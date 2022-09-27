@@ -31,25 +31,25 @@ endif()
 set(HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx")
 file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
-#file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx)
-#file(GLOB HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx)
 
-#foreach(source ${SRCS})
-set(MATIMERS  ${SRCS})#${MATIMERS}) ${source})
-	#endforeach(source)
+set(MATIMERS  ${SRCS})
 message(${MATIMERS})
 
 add_library(MATimers SHARED ${MATIMERS})
 target_include_directories(MATimers PUBLIC ${HEADERS})
 #message(${HDRS})
+set(headers "")
 foreach(header ${HDRS})
 	message(${header})
-	set_target_properties(MATimers PROPERTIES PUBLIC_HEADER ${header})
+	set(headers "${headers} ${header}")
+	set_property(TARGET MATimers APPEND PROPERTY PUBLIC_HEADER ${header})
 endforeach(header)
+#set_target_properties(MATimers PROPERTIES PUBLIC_HEADERS ${HDRS})
+#set_target_properties(MATimers PROPERTIES PUBLIC_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 
 
 install(TARGETS MATimers
-        PUBLIC_HEADER
+	        PUBLIC_HEADER
 	DESTINATION include/MATimers
 )
 
