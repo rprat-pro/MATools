@@ -12,3 +12,10 @@ add_test(NAME test_timers_case_1_robustness COMMAND checkTimers -c 1 -r 1)
 add_test(NAME test_timers_case_2_robustness COMMAND checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness COMMAND checkTimers -c 3 -r 1)
 add_test(NAME test_timers_case_4_robustness COMMAND checkTimers -c 4 -r 1)
+
+
+add_library(other_lib lib_to_link.cxx lib_to_link.hxx)
+
+add_executable(checkLIB test_timer_with_another_lib.cpp)
+target_include_directories( PUBLIC ${TCLAP_INCLUDE_DIR})
+target_link_libraries(checkLIB MATimers other_lib)

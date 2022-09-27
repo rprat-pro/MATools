@@ -1,6 +1,8 @@
 #include <MATimers.hxx>
 #include <tclap/CmdLine.h>
 
+#include <common.hxx>
+#include <lib_to_link.hxx>
 
 
 int main(int argc, char const* argv[]) 
@@ -45,11 +47,13 @@ int main(int argc, char const* argv[])
 	{
 		constexpr int size = 100;
 		launch<size>(tcase);
+		launch_func_in_other_lib_other_lib<size>(tcase);
 	}
 	else
 	{
 		constexpr int size = 1;
 		launch<size>(tcase);
+		launch_func_in_other_lib_other_lib<size>(tcase);
 	}
 
 	MATimer::timers::print_and_write_timers();

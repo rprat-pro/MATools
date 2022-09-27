@@ -9,19 +9,19 @@ namespace MATimer
 		// constructor
 		MATimerNode::MATimerNode() : m_daughter() // only used for root
 		{
-			m_name			= "root";
+			m_name = "root";
 			m_iteration = 1;
-			m_level  		= 0;
-			m_mother 		= nullptr;
+			m_level = 0;
+			m_mother = nullptr;
 
 		}
 
 		MATimerNode::MATimerNode(std::string name, MATimerNode* mother): m_daughter(), m_duration(0)
 		{
-			m_name      = name;
+			m_name = name;
 			m_iteration = 1;
-			m_level 	  = mother->m_level + 1;
-			m_mother 	  = mother;
+			m_level = mother->m_level + 1;
+			m_mother = mother;
 		}
 
 		MATimerNode* 
