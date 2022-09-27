@@ -30,13 +30,20 @@ endif()
 
 set(HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB SRCS ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cpp ${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx)
+file(GLOB HDRS ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hpp ${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx)
 
 set(MATIMERS ${SRCS})
 add_library(MATimers SHARED ${MATIMERS})
 target_include_directories(MATimers PUBLIC ${HEADERS})
+set_target_properties(MATimers PROPERTIES PUBLIC_HEADER ${HDRS})
+
+install(TARGETS MATimers
+        PUBLIC_HEADER
+	DESTINATION include/MATimers
+)
 
 enable_testing()
 set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package(tclap REQUIRED)
+find_package(TCLAP REQUIRED)
 add_subdirectory(test)
 
