@@ -1,4 +1,4 @@
-#include"../Tools/Timer.hxx"
+#include <timer.hxx>
 #ifdef __MPI
 	#include"mpi.h"
 #endif
@@ -281,10 +281,10 @@ namespace MATimer
 			return; // end here
 #endif
 			MATimer::output::printMessage(" Timers initialization ");
-			MATimerNode*& root_timer_ptr 	= MATimer::timers::get_timer<ROOT>() ;
+			MATimerNode*& root_timer_ptr 	= MATimer::timers::get_MATimer_node<ROOT>() ;
 		        assert(root_timer_ptr == nullptr);	
 			root_timer_ptr 			= new MATimerNode(); 
-			MATimerNode*& current 	= MATimer::timers::get_timer<CURRENT>(); 
+			MATimerNode*& current 	= MATimer::timers::get_MATimer_node<CURRENT>(); 
 			current 			= root_timer_ptr;
 		        assert(current != nullptr);	
 			MATimer::timer::start_global_timer<ROOT>();
@@ -330,7 +330,7 @@ namespace MATimer
 		Timer::~Timer() 
 		{
 			end();
-			auto& current_timer = MATimer::timers::get_timer<CURRENT>();
+			auto& current_timer = MATimer::timers::get_MATimer_node<CURRENT>();
 			current_timer = current_timer->get_mother();
 		}
 	};
@@ -357,7 +357,7 @@ namespace MATimer
 
 		void print_timetable()
 		{
-			MATimerNode* root_timer = MATimer::timers::get_timer<ROOT>();
+			MATimerNode* root_timer = MATimer::timers::get_MATimer_node<ROOT>();
 			double runtime = root_timer->get_duration();
 			runtime = MATimer::mpi::reduce_max(runtime); // if MPI, else return runtime
 
@@ -396,10 +396,11 @@ namespace MATimer
 		void write_file(std::string a_name)
 		{
 			using namespace MATimer::output;
+			using namespace MATimer::mpi;
 			//using MATimer::mpi::reduce_max;
 
 			std::ofstream myFile (a_name, std::ofstream::out);	
-			MATimerNode* root_timer = MATimer::timers::get_timer<ROOT>();
+			MATimerNode* root_timer = MATimer::timers::get_MATimer_node<ROOT>();
 			auto rootTime = root_timer->get_duration();
 			rootTime = MATimer::mpi::reduce_max(rootTime);
 			auto my_write = [rootTime](MATimerNode* a_ptr, std::ofstream& a_file)

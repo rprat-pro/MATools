@@ -38,7 +38,7 @@ namespace MATimer
 		template<typename Arg>
 		void printMessage(Arg a_msg)
 		{
-			if(is_master())
+			if(mpi::is_master())
 			{
 				std::cout << a_msg << std::endl;
 			}
@@ -47,7 +47,7 @@ namespace MATimer
 		template<typename Arg, typename... Args>
 		void printMessage(Arg a_msg, Args... a_msgs)
 		{
-			if(is_master())
+			if(mpi::is_master())
 			{
 				std::cout << a_msg << " ";
 				printMessage(a_msgs...);
@@ -80,7 +80,7 @@ namespace MATimer
 
 			// accessor
 			//
-			std::string getName();
+			std::string get_name();
 			std::size_t get_iteration();
 			std::size_t get_level();
 			std::vector<MATimerNode*>& get_daughter();
