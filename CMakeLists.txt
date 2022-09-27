@@ -7,6 +7,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 # set the project name and version
 project(MATimers VERSION 1.0)
 
+option(MATIMERS_TESTING "add tests" OFF)
+
 
 # openmp
 find_package(OpenMP)
@@ -37,24 +39,20 @@ message(${MATIMERS})
 
 add_library(MATimers SHARED ${MATIMERS})
 target_include_directories(MATimers PUBLIC ${HEADERS})
-#message(${HDRS})
-set(headers "")
 foreach(header ${HDRS})
-	message(${header})
-	set(headers "${headers} ${header}")
 	set_property(TARGET MATimers APPEND PROPERTY PUBLIC_HEADER ${header})
 endforeach(header)
-#set_target_properties(MATimers PROPERTIES PUBLIC_HEADERS ${HDRS})
-#set_target_properties(MATimers PROPERTIES PUBLIC_HEADER "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 
 
 install(TARGETS MATimers
 	        PUBLIC_HEADER
-	DESTINATION include/MATimers
+	DESTINATION include/
 )
 
-enable_testing()
-set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
-find_package(TCLAP REQUIRED)
-add_subdirectory(test)
 
+if(MATIMERS_TESTING)
+	enable_testing()
+	set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
+	find_package(TCLAP REQUIRED)
+	add_subdirectory(test)
+endif()
