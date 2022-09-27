@@ -25,13 +25,16 @@ enum enumTimer
 	ROOT
 };
 
-namespace profiling
+namespace MATimer
 {
-	namespace output
+	namespace mpi
 	{
 		bool is_master();
 		double reduce_max(double a_duration);
+	};
 
+	namespace output
+	{
 		template<typename Arg>
 		void printMessage(Arg a_msg)
 		{
@@ -54,24 +57,24 @@ namespace profiling
 
 	namespace timers
 	{
-		class profilingTimer
+		class MATimerNode
 		{
 			using duration = std::chrono::duration<double>;
 
 			public:
 
-			profilingTimer();
-			profilingTimer(std::string name, profilingTimer* mother);
-			profilingTimer* find(std::string name);
+			MATimerNode();
+			MATimerNode(std::string name, MATimerNode* mother);
+			MATimerNode* find(std::string name);
 
 			// printer functions
 			//
-			void printReplicate(size_t begin, size_t end, std::string motif);
+			void print_replicate(size_t begin, size_t end, std::string motif);
 			void space();
 			void column();
-			void endline();
-			void printBanner(size_t shift);
-			void printEnding(size_t shift);
+			void end_line();
+			void print_banner(size_t shift);
+			void print_ending(size_t shift);
 			duration* get_ptr_duration();
 			void print(size_t shift, double runtime);
 
@@ -80,8 +83,8 @@ namespace profiling
 			std::string getName();
 			std::size_t get_iteration();
 			std::size_t get_level();
-			std::vector<profilingTimer*>& get_daughter();
-			profilingTimer* get_mother();
+			std::vector<MATimerNode*>& get_daughter();
+			MATimerNode* get_mother();
 			double get_duration();
 		
 
@@ -90,8 +93,8 @@ namespace profiling
 			std::string m_name;
 			std::size_t m_iteration;
 			std::size_t m_level;
-			std::vector<profilingTimer*> m_daughter;
-			profilingTimer* m_mother;
+			std::vector<MATimerNode*> m_daughter;
+			MATimerNode* m_mother;
 			duration m_duration;
 		};
 
@@ -99,9 +102,9 @@ namespace profiling
 		void print_and_write_timers();
 
 		template<enumTimer T>
-		profilingTimer*& get_timer()
+		MATimerNode*& get_MATimer_node()
 		{
-			static profilingTimer* __current;
+			static MATimerNode* __current;
 			return __current;
 		}
 
@@ -139,7 +142,7 @@ namespace profiling
 		};
 
 		template<enumTimer T>
-		Timer*& get_timer()
+		Timer*& get_MATimer_node()
 		{
 			static Timer* __timer;
 			return __timer;
@@ -149,8 +152,8 @@ namespace profiling
 		void start_global_timer()
 		{
 			assert(T == enumTimer::ROOT);
-			auto& timer = get_timer<T>(); 
-			timer = new Timer(profiling::timers::get_timer<T>()->get_ptr_duration());
+			auto& timer = get_MATimer_node<T>(); 
+			timer = new Timer(MATimer::timers::get_MATimer_node<T>()->get_ptr_duration());
 			timer->start(); // reset start
 		}
 
@@ -158,22 +161,22 @@ namespace profiling
 		void end_global_timer()
 		{
 			assert(T == enumTimer::ROOT);
-			auto timer = get_timer<T>();
+			auto timer = get_MATimer_node<T>();
 			timer->end();
 		}
 	}
 
 	namespace outputManager
 	{
-		using profiling::timers::profilingTimer;
+		using MATimer::timers::MATimerNode;
 
 		std::string build_name();
-		void printTimeTable();
-		void writeFile();
-		void writeFile(std::string a_name);
+		void print_timetable();
+		void write_file();
+		void write_file(std::string a_name);
 
 		template<typename Func, typename... Args>
-		void recursive_call(Func& func, profilingTimer* ptr, Args&... arg)
+		void recursive_call(Func& func, MATimerNode* ptr, Args&... arg)
 		{
 			func(ptr, arg...);
 			auto& daughters = ptr->get_daughter();
@@ -182,7 +185,7 @@ namespace profiling
 		}
 
 		template<typename Func, typename Sort, typename... Args>
-		void recursive_sorted_call(Func& func, Sort mySort, profilingTimer* ptr, Args&... arg)
+		void recursive_sorted_call(Func& func, Sort mySort, MATimerNode* ptr, Args&... arg)
 		{
 			func(ptr, arg...);
 			auto& daughters = ptr->get_daughter();
@@ -204,10 +207,10 @@ namespace profiling
 
 #else
 
-#define START_TIMER(XNAME) auto& current = profiling::timers::get_timer<CURRENT>();\
-	assert(current != nullptr && "do not use an undefined profilingTimer");\
+#define START_TIMER(XNAME) auto& current = MATimer::timers::get_MATimer_node<CURRENT>();\
+	assert(current != nullptr && "do not use an undefined MATimerNode");\
 	current = current->find(XNAME); \
-        profiling::timer::Timer tim(current->get_ptr_duration());
+        MATimer::timer::Timer tim(current->get_ptr_duration());
 
 
 #endif
