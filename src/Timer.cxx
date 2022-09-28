@@ -10,13 +10,11 @@ namespace MATimer
 			start();
 		}
 
-		inline 
 		void Timer::start()
 		{
 			m_start = steady_clock::now();
 		}
 
-		inline 
 		void Timer::end()
 		{
 			assert(m_duration != nullptr && "duration has to be initialised");

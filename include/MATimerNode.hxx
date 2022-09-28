@@ -54,7 +54,7 @@ namespace MATimer
 		};
 
 		template<enumTimer T>
-			static MATimerNode*& get_MATimer_node()
+			MATimerNode*& get_MATimer_node()
 			{
 				static MATimerNode* __current;
 				return __current;

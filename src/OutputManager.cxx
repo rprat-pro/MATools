@@ -25,6 +25,7 @@ namespace MATimer
 		void print_timetable()
 		{
 			MATimerNode* root_timer = MATimer::timers::get_MATimer_node<ROOT>();
+			assert(root_timer != nullptr);
 			double runtime = root_timer->get_duration();
 			runtime = MATimer::mpi::reduce_max(runtime); // if MPI, else return runtime
 
