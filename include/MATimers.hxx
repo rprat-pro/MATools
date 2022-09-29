@@ -16,6 +16,7 @@ namespace MATimer
 	{
 		void init_timers();
 		void print_and_write_timers();
+		void finalise(bool = true, bool = true);
 
 		template<typename Lambda>
 		double chrono_section(Lambda&& lambda)
@@ -44,6 +45,4 @@ namespace MATimer
 	assert(current != nullptr && "do not use an undefined MATimerNode");\
 	current = current->find(XNAME); \
         MATimer::timer::Timer tim(current->get_ptr_duration());
-
-
 #endif

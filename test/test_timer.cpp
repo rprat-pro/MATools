@@ -1,7 +1,6 @@
 #include <MATimers.hxx>
 #include <tclap/CmdLine.h>
-
-
+#include "common.hxx"
 
 int main(int argc, char const* argv[]) 
 {
@@ -52,7 +51,8 @@ int main(int argc, char const* argv[])
 		launch<size>(tcase);
 	}
 
-	MATimer::timers::print_and_write_timers();
+//MATimer::timers::print_and_write_timers();
+	MATimer::timers::finalise();
 
 	return 0;
 }

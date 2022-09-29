@@ -24,7 +24,10 @@ namespace MATimer
 			func(ptr, arg...);
 			auto& daughters = ptr->get_daughter();
 			for(auto& it: daughters)
+			{
+				assert(it != nullptr);
 				recursive_call(func,it,arg...);
+			}
 		}
 
 		template<typename Func, typename Sort, typename... Args>
@@ -34,7 +37,10 @@ namespace MATimer
 			auto& daughters = ptr->get_daughter();
 			std::sort(daughters.begin(),daughters.end(),mySort);
 			for(auto& it:daughters)
+			{
+				assert(it != nullptr);
 				recursive_sorted_call(func, mySort, it,arg...);
+			}
 		}
 
 

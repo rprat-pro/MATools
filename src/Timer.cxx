@@ -12,15 +12,21 @@ namespace MATimer
 
 		void Timer::start()
 		{
-			m_start = steady_clock::now();
+			std::cout << " tic " << std::endl;
+			std::cout << this << std::endl;
+			m_start = high_resolution_clock::now();
 		}
 
 		void Timer::end()
 		{
 			assert(m_duration != nullptr && "duration has to be initialised");
-			m_stop = steady_clock::now();
+			std::cout << " toc " << std::endl;
+			std::cout << this << std::endl;
+			m_stop = high_resolution_clock::now();
 			*m_duration += m_stop - m_start;
 			assert(m_duration->count() >= 0);
+			std::cout << m_duration->count() << std::endl;
+
 		}
 
 		Timer::~Timer() 

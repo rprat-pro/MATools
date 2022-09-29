@@ -69,6 +69,7 @@ namespace MATimer
 
 			std::ofstream myFile (a_name, std::ofstream::out);	
 			MATimerNode* root_timer = MATimer::timers::get_MATimer_node<ROOT>();
+			assert(root_timer != nullptr);
 			auto rootTime = root_timer->get_duration();
 			rootTime = MATimer::mpi::reduce_max(rootTime);
 			auto my_write = [rootTime](MATimerNode* a_ptr, std::ofstream& a_file)

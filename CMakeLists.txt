@@ -37,14 +37,16 @@ file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 set(MATIMERS  ${SRCS})
 message(${MATIMERS})
 
-add_library(MATimers SHARED ${MATIMERS})
+add_library(MATimers STATIC ${MATIMERS})
 target_include_directories(MATimers PUBLIC ${HEADERS})
+target_compile_options(MATimers PRIVATE -fPIC)
 foreach(header ${HDRS})
 	set_property(TARGET MATimers APPEND PROPERTY PUBLIC_HEADER ${header})
 endforeach(header)
 
 
 install(TARGETS MATimers
+	DESTINATION lib
 	        PUBLIC_HEADER
 	DESTINATION include/
 )
