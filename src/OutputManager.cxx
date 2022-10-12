@@ -14,7 +14,8 @@ namespace MATimer
 			std::string base_name = "MATimers";
 #ifdef __MPI
 			int mpiSize;
-			MPI_Comm_size(MPI_COMM_WORLD,&mpiSize);
+			MPI_Comm_rank(MPI_COMM_WORLD,&mpiSize);
+			//MPI_Comm_size(MPI_COMM_WORLD,&mpiSize);
 			std::string file_name = base_name + "." + std::to_string(mpiSize) + ".perf";
 #else
 			std::string file_name = base_name + "." + std::to_string(nthreads) + ".perf";
@@ -81,7 +82,7 @@ namespace MATimer
 
 				const auto max_time = reduce_max(a_ptr->get_duration());
 
-				if(is_master())
+			//	if(is_master())
 				{
 					a_file << space << a_ptr->get_name() 
 						<< " " << a_ptr->get_iteration()

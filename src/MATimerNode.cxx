@@ -1,4 +1,5 @@
 #include<MATimerNode.hxx>
+#include<MATimerMPI.hxx>
 
 namespace MATimer
 {
@@ -166,13 +167,28 @@ namespace MATimer
 
 				if(MATimer::mpi::is_master())
 				{
+#ifdef UNDEFINED // __cplusplus > 201103L
 					const auto [min,max]	= std::minmax_element(list.begin(), list.end());
 					auto global_max 	= *max;
 					auto global_min 	= *min; 
 					auto sum 		= std::accumulate(list.begin(), list.end(), double(0.));
 					auto global_mean 	= sum / double(size);
 					auto part_time	= (global_max / total_time ) * 100;
-
+#else
+					double min= list[0];
+					double max= list[0];
+					double sum= list[0];
+					for(int id = 1 ; id < list.size() ; id++)
+					{
+						min = std::min(min,list[id]);
+						max = std::max(max,list[id]);
+						sum += list[id];
+					}
+					auto global_max     = max;
+					auto global_min     = min;
+					auto global_mean    = sum / double(size);
+					auto part_time  = (global_max / total_time ) * 100;
+#endif
 					assert(global_mean >= 0);
 					assert(global_min >= 0);
 					assert(global_max >= 0);

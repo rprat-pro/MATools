@@ -8,7 +8,14 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 project(MATimers VERSION 1.0)
 
 option(MATIMERS_TESTING "add tests" OFF)
+option(MATIMERS_MPI "add tests" ON)
 
+
+if(MATIMERS_MPI)
+	find_package(MPI REQUIRED)
+	add_definitions(-DOMPI_SKIP_MPICXX)
+	add_compile_options(-D__MPI)	
+endif()
 
 # openmp
 find_package(OpenMP)
@@ -39,6 +46,12 @@ message(${MATIMERS})
 
 add_library(MATimers STATIC ${MATIMERS})
 target_include_directories(MATimers PUBLIC ${HEADERS})
+if(MATIMERS_MPI)
+	target_link_libraries(MATimers PRIVATE MPI_C)
+	target_include_directories(MATimers PRIVATE ${MPI_C_INCLUDE_PATH}) 
+
+endif()
+
 target_compile_options(MATimers PRIVATE -fPIC)
 foreach(header ${HDRS})
 	set_property(TARGET MATimers APPEND PROPERTY PUBLIC_HEADER ${header})

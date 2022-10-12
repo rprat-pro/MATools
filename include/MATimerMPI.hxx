@@ -1,4 +1,7 @@
 #pragma once
+#ifdef __MPI
+	#include "mpi.h"
+#endif
 
 
 namespace MATimer

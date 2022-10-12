@@ -42,7 +42,5 @@ namespace MATimer
 				recursive_sorted_call(func, mySort, it,arg...);
 			}
 		}
-
-
 	};
 };
