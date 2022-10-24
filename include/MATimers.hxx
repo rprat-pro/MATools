@@ -14,9 +14,9 @@ namespace MATimer
 {
 	namespace timers
 	{
-		void init_timers();
+		void initialize(int*,  char***, bool = true);
 		void print_and_write_timers();
-		void finalise(bool = true, bool = true);
+		void finalize(bool = true, bool = true);
 
 		template<typename Lambda>
 		double chrono_section(Lambda&& lambda)

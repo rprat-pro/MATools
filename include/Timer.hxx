@@ -49,7 +49,6 @@ namespace MATimer
 			assert(T == enumTimer::ROOT);
 			auto timer = get_timer<T>();
 			assert(timer != nullptr);
-			std::cout << "ici" << std::endl;
 			timer->end();
 		}
 	}

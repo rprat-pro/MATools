@@ -11,7 +11,11 @@ add_test(NAME test_timers_case_5 COMMAND checkTimers -c 5 -r 0)
 add_test(NAME test_timers_case_1_robustness COMMAND checkTimers -c 1 -r 1)
 add_test(NAME test_timers_case_2_robustness COMMAND checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness COMMAND checkTimers -c 3 -r 1)
-add_test(NAME test_timers_case_4_robustness COMMAND checkTimers -c 4 -r 1)
+#add_test(NAME test_timers_case_4_robustness COMMAND checkTimers -c 4 -r 1)
+add_executable(checkTrace test_trace.cxx)
+target_link_libraries(checkTrace MATimers)
+add_test(NAME test_trace COMMAND checkTrace)
+
 
 
 #add_library(other_lib lib_to_link.cxx lib_to_link.hxx)

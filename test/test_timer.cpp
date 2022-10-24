@@ -2,8 +2,9 @@
 #include <tclap/CmdLine.h>
 #include "common.hxx"
 
-int main(int argc, char const* argv[]) 
+int main(int argc, char * argv[]) 
 {
+	MATimer::timers::initialize(&argc,&argv);
 	int robust = -1; 
 	int tcase = -1;
 
@@ -38,7 +39,6 @@ int main(int argc, char const* argv[])
 		&& "bad choice for tcase parameter"
 	);
 
-	MATimer::timers::init_timers();
 
 	if(robust)
 	{
@@ -51,8 +51,7 @@ int main(int argc, char const* argv[])
 		launch<size>(tcase);
 	}
 
-//MATimer::timers::print_and_write_timers();
-	MATimer::timers::finalise();
+	MATimer::timers::finalize();
 
 	return 0;
 }
