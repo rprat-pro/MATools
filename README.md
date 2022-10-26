@@ -87,5 +87,5 @@ The `finalize` routine handles writing MATrace files. In an MPI context, all dat
 | MPI              | Done        |
 | OpenMP           | TODO        |
 | Hybrid           | not planned |
-| Color generation | TODO        |
+| Default color    | Done        |
 
