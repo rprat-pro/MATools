@@ -33,7 +33,8 @@ namespace MATimer
 			public:
 			void add(char a_name[64]);
 			int operator[] (char a_name[64]);
-			void  write(std::ofstream& a_out);
+			void write_items(std::ofstream& a_out);
+			void write_colors(std::ofstream& a_out);
 
 			int m_acc = _sstart;
 			std::map<std::string,int> m_data;
