@@ -1,12 +1,12 @@
 # MATimers library
 
-MATimers is a library of timers in hierarchical form. The goal is to capture the time spent by a scope as many times as it is called.
+MATimers is a library of timers in hierarchical form. The goal is to capture the time spent in a scope/routine as many times as they are called.
 
 ## HOW TO USE IT
 
-### General
+### Miniaml requirement 
 
-Two instructions to use MATimers: 
+Two instructions are required to use MATimers: 
 
 ```
 MATimer::timers::initialize();
@@ -16,16 +16,18 @@ MATimer::timers::initialize();
 MATimer::timers::finalize();
 ```
 
+These functions create the root MATimerNode and capture your application runtime.
+
 ### Place your timers
 
-At the begining of your function/routine, put this instruction :
+At the beginning of your function/routine, put this instruction :
 
 ```
 START_TIMER("section_name");
 ```
 
-Limitation : only one instruction per scope.
-Limitation : these timers are not thread-safe.
+Limitation: only one instruction per scope.
+Limitation: these timers are not thread-safe.
 
 ### Output
 
@@ -63,11 +65,11 @@ Example :
 
 ## MATrace
 
-MATimer provides others tools such as trace generation at paje format readable with VITE. You can access to this feature with the namespace `MATimer::MATrace`.
+MATimer provides other tools such as trace generation in paje format readable with VITE. You can access this feature with the namespace `MATimer::MATrace`.
 
 ### How to use it
 
-MATrace `initialize` and `finalize` are respectively hidden in the MATimer `initialize` and `finalize`. MATrace feature furnish two routines to capture a task : start and stop. The general way to use it is :
+MATrace `initialize` and `finalize` are respectively hidden in the MATimer `initialize` and `finalize`. MATrace feature furnishes two routines to capture a task: start and stop. The general way to use it is :
 
 ```
 MATimer::MATrace::start()
@@ -75,7 +77,7 @@ do_something();
 MATimer::MATrace::stop("kernel_name");
 ```
 
-The `finalize` routine handles to write MATrace file, in a MPI context, all data are sent to the master process that write the file.
+The `finalize` routine handles writing MATrace files. In an MPI context, all data are sent to the master process that writes the file.
 
 ### Development state
 
