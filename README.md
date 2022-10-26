@@ -4,7 +4,7 @@ MATimers is a library of timers in hierarchical form. The goal is to capture the
 
 ## HOW TO USE IT
 
-### Miniaml requirement 
+### Minimal requirement 
 
 Two instructions are required to use MATimers: 
 
