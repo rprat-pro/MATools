@@ -18,22 +18,22 @@ MATimer::timers::print_and_write_timers();
 
 ### Place your timers
 
-At the begining of your function, put this instruction :
+At the begining of your function/routine, put this instruction :
 
 ```
-START_TIMER("name");
+START_TIMER("section_name");
 ```
 
 Limitation : only one instruction per scope.
 Limitation : these timers are not thread-safe.
 
-## Output
+### Output
 
 Two outputs :
 
 ### File
 
-The MATimers write file routine creates a file MATimers.number_of_threads.perf that contains your timers.
+The MATimers write file routine creates a file `MATimers.number_of_threads.perf` or `MATimers.number_of_MPI.perf` that contains your timers.
 
 ### Shell
 
@@ -51,3 +51,20 @@ Example :
  |             |--> func1  |                120 |           0.000009 |           4.549541 |
  |-- end timetable -----------------------------------------------------------------------|
 ```
+
+### MATrace
+
+MATimer furnishes others tools such as trace generation at paje format readable with VITE.
+
+MATrace Initialization and Finalization are respectively hidden in the MATimer Initialization and Finalization. MATrace feature furnish two routines to capture a task : start and stop. The correct way to use it is
+
+```
+MATimer::MATrace::start()
+do_something();
+MATimer::MATrace::stop("kernel_name");
+```
+
+The finalization routine handles to write MATrace file, in a MPI context, all data are sent to the master process that write the file.
+
+TODO : Trace generation for OpenMP
+TODO : Color generation
