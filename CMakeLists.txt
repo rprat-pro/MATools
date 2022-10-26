@@ -5,13 +5,13 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 # set the project name and version
-project(MATimers VERSION 1.0)
+project(MATools VERSION 1.0)
 
-option(MATIMERS_TESTING "add tests" OFF)
-option(MATIMERS_MPI "add tests" ON)
+option(MATOOLS_TESTING "add tests" OFF)
+option(MATOOLS_MPI "add tests" ON)
 
 
-if(MATIMERS_MPI)
+if(MATOOLS_MPI)
 	find_package(MPI REQUIRED)
 	add_definitions(-DOMPI_SKIP_MPICXX)
 	add_compile_options(-D__MPI)
@@ -42,32 +42,32 @@ set(HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx")
 file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 
-set(MATIMERS  ${SRCS})
-message(${MATIMERS})
+set(MATOOLS  ${SRCS})
+message(${MATOOLS})
 
-add_library(MATimers STATIC ${MATIMERS})
-target_include_directories(MATimers PUBLIC ${HEADERS})
-if(MATIMERS_MPI)
-	#target_link_libraries(MATimers PRIVATE MPI_C)
-	target_link_libraries(MATimers PRIVATE mpi)
-	target_include_directories(MATimers PRIVATE ${MPI_C_INCLUDE_PATH}) 
+add_library(MATools STATIC ${MATOOLS})
+target_include_directories(MATools PUBLIC ${HEADERS})
+if(MATOOLS_MPI)
+	#target_link_libraries(MATools PRIVATE MPI_C)
+	target_link_libraries(MATools PRIVATE mpi)
+	target_include_directories(MATools PRIVATE ${MPI_C_INCLUDE_PATH}) 
 
 endif()
 
-target_compile_options(MATimers PRIVATE -fPIC)
+target_compile_options(MATools PRIVATE -fPIC)
 foreach(header ${HDRS})
-	set_property(TARGET MATimers APPEND PROPERTY PUBLIC_HEADER ${header})
+	set_property(TARGET MATools APPEND PROPERTY PUBLIC_HEADER ${header})
 endforeach(header)
 
 
-install(TARGETS MATimers
+install(TARGETS MATools
 	DESTINATION lib
 	        PUBLIC_HEADER
 	DESTINATION include/
 )
 
 
-if(MATIMERS_TESTING)
+if(MATOOLS_TESTING)
 	enable_testing()
 	set(CMAKE_MODULE_PATH ${CMAKE_CURRENT_SOURCE_DIR}/cmake)
 	find_package(TCLAP REQUIRED)

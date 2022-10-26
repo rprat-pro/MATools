@@ -1,6 +1,6 @@
 add_executable(checkTimers test_timer.cpp)
 target_include_directories(checkTimers PUBLIC ${TCLAP_INCLUDE_DIR})
-target_link_libraries(checkTimers MATimers )
+target_link_libraries(checkTimers MATools )
 
 add_test(NAME test_timers_no_timer COMMAND checkTimers -c 0 -r 0)
 add_test(NAME test_timers_case_1 COMMAND checkTimers -c 1 -r 0)
@@ -13,7 +13,7 @@ add_test(NAME test_timers_case_2_robustness COMMAND checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness COMMAND checkTimers -c 3 -r 1)
 #add_test(NAME test_timers_case_4_robustness COMMAND checkTimers -c 4 -r 1)
 add_executable(checkTrace test_trace.cxx)
-target_link_libraries(checkTrace MATimers)
+target_link_libraries(checkTrace MATools)
 add_test(NAME test_trace COMMAND checkTrace)
 
 
