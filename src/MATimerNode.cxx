@@ -1,9 +1,9 @@
+#include<MAToolsMPI.hxx>
 #include<MATimerNode.hxx>
-#include<MATimerMPI.hxx>
 
-namespace MATimer
+namespace MATools
 {
-	namespace timers
+	namespace MATimer
 	{
 		using duration = std::chrono::duration<double>;
 
@@ -73,10 +73,10 @@ namespace MATimer
 				if(m_name == "root")
 				{
 #ifndef __MPI
-					MATimer::output::printMessage(" MPI feature is disable for timers, if you use MPI please add -D__MPI ");
+					MATools::MAOutput::printMessage(" MPI feature is disable for timers, if you use MPI please add -D__MPI ");
 #else
-					if(MATimer::mpi::is_master()) {
-						MATimer::output::printMessage(" MPI feature activated, rank 0:");
+					if(MATools::MPI::is_master()) {
+						MATools::MAOutput::printMessage(" MPI feature activated, rank 0:");
 #endif
 						std::string start_name = " |-- start timetable "; 
 						std::cout << start_name;
@@ -109,7 +109,7 @@ namespace MATimer
 			{
 				if(m_name == "root")
 				{
-					if(MATimer::mpi::is_master()) 
+					if(MATools::MPI::is_master()) 
 					{
 						shift+= nColumns*(cWidth+1) + 1; // +1 for "|";
 						std::string end_name = " |-- end timetable " ;
@@ -131,7 +131,7 @@ namespace MATimer
 			{
 				assert(total_time >= 0);
 				std::string cValue[nColumns];
-				if(MATimer::mpi::is_master()) 
+				if(MATools::MPI::is_master()) 
 				{
 					size_t realShift = shift;
 					space(); column(); space();
@@ -160,12 +160,12 @@ namespace MATimer
 				assert(size > 0);
 				std::vector<double> list;
 
-				if(MATimer::mpi::is_master()) list.resize(size);
+				if(MATools::MPI::is_master()) list.resize(size);
 
 				MPI_Gather(&local,1,MPI_DOUBLE, list.data(), 1, MPI_DOUBLE, 0, MPI_COMM_WORLD); // master rank is 0
 
 
-				if(MATimer::mpi::is_master())
+				if(MATools::MPI::is_master())
 				{
 #ifdef UNDEFINED // __cplusplus > 201103L
 					const auto [min,max]	= std::minmax_element(list.begin(), list.end());
@@ -207,7 +207,7 @@ namespace MATimer
 				cValue[1] = std::to_string( m_duration.count());	
 				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 );	
 #endif
-				if(MATimer::mpi::is_master())
+				if(MATools::MPI::is_master())
 				{
 					for(size_t i =  0 ; i < nColumns ; i++)
 					{

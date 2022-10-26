@@ -2,7 +2,7 @@
 #include <MATraceColor.hxx>
 #include <random>
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{

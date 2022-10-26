@@ -2,7 +2,7 @@
 
 #include <MATraceTypes.hxx>
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{

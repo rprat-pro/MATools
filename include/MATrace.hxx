@@ -8,13 +8,13 @@
 #include <thread>
 #include <map>
 
-#include <MATimerMPI.hxx>
+#include <MAToolsMPI.hxx>
 
 #include <MATraceTypes.hxx>
 #include <MATraceInstance.hxx>
 
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{

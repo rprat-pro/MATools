@@ -7,11 +7,11 @@
 #include <MATimerNode.hxx>
 
 
-namespace MATimer
+namespace MATools
 {
-	namespace outputManager
+	namespace MAOutputManager
 	{
-		using MATimer::timers::MATimerNode;
+		using MATools::MATimer::MATimerNode;
 
 		std::string build_name();
 		void print_timetable();

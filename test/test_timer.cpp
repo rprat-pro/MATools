@@ -4,7 +4,7 @@
 
 int main(int argc, char * argv[]) 
 {
-	MATimer::timers::initialize(&argc,&argv);
+	MATools::MATimer::initialize(&argc,&argv);
 	int robust = -1; 
 	int tcase = -1;
 
@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 		launch<size>(tcase);
 	}
 
-	MATimer::timers::finalize();
+	MATools::MATimer::finalize();
 
 	return 0;
 }

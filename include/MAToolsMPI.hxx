@@ -4,9 +4,9 @@
 #endif
 
 
-namespace MATimer
+namespace MATools
 {
-	namespace mpi
+	namespace MPI
 	{
 		bool is_master();
 		int get_rank();

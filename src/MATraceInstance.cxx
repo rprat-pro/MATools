@@ -1,6 +1,6 @@
 #include<MATraceInstance.hxx>
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{

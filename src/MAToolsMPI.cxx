@@ -1,9 +1,8 @@
-#include<MATimerMPI.hxx>
+#include<MAToolsMPI.hxx>
 
-
-namespace MATimer
+namespace MATools
 {
-	namespace mpi
+	namespace MPI
 	{
 		constexpr int master=0;
 

@@ -1,15 +1,16 @@
 #pragma once
 
-#include <MATimerMPI.hxx>
+#include <MAToolsMPI.hxx>
 
-namespace MATimer
+namespace MATools
 {
-	namespace output
+	namespace MAOutput
 	{
+		using namespace MATools::MPI;
 		template<typename Arg>
 		void printMessage(Arg a_msg)
 		{
-			if(mpi::is_master())
+			if(is_master())
 			{
 				std::cout << a_msg << std::endl;
 			}
@@ -18,7 +19,7 @@ namespace MATimer
 		template<typename Arg, typename... Args>
 		void printMessage(Arg a_msg, Args... a_msgs)
 		{
-			if(mpi::is_master())
+			if(is_master())
 			{
 				std::cout << a_msg << " ";
 				printMessage(a_msgs...);

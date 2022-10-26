@@ -1,8 +1,8 @@
 #include<Timer.hxx>
 
-namespace MATimer
+namespace MATools
 {
-	namespace timer
+	namespace MATimer
 	{
 		Timer::Timer(duration * acc) 
 		{
@@ -26,7 +26,7 @@ namespace MATimer
 		Timer::~Timer() 
 		{
 			end();
-			auto& current_timer = MATimer::timers::get_MATimer_node<CURRENT>();
+			auto& current_timer = MATools::MATimer::get_MATimer_node<CURRENT>();
 			current_timer = current_timer->get_mother();
 		}
 	};

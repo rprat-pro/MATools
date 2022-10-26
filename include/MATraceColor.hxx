@@ -1,6 +1,6 @@
 #pragma once
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{

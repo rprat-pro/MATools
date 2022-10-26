@@ -2,7 +2,7 @@
 #include <MATraceColor.hxx>
 #include <random>
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{
@@ -134,7 +134,7 @@ namespace MATimer
 
 		void finalize()
 		{
-			using namespace MATimer::mpi;
+			using namespace MATools::MPI;
 			auto& local_MATrace = get_local_MATrace();
 			const int local_size = local_MATrace.size();
 			int local_byte_size = sizeof(MATrace_section) * local_size;

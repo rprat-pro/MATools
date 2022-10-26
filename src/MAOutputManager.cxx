@@ -1,8 +1,8 @@
-#include <OutputManager.hxx>
+#include <MAOutputManager.hxx>
 
-namespace MATimer
+namespace MATools
 {
-	namespace outputManager
+	namespace MAOutputManager
 	{
 		std::string build_name()
 		{
@@ -25,10 +25,10 @@ namespace MATimer
 
 		void print_timetable()
 		{
-			MATimerNode* root_timer = MATimer::timers::get_MATimer_node<ROOT>();
+			MATimerNode* root_timer = MATools::MATimer::get_MATimer_node<ROOT>();
 			assert(root_timer != nullptr);
 			double runtime = root_timer->get_duration();
-			runtime = MATimer::mpi::reduce_max(runtime); // if MPI, else return runtime
+			runtime = MATools::MPI::reduce_max(runtime); // if MPI, else return runtime
 
 			auto my_print = [](MATimerNode* a_ptr, size_t a_shift, double a_runtime)
 			{
@@ -64,15 +64,15 @@ namespace MATimer
 
 		void write_file(std::string a_name)
 		{
-			using namespace MATimer::output;
-			using namespace MATimer::mpi;
-			//using MATimer::mpi::reduce_max;
+			using namespace MATools::MAOutput;
+			using namespace MATools::MPI;
+			//using MATools::MPI::reduce_max;
 
 			std::ofstream myFile (a_name, std::ofstream::out);	
-			MATimerNode* root_timer = MATimer::timers::get_MATimer_node<ROOT>();
+			MATimerNode* root_timer = MATools::MATimer::get_MATimer_node<ROOT>();
 			assert(root_timer != nullptr);
 			auto rootTime = root_timer->get_duration();
-			rootTime = MATimer::mpi::reduce_max(rootTime);
+			rootTime = MATools::MPI::reduce_max(rootTime);
 			auto my_write = [rootTime](MATimerNode* a_ptr, std::ofstream& a_file)
 			{
 				std::string space;

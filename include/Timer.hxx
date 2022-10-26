@@ -1,11 +1,11 @@
 #pragma once
 
 #include <chrono>
-#include<MATimerNode.hxx>
+#include <MATimerNode.hxx>
 
-namespace MATimer
+namespace MATools
 {
-	namespace timer
+	namespace MATimer
 	{
 		using duration = std::chrono::duration<double>;
 		using high_resolution_clock = std::chrono::high_resolution_clock;
@@ -36,7 +36,7 @@ namespace MATimer
 		{
 			assert(T == enumTimer::ROOT);
 			auto& timer = get_timer<T>(); 
-			auto& root_ptr = MATimer::timers::get_MATimer_node<T>(); 
+			auto& root_ptr = MATools::MATimer::get_MATimer_node<T>(); 
 			assert(root_ptr != nullptr);
 			timer = new Timer(root_ptr->get_ptr_duration());
 			timer->start(); // reset start

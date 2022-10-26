@@ -1,6 +1,6 @@
 #include<MATimers.hxx>
 #include<MATrace.hxx>
-#include<MATimerMPI.hxx>
+#include<MAToolsMPI.hxx>
 #include<chrono>
 #include <unistd.h>
 void f1()
@@ -21,10 +21,9 @@ void f3()
 
 int main(int argc, char * argv[]) 
 {
-	MATimer::timers::initialize(&argc,&argv);
-	MATimer::MATrace::initialize();
+	MATools::MATimer::initialize(&argc,&argv);
 #ifdef __MPI
-	using namespace MATimer::mpi;
+	using namespace MATools::MPI;
 	for(int i = 0; i < 20 ; i++)
 	{
 		f3();
@@ -34,33 +33,31 @@ int main(int argc, char * argv[])
 	{
 		for(int i = 0; i < 20 ; i++)
 		{
-			MATimer::MATrace::start();
+			MATools::MATrace::start();
 			f1();
-			MATimer::MATrace::stop("f1");
-			MATimer::MATrace::start();
+			MATools::MATrace::stop("f1");
+			MATools::MATrace::start();
 			f2();
-			MATimer::MATrace::stop("f2");
+			MATools::MATrace::stop("f2");
 		}
 	}
 	else
 	{
 		for(int i = 0; i < 20 ; i++)
 		{
-			MATimer::MATrace::start();
+			MATools::MATrace::start();
 			f3();
-			MATimer::MATrace::stop("f3");
+			MATools::MATrace::stop("f3");
 		}
 	}
 #else
 	for(int i = 0; i < 20 ; i++)
 	{
-		MATimer::MATrace::start();
+		MATools::MATrace::start();
 		f3();
-		MATimer::MATrace::stop("f3");
+		MATools::MATrace::stop("f3");
 	}
 #endif
-	MATimer::MATrace::finalize();	
-	MATimer::timers::finalize();	
-
+	MATools::MATimer::finalize();	
 	return 0;
 }

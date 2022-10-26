@@ -5,12 +5,12 @@
 #include <cassert>
 #include <EnumTimer.hxx>
 #include <Column.hxx>
-#include <Output.hxx>
-#include <MATimerMPI.hxx>
+#include <MAOutput.hxx>
+#include <MAToolsMPI.hxx>
 
-namespace MATimer
+namespace MATools
 {
-	namespace timers
+	namespace MATimer
 	{
 		class MATimerNode
 		{

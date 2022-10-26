@@ -10,7 +10,7 @@
 
 #include <MATraceColor.hxx>
 
-namespace MATimer
+namespace MATools
 {
 	namespace MATrace
 	{
