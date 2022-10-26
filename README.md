@@ -1,6 +1,6 @@
-# MATimers
+# MATimers library
 
-MATimers is a library of timers in hierarchical form. The goal is to capture the time spent by the same scope as many times as it is called.
+MATimers is a library of timers in hierarchical form. The goal is to capture the time spent by a scope as many times as it is called.
 
 ## HOW TO USE IT
 
@@ -9,11 +9,11 @@ MATimers is a library of timers in hierarchical form. The goal is to capture the
 Two instructions to use MATimers: 
 
 ```
-MATimer::timers::init_timers();
+MATimer::timers::initialize();
 
 ... code ...
 
-MATimer::timers::print_and_write_timers();
+MATimer::timers::finalize();
 ```
 
 ### Place your timers
@@ -51,12 +51,23 @@ Example :
  |             |--> func1  |                120 |           0.000009 |           4.549541 |
  |-- end timetable -----------------------------------------------------------------------|
 ```
+### Development state
 
-### MATrace
+| MATimers feature  | State       |
+|-------------------|-------------|
+| Sequential        | Done        |
+| MPI               | Done        |
+| OpenMP            | TODO        |
+| Hybrid            | not planned |
 
-MATimer furnishes others tools such as trace generation at paje format readable with VITE.
 
-MATrace Initialization and Finalization are respectively hidden in the MATimer Initialization and Finalization. MATrace feature furnish two routines to capture a task : start and stop. The correct way to use it is
+## MATrace
+
+MATimer provides others tools such as trace generation at paje format readable with VITE. You can access to this feature with the namespace `MATimer::MATrace`.
+
+### How to use it
+
+MATrace `initialize` and `finalize` are respectively hidden in the MATimer `initialize` and `finalize`. MATrace feature furnish two routines to capture a task : start and stop. The general way to use it is :
 
 ```
 MATimer::MATrace::start()
@@ -64,7 +75,15 @@ do_something();
 MATimer::MATrace::stop("kernel_name");
 ```
 
-The finalization routine handles to write MATrace file, in a MPI context, all data are sent to the master process that write the file.
+The `finalize` routine handles to write MATrace file, in a MPI context, all data are sent to the master process that write the file.
 
-TODO : Trace generation for OpenMP
-TODO : Color generation
+### Development state
+
+| MATrace feature  | State       |
+|------------------|-------------|
+| Sequential       | Done        |
+| MPI              | Done        |
+| OpenMP           | TODO        |
+| Hybrid           | not planned |
+| Color generation | TODO        |
+
