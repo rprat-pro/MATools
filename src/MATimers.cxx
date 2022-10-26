@@ -9,6 +9,11 @@ namespace MATimer
 #ifdef __MPI
 			if(do_mpi_init) MPI_Init(argc,argv);
 #endif
+			initialize();
+		}
+
+		void initialize()
+		{
 #ifdef NO_TIMER
 			MATimer::output::printMessage("MATimers_LOG: No timers initialization - timers are disabled by the ROCKABLE_USE_NO_TIMER option");
 			return; // end here

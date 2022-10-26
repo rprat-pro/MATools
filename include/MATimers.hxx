@@ -16,6 +16,7 @@ namespace MATimer
 	namespace timers
 	{
 		void initialize(int*,  char***, bool = true);
+		void initialize();
 		void print_and_write_timers();
 		void finalize(bool = true, bool = true, bool = true);
 
