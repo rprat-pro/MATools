@@ -1,10 +1,10 @@
-#include <MATimers.hxx>
+#include <MATools.hxx>
 #include <tclap/CmdLine.h>
 #include "common.hxx"
 
 int main(int argc, char * argv[]) 
 {
-	MATools::MATimer::initialize(&argc,&argv);
+	MATools::initialize(&argc,&argv);
 	int robust = -1; 
 	int tcase = -1;
 
@@ -51,7 +51,7 @@ int main(int argc, char * argv[])
 		launch<size>(tcase);
 	}
 
-	MATools::MATimer::finalize();
+	MATools::finalize();
 
 	return 0;
 }

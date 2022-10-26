@@ -15,10 +15,9 @@ namespace MATools
 {
 	namespace MATimer
 	{
-		void initialize(int*,  char***, bool = true);
 		void initialize();
 		void print_and_write_timers();
-		void finalize(bool = true, bool = true, bool = true);
+		void finalize(bool = true, bool = true);
 
 		template<typename Lambda>
 		double chrono_section(Lambda&& lambda)

@@ -4,14 +4,6 @@ namespace MATools
 {
 	namespace MATimer
 	{
-		void initialize(int *argc, char ***argv, bool do_mpi_init)
-		{
-#ifdef __MPI
-			if(do_mpi_init) MPI_Init(argc,argv);
-#endif
-			initialize();
-		}
-
 		void initialize()
 		{
 #ifdef NO_TIMER
@@ -26,7 +18,6 @@ namespace MATools
 			current 			= root_timer_ptr;
 			assert(current != nullptr);	
 			MATools::MATimer::start_global_timer<ROOT>();
-			MATools::MATrace::initialize();
 		}
 
 
@@ -41,9 +32,8 @@ namespace MATools
 			MATools::MAOutputManager::print_timetable();
 		}
 
-		void finalize(bool a_print_timetable, bool a_write_file, bool do_mpi_final)
+		void finalize(bool a_print_timetable, bool a_write_file)
 		{
-			MATools::MATrace::finalize();
 			MATimerNode* root_ptr 	 = MATools::MATimer::get_MATimer_node<ROOT>() ;
 			MATimerNode* current_ptr = MATools::MATimer::get_MATimer_node<CURRENT>() ;
 			assert(root_ptr != nullptr);
@@ -64,9 +54,6 @@ namespace MATools
 				MATools::MAOutput::printMessage("MATimers_LOG: Writing timetable ... ");
 				MATools::MAOutputManager::write_file(); 
 			}
-#ifdef __MPI
-			if(do_mpi_final) MPI_Finalize();
-#endif
 			delete root_ptr;
 		}
 	};
