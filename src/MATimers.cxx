@@ -7,7 +7,7 @@ namespace MATimer
 		void initialize(int *argc, char ***argv, bool do_mpi_init)
 		{
 #ifdef __MPI
-			if(do_mpi_init) MPI_Init(argc, argv);
+			if(do_mpi_init) MPI_Init(argc,argv);
 #endif
 #ifdef NO_TIMER
 			MATimer::output::printMessage("MATimers_LOG: No timers initialization - timers are disabled by the ROCKABLE_USE_NO_TIMER option");
@@ -15,14 +15,15 @@ namespace MATimer
 #endif
 			MATimer::output::printMessage("MATimers_LOG: MATimers initialization ");
 			MATimerNode*& root_timer_ptr 	= MATimer::timers::get_MATimer_node<ROOT>() ;
-		        assert(root_timer_ptr == nullptr);	
+			assert(root_timer_ptr == nullptr);	
 			root_timer_ptr 			= new MATimerNode(); 
 			MATimerNode*& current 	        = MATimer::timers::get_MATimer_node<CURRENT>(); 
 			current 			= root_timer_ptr;
-		        assert(current != nullptr);	
+			assert(current != nullptr);	
 			MATimer::timer::start_global_timer<ROOT>();
+			MATimer::MATrace::initialize();
 		}
-		
+
 
 		void print_and_write_timers()
 		{
@@ -35,8 +36,9 @@ namespace MATimer
 			MATimer::outputManager::print_timetable();
 		}
 
-		void finalize(bool a_print_timetable, bool a_write_file)
+		void finalize(bool a_print_timetable, bool a_write_file, bool do_mpi_final)
 		{
+			MATimer::MATrace::finalize();
 			MATimerNode* root_ptr 	 = MATimer::timers::get_MATimer_node<ROOT>() ;
 			MATimerNode* current_ptr = MATimer::timers::get_MATimer_node<CURRENT>() ;
 			assert(root_ptr != nullptr);
@@ -45,7 +47,7 @@ namespace MATimer
 				MATimer::output::printMessage("MATimers_DEBUG_LOG: MATimers are not corretly used, root node is ", root_ptr, " and current node is " , current_ptr);
 			else 
 				MATimer::output::printMessage("MATimers_LOG: MATimers finalisation");
-				
+
 			MATimer::timer::end_global_timer<ROOT>(); 
 
 			if(a_print_timetable)
@@ -58,7 +60,7 @@ namespace MATimer
 				MATimer::outputManager::write_file(); 
 			}
 #ifdef __MPI
-			MPI_Finalize();
+			if(do_mpi_final) MPI_Finalize();
 #endif
 			delete root_ptr;
 		}

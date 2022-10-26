@@ -178,7 +178,8 @@ namespace MATimer
 					double min= list[0];
 					double max= list[0];
 					double sum= list[0];
-					for(int id = 1 ; id < list.size() ; id++)
+					int size = list.size();
+					for(int id = 1 ; id < size ; id++)
 					{
 						min = std::min(min,list[id]);
 						max = std::max(max,list[id]);

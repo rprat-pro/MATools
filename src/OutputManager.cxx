@@ -6,11 +6,6 @@ namespace MATimer
 	{
 		std::string build_name()
 		{
-			std::size_t nthreads=0;
-#pragma omp parallel
-			{
-				nthreads = omp_get_num_threads();
-			}
 			std::string base_name = "MATimers";
 #ifdef __MPI
 			int mpiSize;
@@ -18,6 +13,11 @@ namespace MATimer
 			MPI_Comm_size(MPI_COMM_WORLD,&mpiSize);
 			std::string file_name = base_name + "." + std::to_string(mpiSize) + ".perf";
 #else
+			std::size_t nthreads=0;
+#pragma omp parallel
+			{
+				nthreads = omp_get_num_threads();
+			}
 			std::string file_name = base_name + "." + std::to_string(nthreads) + ".perf";
 #endif
 			return file_name;
