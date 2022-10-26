@@ -29,13 +29,13 @@ Limitation : these timers are not thread-safe.
 
 ### Output
 
-Two outputs :
+There are two possibilities for outputs, a file or in the terminal. By default, timers are sorted by their times for a given MATimerNode level.
 
-### File
+#### File
 
 The MATimers write file routine creates a file `MATimers.number_of_threads.perf` or `MATimers.number_of_MPI.perf` that contains your timers.
 
-### Shell
+#### Shell
 
 Example :
 
@@ -53,13 +53,13 @@ Example :
 ```
 ### Development state
 
-| MATimers feature  | State       |
-|-------------------|-------------|
-| Sequential        | Done        |
-| MPI               | Done        |
-| OpenMP            | TODO        |
-| Hybrid            | not planned |
-
+| MATimers feature                 | State       |
+|----------------------------------|-------------|
+| Sequential                       | Done        |
+| MPI                              | Done        |
+| OpenMP                           | Done        |
+| Hybrid                           | not planned |
+| Unbalanced timers trees with MPI | Todo        |
 
 ## MATrace
 
