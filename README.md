@@ -1,19 +1,19 @@
-# MATimers library
+# MATools library
 
-MATimers is a library of timers in hierarchical form. The goal is to capture the time spent in a scope/routine as many times as they are called.
+MATools is a library of timers in hierarchical form. The goal is to capture the time spent in a scope/routine as many times as they are called.
 
-## HOW TO USE IT
+## MATimer
 
 ### Minimal requirement 
 
 Two instructions are required to use MATimers: 
 
 ```
-MATimer::timers::initialize();
+MATools::MATimer::initialize();
 
 ... code ...
 
-MATimer::timers::finalize();
+MATools::MATimer::finalize();
 ```
 
 These functions create the root MATimerNode and capture your application runtime.
@@ -72,9 +72,9 @@ MATimer provides other tools such as trace generation in paje format readable wi
 MATrace `initialize` and `finalize` are respectively hidden in the MATimer `initialize` and `finalize`. MATrace feature furnishes two routines to capture a task: start and stop. The general way to use it is :
 
 ```
-MATimer::MATrace::start()
+MATools::MATrace::start()
 do_something();
-MATimer::MATrace::stop("kernel_name");
+MATools::MATrace::stop("kernel_name");
 ```
 
 The `finalize` routine handles writing MATrace files. In an MPI context, all data are sent to the master process that writes the file.
