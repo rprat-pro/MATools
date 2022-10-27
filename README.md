@@ -1,8 +1,10 @@
 # MATools library
 
-MATools is a library of timers in hierarchical form. The goal is to capture the time spent in a scope/routine as many times as they are called.
+MATools is a library poviding tools such as MATimers (timers in hierarchical form) or MATrace (Trace generation for VITE). 
 
 ## MATimer
+
+MATimer aimes to capture the time spent in a scope/routine as many times as they are called. Timer are represented with a tree. These Timers work with MPI too and min time, mean time, max time, % of runtime and imbalance are shown for each scope/routine.
 
 ### Minimal requirement 
 
