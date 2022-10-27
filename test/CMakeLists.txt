@@ -11,15 +11,14 @@ add_test(NAME test_timers_case_5 COMMAND checkTimers -c 5 -r 0)
 add_test(NAME test_timers_case_1_robustness COMMAND checkTimers -c 1 -r 1)
 add_test(NAME test_timers_case_2_robustness COMMAND checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness COMMAND checkTimers -c 3 -r 1)
-#add_test(NAME test_timers_case_4_robustness COMMAND checkTimers -c 4 -r 1)
+add_test(NAME test_timers_case_1_robustness_4mpi COMMAND mpirun -n 4 checkTimers -c 1 -r 1)
+add_test(NAME test_timers_case_2_robustness_4mpi COMMAND mpirun -n 4 checkTimers -c 2 -r 1)
+add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 checkTimers -c 3 -r 1)
+
+
 add_executable(checkTrace test_trace.cxx)
 target_link_libraries(checkTrace MATools)
 add_test(NAME test_trace COMMAND checkTrace)
 add_test(NAME test_trace_mpi_4 COMMAND mpirun -n 4 ./checkTrace)
 
 
-#add_library(other_lib lib_to_link.cxx lib_to_link.hxx)
-
-#add_executable(checkLIB test_timer_with_another_lib.cpp)
-#target_include_directories(checkLIB PUBLIC ${TCLAP_INCLUDE_DIR})
-#target_link_libraries(checkLIB MATimers other_lib)
