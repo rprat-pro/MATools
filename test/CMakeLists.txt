@@ -15,7 +15,7 @@ add_test(NAME test_timers_case_3_robustness COMMAND checkTimers -c 3 -r 1)
 add_executable(checkTrace test_trace.cxx)
 target_link_libraries(checkTrace MATools)
 add_test(NAME test_trace COMMAND checkTrace)
-
+add_test(NAME test_trace_mpi_4 COMMAND mpirun -n 4 ./checkTrace)
 
 
 #add_library(other_lib lib_to_link.cxx lib_to_link.hxx)
