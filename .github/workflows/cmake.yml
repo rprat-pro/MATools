@@ -31,7 +31,8 @@ jobs:
 
     - name: Build
       # Build your program with the given configuration
-      run: cmake -DMATOOLS_TESTING=ON --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      run: make -j
+      #cmake -DMATOOLS_TESTING=ON --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
 
     - name: Test
       working-directory: ${{github.workspace}}/build
