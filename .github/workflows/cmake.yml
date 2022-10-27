@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v3
-    - uses: mirror/tclap@v1.2.5
+    - uses: mirror/tclap@v1
     - uses: mpi4py/setup-mpi@v1
 
     - name: Configure CMake
