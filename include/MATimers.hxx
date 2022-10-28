@@ -8,7 +8,7 @@
 #include <MATimerNode.hxx>
 #include <Timer.hxx>
 #include <MAOutputManager.hxx>
-#include <MATrace.hxx>
+#include <MATimerOptional.hxx>
 
 
 namespace MATools

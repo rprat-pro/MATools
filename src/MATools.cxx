@@ -1,4 +1,5 @@
 #include <MATimers.hxx>
+#include <MATrace.hxx>
 
 namespace MATools
 {

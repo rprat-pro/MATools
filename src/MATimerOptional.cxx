@@ -17,7 +17,7 @@ namespace MATools
 			{
 				bool& mode = get_full_tree_mode();
 				mode = true;
-				MATools::MAOutput::printMessage("INFO: full tree mode is activated");
+				MATools::MAOutput::printMessage("MATimers_LOG: full tree mode is activated");
 			}
 
 			bool is_full_tree_mode()
@@ -36,7 +36,7 @@ namespace MATools
 			{
 				bool& mode = get_print_timetable();
 				mode = false;
-				MATools::MAOutput::printMessage("INFO: print timetable mode is disabled");
+				MATools::MAOutput::printMessage("MATimers_LOG: print timetable mode is disabled");
 			}
 
 			bool is_print_timetable()
@@ -55,7 +55,7 @@ namespace MATools
 			{
 				bool& mode = get_write_file();
 				mode = false;
-				MATools::MAOutput::printMessage("INFO: write file mode is disabled");
+				MATools::MAOutput::printMessage("MATimers_LOG: write file mode is disabled");
 			}
 
 			bool is_write_file()

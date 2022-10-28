@@ -24,10 +24,7 @@ namespace MATools
 			 */
 			int minimal_info_size()
 			{
-				int ret = 0;
-				ret += 8*sizeof(double); // m_duration
-				ret += 8*sizeof(std::size_t); // m_nb_daugther
-				ret += minimal_info_name_size;
+				int ret = sizeof(minimal_info);
 				return ret;
 			}
 
@@ -41,7 +38,7 @@ namespace MATools
 				m_duration =  a_duration;
 				m_nb_daughter = a_s;
 			}
-			
+
 			/**
 			 * print information of a minimal_info structure on the master node 
 			 * @see class minimal_info
@@ -51,7 +48,8 @@ namespace MATools
 			{
 				if(is_master())
 				{
-					std::cout << " (" << m_name << "," << m_duration << "," << m_nb_daughter << ")";
+					std::string name = m_name;
+					std::cout << " (" << name << "," << m_duration << "," << m_nb_daughter << ")";
 				}
 			}
 
@@ -81,7 +79,7 @@ namespace MATools
 			}
 
 			/**
-			 * build a vector of minimal info on the master process. Every timer trees are packed in a vector of minimal_info and they are gathered on the master node. 
+			 * build a vector of minimal info on the master process. Every trees are packed in a vector of minimal_info and they are gathered on the master node. 
 			 * @see class minimal_info
 			 * @return void
 			 */
@@ -95,7 +93,7 @@ namespace MATools
 				std::vector<int> all_info_size(mpi_size);
 
 				MPI_Allgather(&info_size, 1, MPI_INT, all_info_size.data(), 1, MPI_INT, MPI_COMM_WORLD);
-				
+
 				int size=0;
 				for(auto it : all_info_size) {
 					size += it;
@@ -104,7 +102,7 @@ namespace MATools
 				std::vector<char> full_tree (size) ;  
 				std::vector<int> displ(mpi_size, 0);
 
-				MPI_Allgatherv(my_info.data(), my_info.size(), MPI_CHAR, full_tree.data() , all_info_size.data() , displ.data(), MPI_CHAR , MPI_COMM_WORLD);
+				MPI_Gatherv(my_info.data(), my_info.size(), MPI_CHAR, full_tree.data() , all_info_size.data() , displ.data(), MPI_CHAR, 0, MPI_COMM_WORLD);
 
 				const int structure_size = minimal_info_size(); 
 				char* ptr = full_tree.data();
