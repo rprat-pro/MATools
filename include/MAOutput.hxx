@@ -1,6 +1,7 @@
 #pragma once
 
 #include <MAToolsMPI.hxx>
+#include <iostream>
 
 namespace MATools
 {

@@ -16,10 +16,10 @@ namespace MATools
 		initialize();
 	}
 
-	void finalize(bool a_print_timetable, bool a_write_file, bool do_mpi_final)
+	void finalize(bool do_mpi_final)
 	{
 		MATrace::finalize();
-		MATimer::finalize(a_print_timetable, a_write_file);
+		MATimer::finalize();
 #ifdef __MPI
 		if(do_mpi_final) MPI_Finalize();
 #endif

@@ -1,3 +1,4 @@
+#include <MATimerOptional.hxx>
 #include <MATimers.hxx>
 
 namespace MATools
@@ -32,24 +33,26 @@ namespace MATools
 			MATools::MAOutputManager::print_timetable();
 		}
 
-		void finalize(bool a_print_timetable, bool a_write_file)
+		void finalize()
 		{
+			using namespace MATools::MATimer::Optional;
+			using namespace MATools::MAOutput;
 			MATimerNode* root_ptr 	 = MATools::MATimer::get_MATimer_node<ROOT>() ;
 			MATimerNode* current_ptr = MATools::MATimer::get_MATimer_node<CURRENT>() ;
 			assert(root_ptr != nullptr);
 			assert(current_ptr != nullptr);
 			if(root_ptr != current_ptr) 
-				MATools::MAOutput::printMessage("MATimers_DEBUG_LOG: MATimers are not corretly used, root node is ", root_ptr, " and current node is " , current_ptr);
+				printMessage("MATimers_DEBUG_LOG: MATimers are not corretly used, root node is ", root_ptr, " and current node is " , current_ptr);
 			else 
-				MATools::MAOutput::printMessage("MATimers_LOG: MATimers finalisation");
+				printMessage("MATimers_LOG: MATimers finalisation");
 
 			MATools::MATimer::end_global_timer<ROOT>(); 
 
-			if(a_print_timetable)
+			if(is_print_timetable())
 				MATools::MAOutputManager::print_timetable();
 
 
-			if(a_write_file)
+			if(is_write_file())
 			{
 				MATools::MAOutput::printMessage("MATimers_LOG: Writing timetable ... ");
 				MATools::MAOutputManager::write_file(); 

@@ -17,7 +17,7 @@ namespace MATools
 	{
 		void initialize();
 		void print_and_write_timers();
-		void finalize(bool = true, bool = true);
+		void finalize();
 
 		template<typename Lambda>
 		double chrono_section(Lambda&& lambda)
