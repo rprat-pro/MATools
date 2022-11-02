@@ -18,7 +18,7 @@ namespace MATools
 
 			void rec_call(MATimerNode* a_node, minimal_info* a_ptr)
 			{
-				uint64_t elem = a_ptr->m_nb_daughter;
+				int elem = a_ptr->m_nb_daughter;
 				a_node->inc_mpi();
 				
 				for(int it = 0 ; it < elem ; it++)

@@ -159,7 +159,7 @@ namespace MATools
 				cValue[1] = std::to_string( m_duration.count());	
 				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 );	
 
-				for(size_t i =  0 ; i < nC ; i++)
+				for(int i =  0 ; i < nC ; i++)
 				{
 					column();
 					int size = cValue[i].size();
