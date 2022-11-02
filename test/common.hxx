@@ -3,7 +3,9 @@
 	template<int N>
 void func1()
 {
+	MATools::MATrace::start();
 	START_TIMER("func1");
+	MATools::MATrace::stop("func1");
 }
 
 	template<int N>
@@ -39,7 +41,7 @@ void func5()
 		func4<N>();
 }
 
-template<int N>
+	template<int N>
 void launch(int _case)
 {
 	switch(_case)

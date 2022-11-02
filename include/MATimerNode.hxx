@@ -32,6 +32,7 @@ namespace MATools
 			void print_ending(size_t shift);
 			duration* get_ptr_duration();
 			void print(size_t shift, double runtime);
+			void print_local(size_t shift, double runtime);
 
 			// accessor
 			//
@@ -41,8 +42,9 @@ namespace MATools
 			std::vector<MATimerNode*>& get_daughter();
 			MATimerNode* get_mother();
 			double get_duration();
-
-
+#ifdef __MPI
+			void inc_mpi() {m_nb_mpi++;} 
+#endif
 			private:
 
 			std::string m_name;
@@ -51,6 +53,10 @@ namespace MATools
 			std::vector<MATimerNode*> m_daughter;
 			MATimerNode* m_mother;
 			duration m_duration;
+#ifdef __MPI
+			int m_nb_mpi;
+#endif
+	
 		};
 
 		template<enumTimer T>

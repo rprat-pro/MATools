@@ -31,7 +31,7 @@ namespace MATools
 #endif
 			MATools::MATimer::end_global_timer<ROOT>(); 
 			MATools::MAOutputManager::write_file(); 
-			MATools::MAOutputManager::print_timetable();
+			MATools::MAOutputManager::print_timetable<ROOT>();
 		}
 
 		void finalize()
@@ -42,6 +42,7 @@ namespace MATools
 			MATimerNode* current_ptr = MATools::MATimer::get_MATimer_node<CURRENT>() ;
 			assert(root_ptr != nullptr);
 			assert(current_ptr != nullptr);
+
 			if(root_ptr != current_ptr) 
 				printMessage("MATimers_DEBUG_LOG: MATimers are not corretly used, root node is ", root_ptr, " and current node is " , current_ptr);
 			else 
@@ -53,8 +54,7 @@ namespace MATools
 				MATools::MATimer::FullTreeMode::build_full_tree();
 
 			if(is_print_timetable())
-				MATools::MAOutputManager::print_timetable();
-
+				MATools::MAOutputManager::print_timetable<enumTimer::ROOT>();
 
 			if(is_write_file())
 			{

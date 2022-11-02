@@ -14,6 +14,9 @@ namespace MATools
 			m_iteration = 1;
 			m_level = 0;
 			m_mother = nullptr;
+#ifdef __MPI
+			m_nb_mpi = 1;
+#endif
 
 		}
 
@@ -23,6 +26,9 @@ namespace MATools
 			m_iteration = 1;
 			m_level = mother->m_level + 1;
 			m_mother = mother;
+#ifdef __MPI
+			m_nb_mpi = 1;
+#endif
 		}
 
 		MATimerNode* 
@@ -124,6 +130,44 @@ namespace MATools
 			MATimerNode::get_ptr_duration()
 			{
 				return &m_duration;
+			}
+		
+		void 
+			MATimerNode::print_local(size_t shift, double total_time)
+			{
+				assert(total_time >= 0);
+				int nC = 3;
+				std::string cValue[3];
+				size_t realShift = shift;
+				space(); column(); space();
+				size_t currentShift = 3;
+				for(int i = 0 ; i < int(m_level) - 1; i++) 
+				{
+					int spaceSize = 3;
+					for(int j = 0 ; j < spaceSize ; j++) space();
+					currentShift += spaceSize;
+				}
+				if(m_level>0) {
+					std::cout << "|--";
+					currentShift += 3;
+				}
+				std::cout << "> "<< m_name;
+				currentShift += m_name.size() + 1;
+				print_replicate(currentShift, realShift, " ");
+
+				cValue[0] = std::to_string(m_iteration);	
+				cValue[1] = std::to_string( m_duration.count());	
+				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 );	
+
+				for(size_t i =  0 ; i < nC ; i++)
+				{
+					column();
+					int size = cValue[i].size();
+					print_replicate(0,(int(cWidth)-size - 1), " ");
+					std::cout << cValue[i];
+					space();
+				}
+				column();end_line();
 			}
 
 		void 

@@ -23,39 +23,6 @@ namespace MATools
 			return file_name;
 		}
 
-		void print_timetable()
-		{
-			MATimerNode* root_timer = MATools::MATimer::get_MATimer_node<ROOT>();
-			assert(root_timer != nullptr);
-			double runtime = root_timer->get_duration();
-			runtime = MATools::MPI::reduce_max(runtime); // if MPI, else return runtime
-
-			auto my_print = [](MATimerNode* a_ptr, size_t a_shift, double a_runtime)
-			{
-				a_ptr->print(a_shift, a_runtime);
-			};
-
-			auto sort_comp = [] (MATimerNode* a_ptr, MATimerNode* b_ptr)
-			{
-				return a_ptr->get_duration() > b_ptr->get_duration() ;
-			};
-
-
-			auto max_length = [](MATimerNode* a_ptr, size_t& a_count, size_t& a_nbElem)
-			{
-				size_t length = a_ptr->get_level()*3 + a_ptr->get_name().size();
-				a_count = std::max(a_count, length);
-				a_nbElem++;
-			};
-			size_t count(0), nbElem(0);
-
-			recursive_call(max_length, root_timer, count, nbElem);
-			count += 6;
-			root_timer->print_banner(count);
-			recursive_sorted_call(my_print, sort_comp, root_timer, count, runtime);
-			root_timer->print_ending(count);
-		}
-
 		void write_file()
 		{
 			auto name = build_name();

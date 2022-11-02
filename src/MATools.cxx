@@ -19,8 +19,8 @@ namespace MATools
 
 	void finalize(bool do_mpi_final)
 	{
-		MATrace::finalize();
 		MATimer::finalize();
+		MATrace::finalize();
 #ifdef __MPI
 		if(do_mpi_final) MPI_Finalize();
 #endif
