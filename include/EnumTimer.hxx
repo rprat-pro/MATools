@@ -3,7 +3,6 @@
 enum enumTimer
 {
 	CURRENT,
-	ROOT,
-	MPI
+	ROOT
 };
 
