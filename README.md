@@ -56,28 +56,30 @@ Example :
  |-- end timetable -----------------------------------------------------------------------|
 ```
 
-### Options
-
+### MATimer Options
 
 #### Do not print timetable
 
-```
-MATools::MATimer::disable_print_timetable()
+This routine has to be called by the MATools::Finalise() routine.
 
+```
+MATools::MATimer::disable_print_timetable();
 ```
 
 #### Do not write timetable file
 
-```
-MATools::MATimer::disable_write_file()
-```
-
-### Use the full tree mode
-
-This option has to be activated if all mpi processes do not built the same timers tree. Example : Master/slave scheme.
+This routine has to be called by the MATools::Finalise() routine.
 
 ```
-active_full_tree_mode()
+MATools::MATimer::disable_write_file();
+```
+
+#### Use the full tree mode
+
+This option has to be activated if all mpi processes do not built the same timers tree. Example : Master/slave scheme. This routine has to be called by the MATools::Finalise() routine.
+
+```
+active_full_tree_mode();
 ```
 
 ### Development state
@@ -86,7 +88,7 @@ active_full_tree_mode()
 |----------------------------------|-------------|
 | Sequential                       | Done        |
 | MPI                              | Done        |
-| OpenMP                           | Done        |
+| OpenMP                           | TODO        |
 | Hybrid                           | not planned |
 | Unbalanced timers trees with MPI | Done        |
 
@@ -104,7 +106,43 @@ do_something();
 MATools::MATrace::stop("kernel_name");
 ```
 
-The `finalize` routine handles writing MATrace files. In an MPI context, all data are sent to the master process that writes the file.
+The `finalize` routine handles writing MATrace files. In an MPI context, all data are sent to the master process that writes the MATrace.txt file.
+
+### MATrace Options
+
+#### Activate MATrace
+
+The default mode of MATrace works in serial and MPI but this tool is disabled. MATrace can be activated with this routine:
+
+```
+MATools::MATrace::active_MATrace_mode();
+```
+This routine has to be called by the MATools::Finalise() routine.
+
+#### Activate OpenMP mode
+
+This is special mode of MATrace, tasks are labelled by a thread id instead of an mpi process id. We use a different way to capture chrono sections: 
+
+```
+#pragma omp parallel ...
+{
+ MATools::MATrace::omp_start()
+ do_something();
+ MATools::MATrace::omp_stop("kernel_name");
+}
+```
+This mode can only be activated if the MATrace mode is used: 
+
+```
+MATools::MATrace::active_MATrace_mode();
+MATools::MATrace::active_omp_mode();
+```
+
+These routines have to be called by the first omp_start() routine.
+
+WARNING : The OpenMP mode does not work correctly with MPI. If you use MPI+OpenMP, the trace would be generated with all tasks and sent on the master node but, as tasks are labelled with threads id with this mode, tasks will be overlapped for a same thread id. 
+
+REMARK : label could be : MPI_ID * NB_THREADS + THREAD_ID
 
 ### Development state
 
@@ -113,6 +151,6 @@ The `finalize` routine handles writing MATrace files. In an MPI context, all dat
 | Sequential       | Done        |
 | MPI              | Done        |
 | OpenMP           | Done        |
-| Hybrid           | not planned |
+| Hybrid           | Not planned |
 | Default color    | Done        |
 
