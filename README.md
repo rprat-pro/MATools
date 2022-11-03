@@ -55,6 +55,31 @@ Example :
  |             |--> func1  |                120 |           0.000009 |           4.549541 |
  |-- end timetable -----------------------------------------------------------------------|
 ```
+
+### Options
+
+
+#### Do not print timetable
+
+```
+MATools::MATimer::disable_print_timetable()
+
+```
+
+#### Do not write timetable file
+
+```
+MATools::MATimer::disable_write_file()
+```
+
+### Use the full tree mode
+
+This option has to be activated if all mpi processes do not built the same timers tree. Example : Master/slave scheme.
+
+```
+active_full_tree_mode()
+```
+
 ### Development state
 
 | MATimers feature                 | State       |
@@ -63,7 +88,7 @@ Example :
 | MPI                              | Done        |
 | OpenMP                           | Done        |
 | Hybrid                           | not planned |
-| Unbalanced timers trees with MPI | Todo        |
+| Unbalanced timers trees with MPI | Done        |
 
 ## MATrace
 
@@ -87,7 +112,7 @@ The `finalize` routine handles writing MATrace files. In an MPI context, all dat
 |------------------|-------------|
 | Sequential       | Done        |
 | MPI              | Done        |
-| OpenMP           | TODO        |
+| OpenMP           | Done        |
 | Hybrid           | not planned |
 | Default color    | Done        |
 
