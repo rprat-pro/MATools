@@ -15,6 +15,14 @@ add_test(NAME test_timers_case_1_robustness_4mpi COMMAND mpirun -n 4 ./checkTime
 add_test(NAME test_timers_case_2_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 3 -r 1)
 
+add_executable(checkOmpTrace test_trace_with_omp.cxx)
+target_link_libraries(checkOmpTrace MATools)
+add_test(NAME test_omp_trace COMMAND checkOmpTrace)
+
+
+add_executable(checkOmpTaskTrace test_trace_with_omp_task.cxx)
+target_link_libraries(checkOmpTaskTrace MATools)
+add_test(NAME test_omp_trace_task COMMAND checkOmpTaskTrace)
 
 add_executable(checkTrace test_trace.cxx)
 target_link_libraries(checkTrace MATools)

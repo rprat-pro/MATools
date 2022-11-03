@@ -8,11 +8,7 @@
 #include <thread>
 #include <map>
 
-#include <MAToolsMPI.hxx>
-
 #include <MATraceTypes.hxx>
-#include <MATraceInstance.hxx>
-
 
 namespace MATools
 {
@@ -22,6 +18,9 @@ namespace MATools
 		void finalize();
 		void start();
 		void stop(std::string a_name);
+		void omp_start();
+		void omp_stop(std::string a_name);
+		void init_omp_trace();
 
 		void header(std::ofstream& out, vite_event& event);
 		void ending(std::ofstream& out, double last);

@@ -5,7 +5,7 @@
 int main(int argc, char * argv[]) 
 {
 #ifdef __MPI
-	MATools::initialize(&argc,&argv, true);
+	MATools::initialize(&argc,&argv);
 	MATools::MATimer::Optional::active_full_tree_mode();
 
 	constexpr int size = 1;

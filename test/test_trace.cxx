@@ -1,4 +1,4 @@
-#include<MATools.hxx>
+#include <MATools.hxx>
 #include<chrono>
 #include <unistd.h>
 void f1()
@@ -20,6 +20,7 @@ void f3()
 int main(int argc, char * argv[]) 
 {
 	MATools::initialize(&argc,&argv);
+	MATools::MATrace::Optional::active_MATrace_mode();
 #ifdef __MPI
 	using namespace MATools::MPI;
 	for(int i = 0; i < 20 ; i++)

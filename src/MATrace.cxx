@@ -1,6 +1,12 @@
-#include <MATrace.hxx>
-#include <MATraceColor.hxx>
 #include <random>
+#include <omp.h>
+
+#include <MATrace.hxx>
+#include <MAToolsMPI.hxx>
+#include <MATraceColor.hxx>
+#include <MATraceOptional.hxx>
+#include <MATraceInstance.hxx>
+#include <iostream>
 
 namespace MATools
 {
@@ -23,23 +29,44 @@ namespace MATools
 			auto& local_MATrace = get_local_MATrace();
 			local_MATrace.push_back(section);
 		}
-		/*
-		   template<typename Fun>
-		   void MATrace_kernel (Fun& a_fun, std::string a_name)
-		   {
-		   start();
-		   a_fun();
-		   stop(a_name);
-		   }
 
-		   template<typename Fun, typename... Args>
-		   void MATrace_functor (Fun& a_fun, Args&&... a_args)
-		   {
-		   auto start = MATrace_point();
-		   a_fun(std::forward<Args>(a_args)...);
-		   auto end = MATrace_point();
-		   }
-		   */
+		void omp_start()
+		{
+			auto& start = get_MATrace_omp_point();
+			auto id = omp_get_thread_num();
+			start[id] = MATrace_point();
+		}
+
+		void omp_stop(std::string a_name)
+		{
+			auto id = omp_get_thread_num();
+			auto end = MATrace_point();
+			auto start = get_MATrace_omp_point();
+			auto ref = get_ref_MATrace_point();
+			char name[64];
+			strncpy(name, a_name.c_str(), 64);
+			auto section = MATrace_section(name, ref, start[id], end);
+			section.set_proc(id);
+			auto& omp_MATrace = get_omp_MATrace();
+			omp_MATrace[id].push_back(section);
+		}
+	
+		void init_omp_trace()
+		{
+			auto& omp_trace = get_omp_MATrace();
+			size_t num_threads;
+#pragma omp parallel
+			{	
+				num_threads = omp_get_num_threads();
+				omp_trace.resize(num_threads);
+#pragma omp for
+				for(auto& it : omp_trace)
+					it = Trace();
+			}
+			auto& omp_points = get_MATrace_omp_point();
+			omp_points.resize(num_threads);
+		}
+
 		void initialize()
 		{
 			auto start = get_ref_MATrace_point();
@@ -115,11 +142,19 @@ namespace MATools
 			out << "50 V_Sem Semaphore CT_Thread" << std::endl;
 			out << "7 0.000000 C_Prog CT_Prog 0 'Programme'" << std::endl;
 			int mpi_size = -1;
+			if(Optional::is_omp_mode())
+			{
+#pragma omp parallel
+				mpi_size = omp_get_num_threads();
+			}
+			else
+			{
 #ifdef __MPI
-			MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
+				MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
 #else
-			mpi_size=1;
+				mpi_size=1;
 #endif
+			}
 			for(int i = 0 ; i < mpi_size ; i++)
 			{
 				out << "7  0.000000 C_Thread" << i <<" CT_Thread C_Prog 'Thread " << i <<"'" << std::endl;
@@ -130,11 +165,19 @@ namespace MATools
 		void ending(std::ofstream& out, double last)
 		{
 			int mpi_size = -1;
+			if(Optional::is_omp_mode())
+			{
+#pragma omp parallel
+				mpi_size = omp_get_num_threads();
+			}
+			else
+			{
 #ifdef __MPI
-			MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
+				MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
 #else
-			mpi_size=1;
+				mpi_size=1;
 #endif
+			}
 			for(int i = 0 ; i < mpi_size ; i++)
 				out << "8 " << last << " C_Thread" << i << " CT_Thread" << std::endl;
 			out <<"8 " << last << " C_Prog CT_Prog" << std::endl;
@@ -142,26 +185,44 @@ namespace MATools
 
 		void finalize()
 		{
-			using namespace MATools::MPI;
+
+			// no MATrace
+			if(!Optional::is_MATrace_mode())
+			{
+				return;
+			}
+
+			// We copy data from omp traces to the master trace
+			if(Optional::is_omp_mode())
+			{
+				auto& master_trace = get_local_MATrace();
+				auto& omp_traces = get_omp_MATrace();
+				for(auto& it : omp_traces)
+					master_trace.insert(master_trace.end(),it.begin(), it.end());
+			}
+
 			auto& local_MATrace = get_local_MATrace();
 			const int local_size = local_MATrace.size();
 			int local_byte_size = sizeof(MATrace_section) * local_size;
 
 #ifdef __MPI
+			using namespace MATools::MPI;
+
 			// update proc id
 			const auto my_rank = get_rank();
-			for(auto& it : local_MATrace)
-			{
-				it.set_proc(my_rank);
+			bool omp_mode = Optional::is_omp_mode();
+			if(!omp_mode)
+			{	
+				for(auto& it : local_MATrace)
+				{
+					it.set_proc(my_rank);
+				}
 			}
 			// all data are sent to the process 0
 			// we gather the sizes for each process
 			int mpi_size = -1;
-#ifdef __MPI
 			MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
-#else
-			mpi_size=1;
-#endif
+
 			assert(mpi_size >= 0);	
 			std::vector<int> sizes (mpi_size,0);
 			std::vector<int> dists (mpi_size,0);

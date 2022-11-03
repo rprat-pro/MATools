@@ -15,10 +15,22 @@ namespace MATools
 			static MATrace_point instance;
 			return instance;
 		}
-
+		
 		extern Trace& get_local_MATrace()
 		{
 			static Trace instance;
+			return instance;
+		}
+
+		extern std::vector<MATrace_point>& get_MATrace_omp_point()
+		{
+			static std::vector<MATrace_point> instance;
+			return instance;
+		}
+		
+		extern std::vector<Trace>& get_omp_MATrace()
+		{
+			static std::vector<Trace> instance;
 			return instance;
 		}
 	};

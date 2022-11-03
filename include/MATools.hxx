@@ -3,6 +3,10 @@
 #include<MATimers.hxx>
 #include<MATrace.hxx>
 
+// options
+#include<MATraceOptional.hxx>
+#include<MATimerOptional.hxx>
+
 namespace MATools
 {
 	void initialize();

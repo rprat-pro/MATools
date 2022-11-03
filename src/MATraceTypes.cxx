@@ -1,4 +1,5 @@
 #include <MATrace.hxx>
+#include <MAToolsMPI.hxx>
 #include <MATraceColor.hxx>
 #include <random>
 
