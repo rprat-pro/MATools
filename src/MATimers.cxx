@@ -49,10 +49,10 @@ namespace MATools
 				printMessage("MATimers_LOG: MATimers finalisation");
 
 			MATools::MATimer::end_global_timer<ROOT>(); 
-
+#ifdef __MPI
 			if(is_full_tree_mode())
 				MATools::MATimer::FullTreeMode::build_full_tree();
-
+#endif
 			if(is_print_timetable())
 				MATools::MAOutputManager::print_timetable<enumTimer::ROOT>();
 

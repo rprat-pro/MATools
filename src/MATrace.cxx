@@ -115,7 +115,11 @@ namespace MATools
 			out << "50 V_Sem Semaphore CT_Thread" << std::endl;
 			out << "7 0.000000 C_Prog CT_Prog 0 'Programme'" << std::endl;
 			int mpi_size = -1;
+#ifdef __MPI
 			MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
+#else
+			mpi_size=1;
+#endif
 			for(int i = 0 ; i < mpi_size ; i++)
 			{
 				out << "7  0.000000 C_Thread" << i <<" CT_Thread C_Prog 'Thread " << i <<"'" << std::endl;
@@ -126,7 +130,11 @@ namespace MATools
 		void ending(std::ofstream& out, double last)
 		{
 			int mpi_size = -1;
+#ifdef __MPI
 			MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
+#else
+			mpi_size=1;
+#endif
 			for(int i = 0 ; i < mpi_size ; i++)
 				out << "8 " << last << " C_Thread" << i << " CT_Thread" << std::endl;
 			out <<"8 " << last << " C_Prog CT_Prog" << std::endl;
@@ -149,7 +157,11 @@ namespace MATools
 			// all data are sent to the process 0
 			// we gather the sizes for each process
 			int mpi_size = -1;
+#ifdef __MPI
 			MPI_Comm_size(MPI_COMM_WORLD,&mpi_size);
+#else
+			mpi_size=1;
+#endif
 			assert(mpi_size >= 0);	
 			std::vector<int> sizes (mpi_size,0);
 			std::vector<int> dists (mpi_size,0);

@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
 	launch<size>(tcase);
 #else
 	MATools::initialize();
-	unsigned int tcase = 1
+	unsigned int tcase = 1;
 	constexpr int size = 1;
 	launch<size>(tcase);
 #endif
