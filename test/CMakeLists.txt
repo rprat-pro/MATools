@@ -17,12 +17,12 @@ add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTime
 
 add_executable(checkOmpTrace test_trace_with_omp.cxx)
 target_link_libraries(checkOmpTrace MATools)
-add_test(NAME test_omp_trace COMMAND checkOmpTrace)
+add_test(NAME test_omp_trace COMMAND ./checkOmpTrace)
 
 
 add_executable(checkOmpTaskTrace test_trace_with_omp_task.cxx)
 target_link_libraries(checkOmpTaskTrace MATools)
-add_test(NAME test_omp_trace_task COMMAND checkOmpTaskTrace)
+add_test(NAME test_omp_trace_task COMMAND ./checkOmpTaskTrace)
 
 add_executable(checkTrace test_trace.cxx)
 target_link_libraries(checkTrace MATools)
@@ -33,3 +33,8 @@ add_test(NAME test_trace_mpi_4 COMMAND mpirun -n 4 ./checkTrace)
 add_executable(checkFullTreeMode test_full_tree_mode.cxx)
 target_link_libraries(checkFullTreeMode MATools)
 add_test(NAME test_full_tree_mode_mpi_4 COMMAND mpirun -n 4 ./checkFullTreeMode)
+
+
+add_executable(checkMemoryFootprint test_memory_footprint.cxx)
+target_link_libraries(checkMemoryFootprint MATools)
+add_test(NAME test_memory_footprint COMMAND ./checkMemoryFootprint)
