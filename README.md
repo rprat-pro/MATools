@@ -82,15 +82,33 @@ This option has to be activated if all mpi processes do not built the same timer
 active_full_tree_mode();
 ```
 
-### Development state
+### Status of developments 
 
-| MATimers feature                 | State       |
+| MATimers feature                 | Status      |
 |----------------------------------|-------------|
 | Sequential                       | Done        |
 | MPI                              | Done        |
 | OpenMP                           | TODO        |
 | Hybrid                           | not planned |
 | Unbalanced timers trees with MPI | Done        |
+
+## MAMemory
+
+MAMemory provides a flexible way to add memory checkpoints to print the memory usage at different points of the code. This tool is based on rusage.
+
+### How to use it
+
+This tool does not need an `initialize` or `finalize` routine. To get the memory usage at only one point, the `MATools::MAMemory::print_memory_footprint` creates a temporary memory checkpoint and prints the total memory usage size. 
+
+
+### Status of developments 
+
+| MAMemory feature                 | Status      |
+|----------------------------------|-------------|
+| Sequential                       | Done        |
+| MPI                              | Done        |
+| Collect checkpoints              | In progress |
+| Add checkpoint names             | Todo        |
 
 ## MATrace
 
@@ -144,9 +162,9 @@ WARNING : The OpenMP mode does not work correctly with MPI. If you use MPI+OpenM
 
 REMARK : label could be : MPI_ID * NB_THREADS + THREAD_ID
 
-### Development state
+### ### Status of developments 
 
-| MATrace feature  | State       |
+| MATrace feature  | Status      |
 |------------------|-------------|
 | Sequential       | Done        |
 | MPI              | Done        |
