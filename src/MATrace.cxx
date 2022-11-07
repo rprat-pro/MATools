@@ -204,10 +204,9 @@ namespace MATools
 
 			auto& local_MATrace = get_local_MATrace();
 			const int local_size = local_MATrace.size();
-			int local_byte_size = sizeof(MATrace_section) * local_size;
-
 #ifdef __MPI
-
+			int local_byte_size = sizeof(MATrace_section) * local_size;
+			
 			// update proc id
 			const auto my_rank = get_rank();
 			bool omp_mode = Optional::is_omp_mode();
