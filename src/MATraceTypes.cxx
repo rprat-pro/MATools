@@ -103,6 +103,7 @@ namespace MATools
 			// set proc id and name
 			m_proc_id = a_ref.get_proc();
 			strncpy(m_name, a_name, 64);
+			m_name[63]='\0'; // warning issue without this line
 		}
 
 		void MATrace_section::write(std::ofstream& a_out)
