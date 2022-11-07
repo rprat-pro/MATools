@@ -62,8 +62,8 @@ namespace MATools
 				num_threads = omp_get_num_threads();
 				omp_trace.resize(num_threads);
 #pragma omp for
-				for(auto& it : omp_trace)
-					it = Trace();
+				for(unsigned int id = 0 ; id < omp_trace.size() ; id++)
+					omp_trace[id] = Trace();
 			}
 			auto& omp_points = get_MATrace_omp_point();
 			omp_points.resize(num_threads);
