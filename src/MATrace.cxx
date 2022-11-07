@@ -203,8 +203,8 @@ namespace MATools
 			}
 
 			auto& local_MATrace = get_local_MATrace();
-			const int local_size = local_MATrace.size();
 #ifdef __MPI
+			const int local_size = local_MATrace.size();
 			int local_byte_size = sizeof(MATrace_section) * local_size;
 			
 			// update proc id
