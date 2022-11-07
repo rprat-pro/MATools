@@ -12,8 +12,8 @@ int main(int argc, char * argv[])
 	using namespace MATools::MAMemory;
 	std::vector<char> vec(1E6);
 	print_memory_footprint();
-	return 0;
 #ifdef __MPI
 	MPI_Finalize();
 #endif
+	return 0;
 }
