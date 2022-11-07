@@ -12,6 +12,7 @@ namespace MATools
 		{
 
 			constexpr size_t minimal_info_name_size = 64;
+			//#define minimal_info_name_size 64
 			class minimal_info
 			{
 				public:
@@ -24,7 +25,6 @@ namespace MATools
 					std::uint64_t m_nb_daughter;
 			};
 
-			void copy_to_string(const std::string& a_src, char a_dst[minimal_info_name_size]);
 			int minimal_info_size() ;
 			std::vector<minimal_info> build_my_tree();
 			void build_full_tree();
