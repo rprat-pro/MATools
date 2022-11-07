@@ -25,6 +25,7 @@ namespace MATools
 			auto ref = get_ref_MATrace_point();
 			char name[64];
 			strncpy(name, a_name.c_str(), 64);
+			name[63]='\0'; // warning issue without this line
 			auto section = MATrace_section(name, ref, start, end);
 			auto& local_MATrace = get_local_MATrace();
 			local_MATrace.push_back(section);
@@ -45,6 +46,7 @@ namespace MATools
 			auto ref = get_ref_MATrace_point();
 			char name[64];
 			strncpy(name, a_name.c_str(), 64);
+			name[63]='\0'; // warning issue without this line
 			auto section = MATrace_section(name, ref, start[id], end);
 			section.set_proc(id);
 			auto& omp_MATrace = get_omp_MATrace();
