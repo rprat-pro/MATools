@@ -185,7 +185,8 @@ namespace MATools
 
 		void finalize()
 		{
-
+			using namespace MATools::MPI;
+			
 			// no MATrace
 			if(!Optional::is_MATrace_mode())
 			{
@@ -206,7 +207,6 @@ namespace MATools
 			int local_byte_size = sizeof(MATrace_section) * local_size;
 
 #ifdef __MPI
-			using namespace MATools::MPI;
 
 			// update proc id
 			const auto my_rank = get_rank();
@@ -279,7 +279,5 @@ namespace MATools
 
 			}
 		}
-
-
 	}
 };

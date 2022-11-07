@@ -9,7 +9,7 @@ namespace MATools
 	{
 		using duration = std::chrono::duration<double>;
 		using high_resolution_clock = std::chrono::high_resolution_clock;
-		using time_point = std::chrono::time_point<high_resolution_clock>;
+		using MATime_point = std::chrono::time_point<high_resolution_clock>;
 		class Timer
 		{
 			public:
@@ -19,8 +19,8 @@ namespace MATools
 			~Timer(); 
 
 			private:
-			time_point m_start;
-			time_point m_stop;
+			MATime_point m_start;
+			MATime_point m_stop;
 			duration * m_duration; 
 		};
 
