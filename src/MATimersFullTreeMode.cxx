@@ -20,8 +20,6 @@ namespace MATools
 		{
 			using namespace MATools::MPI;
 			
-			
-
 			/**
 			 * return the number of bytes in a minimal_info_size. This size doesn't change.
 			 * @see class minimal_info
@@ -60,11 +58,9 @@ namespace MATools
 			 */
 			void minimal_info::print()
 			{
-				if(is_master())
-				{
-					std::string name = m_name;
-					std::cout << " (" << name << "," << m_nb_daughter << ")";
-				}
+				using namespace MATools::MAOutput;
+				std::string name = m_name;
+				printMessage(" (" , name , "," , m_nb_daughter, ")");
 			}
 
 			/**

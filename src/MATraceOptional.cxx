@@ -8,9 +8,13 @@ namespace MATools
 	{
 		namespace Optional
 		{
+			// define default mode values
+			constexpr bool MATrace_default_mode = false;
+			constexpr bool omp_default_mode = false;
+
 			extern bool& get_MATrace_mode()
 			{
-				static bool _ftm = false;
+				static bool _ftm = MATrace_default_mode;
 				return _ftm;
 			}
 
@@ -29,7 +33,7 @@ namespace MATools
 
 			extern bool& get_omp_mode()
 			{
-				static bool _ftm = false;
+				static bool _ftm = omp_default_mode;
 				return _ftm;
 			}
 

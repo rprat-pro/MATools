@@ -256,6 +256,7 @@ namespace MATools
 			int total_size = local_MATrace.size();
 #endif
 
+			// write trace header -> trace core -> end
 			if(is_master())
 			{
 				std::ofstream out ("MATrace.txt", std::ofstream::out);
@@ -277,7 +278,6 @@ namespace MATools
 				}
 
 				ending(out, last);
-
 			}
 		}
 	}

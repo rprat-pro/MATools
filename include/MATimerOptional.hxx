@@ -11,6 +11,8 @@ namespace MATools
 			extern bool& get_write_file();
 			
 			void active_full_tree_mode();
+			void enable_print_timetable();
+			void enable_write_file();
 			void disable_print_timetable();
 			void disable_write_file();
 			

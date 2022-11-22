@@ -6,6 +6,7 @@ namespace MATools
 	{
 		constexpr int master=0;
 
+		inline
 		int get_rank()
 		{
 #ifdef __MPI
@@ -13,10 +14,11 @@ namespace MATools
 			MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 			return rank;
 #else
-			return 0;
+			return master;
 #endif
 		}
 
+		inline
 		bool is_master()
 		{
 #ifdef __MPI
@@ -28,6 +30,7 @@ namespace MATools
 #endif
 		}
 
+		inline
 		double reduce_max(double a_duration)
 		{
 #ifdef __MPI
