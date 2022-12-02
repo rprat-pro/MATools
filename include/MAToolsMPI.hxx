@@ -1,6 +1,7 @@
 #pragma once
+
 #ifdef __MPI
-	#include "mpi.h"
+	#include <mpi.h>
 #endif
 
 

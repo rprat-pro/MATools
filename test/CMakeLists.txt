@@ -1,6 +1,27 @@
+if(MATOOLS_MPI)
+	set(LIBS MATools mpi)
+	function(add_test_mpi name)
+		add_test(NAME ${name}_4mpi COMMAND mpirun -n 4 ./check_${name})
+	endfunction()
+else()
+	set(LIBS "MATools")
+	function(add_test_mpi name)
+	endfunction()
+endif()
+
+message(${LIBS})
+function(build_test name)
+	add_executable(check_${name} ${name}.cxx)
+	target_include_directories(check_${name} PUBLIC ${HEADERS})
+	target_link_libraries(check_${name} ${LIBS})
+	#target_link_libraries(check_${name} MATools mpi)
+	add_test(NAME ${name} COMMAND ./check_${name})
+endfunction()
+
+
 add_executable(checkTimers test_timer.cpp)
 target_include_directories(checkTimers PUBLIC ${TCLAP_INCLUDE_DIR})
-target_link_libraries(checkTimers MATools )
+target_link_libraries(checkTimers MATools)
 
 add_test(NAME test_timers_no_timer COMMAND checkTimers -c 0 -r 0)
 add_test(NAME test_timers_case_1 COMMAND checkTimers -c 1 -r 0)
@@ -15,27 +36,12 @@ add_test(NAME test_timers_case_1_robustness_4mpi COMMAND mpirun -n 4 ./checkTime
 add_test(NAME test_timers_case_2_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 3 -r 1)
 
-add_executable(checkOmpTrace test_trace_with_omp.cxx)
-target_link_libraries(checkOmpTrace MATools)
-add_test(NAME test_omp_trace COMMAND ./checkOmpTrace)
+build_test(test_trace_with_omp)
+build_test(test_trace_with_omp_task)
+set (testlist test_trace test_full_tree_mode test_memory_footprint)
 
-
-add_executable(checkOmpTaskTrace test_trace_with_omp_task.cxx)
-target_link_libraries(checkOmpTaskTrace MATools)
-add_test(NAME test_omp_trace_task COMMAND ./checkOmpTaskTrace)
-
-add_executable(checkTrace test_trace.cxx)
-target_link_libraries(checkTrace MATools)
-add_test(NAME test_trace COMMAND checkTrace)
-add_test(NAME test_trace_mpi_4 COMMAND mpirun -n 4 ./checkTrace)
-
-
-add_executable(checkFullTreeMode test_full_tree_mode.cxx)
-target_link_libraries(checkFullTreeMode MATools)
-add_test(NAME test_full_tree_mode_mpi_4 COMMAND mpirun -n 4 ./checkFullTreeMode)
-
-
-add_executable(checkMemoryFootprint test_memory_footprint.cxx)
-target_link_libraries(checkMemoryFootprint MATools)
-add_test(NAME test_memory_footprint COMMAND ./checkMemoryFootprint)
-add_test(NAME test_memory_footprint_mpi_4 COMMAND mpirun -n 4 ./checkMemoryFootprint)
+foreach(elem IN LISTS testlist)
+	message("add test ${elem}")
+	build_test(${elem})
+	add_test_mpi(${elem})
+endforeach()

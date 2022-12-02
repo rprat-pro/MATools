@@ -3,6 +3,7 @@
 #include <cassert>
 #include <MAOutput.hxx>
 #include <MAMemory.hxx>
+#include <MAToolsMPI.hxx>
 
 namespace MATools
 {
@@ -10,7 +11,7 @@ namespace MATools
 	{
 
 		/**
-		 * this function create a rusage variable
+		 * This function creates a rusage variable
 		 * @return rusage data type that get memory informations
 		 */
 		rusage make_memory_checkpoint()
@@ -18,7 +19,7 @@ namespace MATools
 			rusage obj;
 			int who = 0;
 			[[maybe_unused]] auto res = getrusage(who, &obj);
-			assert(res = 0 && "error: getrusage has failed");
+			assert((res = -1) && "error: getrusage has failed");
 			return obj;
 		};
 
@@ -71,10 +72,11 @@ namespace MATools
 		 */
 		void print_checkpoints(MAFootprint& a_f)
 		{
-			// This function extract the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
+			using namespace MATools::MPI;
+			// This function extracts the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
 			// For every memory checkpoints
 			auto obj = a_f.reduce();
-			if(MATools::MPI::is_master())
+			if(is_master())
 			{
 				std::cout << " List (maximum resident size): ";
 				for(auto it : obj)
@@ -95,7 +97,7 @@ namespace MATools
 			MAFootprint f;
 			// We fill this function with only one checkpoint
 			f.add_memory_checkpoint();
-			// This function extract the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
+			// This function extracts the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
 			auto obj = f.reduce();
 			// As we have only one memory checkpoint, we get this element
 			auto last = obj.back() * 1e-6; // conversion kb to Gb

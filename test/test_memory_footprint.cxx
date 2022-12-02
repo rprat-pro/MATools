@@ -1,4 +1,5 @@
 #include <vector>
+#include <MATools.hxx>
 #include <MAMemory.hxx>
 #ifdef __MPI
 #include <mpi.h>

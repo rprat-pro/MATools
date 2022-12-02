@@ -1,7 +1,9 @@
 #pragma once
 
+// features
 #include<MATimers.hxx>
 #include<MATrace.hxx>
+#include<MAMemory.hxx>
 
 // options
 #include<MATraceOptional.hxx>
