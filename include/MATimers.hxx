@@ -22,14 +22,11 @@ namespace MATools
 		template<typename Lambda>
 		double chrono_section(Lambda&& lambda)
 		{
-			using steady_clock = std::chrono::steady_clock;
-			using time_point = std::chrono::time_point<steady_clock>;
-			time_point tic, toc;
-			tic = steady_clock::now();
+			BasicTimer time;
+			time.start();
 			lambda();
-			toc = steady_clock::now();
-			auto measure = toc - tic;
-			return measure.count();	
+			time.end();
+			return time.get_duration();	
 		}
 	};
 };

@@ -10,7 +10,20 @@ namespace MATools
 		using duration = std::chrono::duration<double>;
 		using high_resolution_clock = std::chrono::high_resolution_clock;
 		using MATime_point = std::chrono::time_point<high_resolution_clock>;
-		class Timer
+	
+		template<typename T>	
+		class BaseTimer
+		{
+			public:
+			virtual void start() = 0;
+			virtual void end() = 0;
+
+			protected:
+			T m_start;
+			T m_stop;
+		};
+		
+		class Timer : public BaseTimer<MATime_point>
 		{
 			public:
 			Timer(duration * acc);
@@ -19,10 +32,18 @@ namespace MATools
 			~Timer(); 
 
 			private:
-			MATime_point m_start;
-			MATime_point m_stop;
 			duration * m_duration; 
 		};
+
+		//Regular timer
+		class BasicTimer : public BaseTimer<MATime_point>
+		{
+			public:
+			void start();
+			void end();
+			double get_duration();
+		};	
+
 
 		template<enumTimer T>
 		Timer*& get_timer()
@@ -51,5 +72,6 @@ namespace MATools
 			assert(timer != nullptr);
 			timer->end();
 		}
+
 	}
 };
