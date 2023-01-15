@@ -1,5 +1,6 @@
 #include <MAToolsMPI.hxx>
 #include <iostream>
+#include <cassert>
 
 namespace MATools
 {
@@ -18,6 +19,18 @@ namespace MATools
 #endif
 		}
 
+		int get_mpi_size()
+		{
+#ifdef __MPI
+			int ret;
+			MPI_Comm_size(MPI_COMM_WORLD, &ret);
+			return ret;
+#else
+			constexpr int ret = 1;
+			return 1;
+#endif
+		}
+
 		bool is_master()
 		{
 #ifdef __MPI
@@ -30,7 +43,6 @@ namespace MATools
 		}
 
 		template<typename T>
-		inline
 		T reduce(T a_in, MPI_Op a_op)
 		{
 			std::cout << "error" << std::endl;
@@ -72,5 +84,16 @@ namespace MATools
 #endif
 		}
 
+		double reduce_mean(double a_duration)
+		{
+#ifdef __MPI
+			double ret = reduce(a_duration, MPI_SUM);
+			auto mpi_size = get_mpi_size(); 
+			assert(mpi_size>0);
+			return ret / mpi_size;
+#else
+			return a_duration;
+#endif
+		}
 	};
 };

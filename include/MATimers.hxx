@@ -9,7 +9,7 @@
 #include <Timer.hxx>
 #include <MAOutputManager.hxx>
 #include <MATimerOptional.hxx>
-
+#include <MATimerInfo.hxx>
 
 namespace MATools
 {
@@ -40,7 +40,7 @@ namespace MATools
 #else
 
 #define START_TIMER(XNAME) auto& current = MATools::MATimer::get_MATimer_node<CURRENT>();\
-	assert(current != nullptr && "do not use an undefined MATimerNode");\
-	current = current->find(XNAME); \
-        MATools::MATimer::Timer tim(current->get_ptr_duration());
+					   assert(current != nullptr && "do not use an undefined MATimerNode");\
+					   current = current->find(XNAME); \
+					   MATools::MATimer::Timer tim(current->get_ptr_duration());
 #endif

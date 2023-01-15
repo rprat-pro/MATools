@@ -42,6 +42,7 @@ namespace MATools
 
 		double BasicTimer::get_duration()
 		{
+			using duration = std::chrono::duration<double>;
 			duration measure = m_stop - m_start;
 			double ret = measure.count();
 			return ret;

@@ -51,7 +51,7 @@ namespace MATools
 			std::size_t m_iteration;
 			std::size_t m_level;
 			std::vector<MATimerNode*> m_daughter;
-			MATimerNode* m_mother;
+			MATimerNode* m_mother = nullptr;
 			duration m_duration;
 #ifdef __MPI
 			int m_nb_mpi;

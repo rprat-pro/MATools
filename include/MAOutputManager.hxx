@@ -6,6 +6,7 @@
 #include <Column.hxx>
 #include <MATimerNode.hxx>
 #include <MATimerOptional.hxx>
+#include <MATimerInfo.hxx>
 
 namespace MATools
 {
@@ -17,6 +18,8 @@ namespace MATools
 		void print_timetable();
 		void write_file();
 		void write_file(std::string a_name);
+		std::vector<MATools::MATimer::MATimerInfo> get_filtered_timers(std::string);
+		void print_filtered_timers(std::string);
 
 		template<enumTimer T>
 			void print_timetable()

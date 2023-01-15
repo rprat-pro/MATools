@@ -9,8 +9,6 @@ namespace MATools
 {
 	namespace MATimer
 	{
-
-
 		namespace FullTreeMode
 		{
 			using namespace MATools::MATimer;

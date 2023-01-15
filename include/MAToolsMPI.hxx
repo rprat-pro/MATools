@@ -11,6 +11,8 @@ namespace MATools
 	{
 		bool is_master();
 		int get_rank();
-		double reduce_max(double a_duration);
+		int get_mpi_size();
+		double reduce_max(double);
+		double reduce_mean(double);
 	};
 }
