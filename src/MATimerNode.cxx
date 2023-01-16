@@ -198,8 +198,7 @@ namespace MATools
 				}
 #ifdef __MPI
 				double local  = m_duration.count();	
-				int size = -1;
-				MPI_Comm_size(MPI_COMM_WORLD, &size);
+				int size = MATools::MPI::get_mpi_size();
 
 				assert(size > 0);
 				std::vector<double> list;

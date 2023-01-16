@@ -69,10 +69,10 @@ namespace MATools
 			using namespace MATools::MATimer;
 			std::vector<MATimerInfo> ret;
 			MATimerNode* root_timer = MATools::MATimer::get_MATimer_node<ROOT>();
-			auto my_fill = []	(MATimerNode* a_ptr, std::vector<MATimerInfo>&ret, std::string a_timer_name)
+			auto my_fill = []	(MATimerNode* a_ptr, std::vector<MATimerInfo>& a_ret, std::string a_filter)
 			{
 				// filter
-				if(a_ptr->get_name() == a_timer_name)
+				if(a_ptr->get_name() == a_filter)
 				{
 					// build full path
 					auto tmp_ptr = a_ptr->get_mother();
@@ -83,14 +83,14 @@ namespace MATools
 						tmp_ptr = tmp_ptr->get_mother();
 					}
 					// get information in MATimerNode
-					auto name = current_path + a_timer_name;
+					auto name = current_path + a_filter;
 					auto it = a_ptr->get_iteration();
 					double duration = a_ptr->get_duration();
 					double max = reduce_max(duration);
 					double mean = reduce_mean(duration);
 					// fill the vector of MATimerInfo
 					MATimerInfo tmp(name, it, max, mean);
-					ret.push_back(std::move(tmp));
+					a_ret.push_back(std::move(tmp));
 				}
 			};
 			recursive_call(my_fill,root_timer, ret, a_name);
@@ -100,8 +100,14 @@ namespace MATools
 		void print_filtered_timers(std::string a_name)
 		{
 			auto filtered_timers = get_filtered_timers(a_name);
+			bool first = true;
 			for(auto it : filtered_timers)
 			{
+				if(first)
+				{
+					it.header();
+					first = false;
+				}
 				it.print();
 			}
 		}

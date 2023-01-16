@@ -27,7 +27,7 @@ namespace MATools
 			return ret;
 #else
 			constexpr int ret = 1;
-			return 1;
+			return ret;
 #endif
 		}
 

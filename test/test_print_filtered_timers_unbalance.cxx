@@ -13,12 +13,16 @@ int main(int argc, char * argv[])
 
 	if(robust)
 	{
+		auto mpi_rank = MATools::MPI::get_rank();
 		constexpr int size = 10;
-		int _case = tcase;
-		while(_case >= 1)
+		for(int i = 0 ; i < 10*(mpi_rank+1); i++)
 		{
-			launch<size>(tcase);
-			_case--;
+			int _case = tcase;
+			while(_case >= 1)
+			{
+				launch<size>(tcase);
+				_case--;
+			}
 		}
 	}
 	else
@@ -31,7 +35,7 @@ int main(int argc, char * argv[])
 			_case--;
 		}
 	}
-	
+
 	// test
 	if(test_get_filtered_timers)
 	{
