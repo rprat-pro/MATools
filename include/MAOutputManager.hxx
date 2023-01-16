@@ -44,7 +44,9 @@ namespace MATools
 
 				using namespace MATools::MATimer::Optional;
 				const bool sorted_by_name= is_full_tree_mode();
-				auto sort_comp = [sorted_by_name] (MATimerNode* a_ptr, MATimerNode* b_ptr)
+				
+				// the sorting is finally disabled
+				[[maybe_unused]] auto sort_comp = [sorted_by_name] (MATimerNode* a_ptr, MATimerNode* b_ptr)
 				{
 					if(sorted_by_name) return a_ptr->get_name() > b_ptr->get_name();
 					else return a_ptr->get_duration() > b_ptr->get_duration() ;
@@ -62,7 +64,8 @@ namespace MATools
 				recursive_call(max_length, root_timer, count, nbElem);
 				count += 6;
 				root_timer->print_banner(count);
-				recursive_sorted_call(my_print, sort_comp, root_timer, count, runtime);
+				recursive_call(my_print, root_timer, count, runtime);
+				//recursive_sorted_call(my_print, sort_comp, root_timer, count, runtime);
 				root_timer->print_ending(count);
 			}
 
