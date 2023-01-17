@@ -2,6 +2,7 @@
 #include <iostream>
 #include <cassert>
 
+
 namespace MATools
 {
 	namespace MPI
@@ -42,37 +43,31 @@ namespace MATools
 #endif
 		}
 
-		template<typename T>
-		T reduce(T a_in, MPI_Op a_op)
-		{
-			std::cout << "error" << std::endl;
-			std::abort();
-			return -666;
-		}
-		
-		template<>
-		double reduce(double a_in, MPI_Op a_op)
-		{
 #ifdef __MPI
-			double global(0.0);
-                        MPI_Reduce(&a_in, &global, 1, MPI_DOUBLE, a_op, master, MPI_COMM_WORLD); // master rank is 0
-			return global;
-#else
-			return a_in;
-#endif
-		}
+		template<typename T>
+			T reduce(T a_in, MPI_Op a_op)
+			{
+				std::cout << "error" << std::endl;
+				std::abort();
+				return -666;
+			}
 
 		template<>
-		int reduce(int a_in, MPI_Op a_op)
-		{
-#ifdef __MPI
-			int global(0.0);
-                        MPI_Reduce(&a_in, &global, 1, MPI_INT, a_op, master, MPI_COMM_WORLD); // master rank is 0
-			return global;
-#else
-			return a_in;
+			double reduce(double a_in, MPI_Op a_op)
+			{
+				double global(0.0);
+				MPI_Reduce(&a_in, &global, 1, MPI_DOUBLE, a_op, master, MPI_COMM_WORLD); // master rank is 0
+				return global;
+			}
+
+		template<>
+			int reduce(int a_in, MPI_Op a_op)
+			{
+				int global(0.0);
+				MPI_Reduce(&a_in, &global, 1, MPI_INT, a_op, master, MPI_COMM_WORLD); // master rank is 0
+				return global;
+			}
 #endif
-		}
 
 		double reduce_max(double a_duration)
 		{
