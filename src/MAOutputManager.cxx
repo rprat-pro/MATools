@@ -22,7 +22,7 @@ namespace MATools
 #endif
 			return file_name;
 		}
-
+		
 		void write_file()
 		{
 			auto name = build_name();
@@ -60,6 +60,68 @@ namespace MATools
 			};
 
 			recursive_call(my_write,root_timer,myFile);
+		}
+
+		/*
+		 * @brief Create debugging file names for each MPI process
+		 * @return local name
+		 */
+		std::string build_current_mpi_name()
+		{
+			using namespace MATools::MPI;
+			std::string base_name = "MATimers";
+#ifdef __MPI
+			int mpi_rank = get_rank();
+			std::string file_name = base_name + "." + std::to_string(mpi_rank) + ".debug";
+#else
+			std::size_t nthreads=0;
+#pragma omp parallel
+			{
+				nthreads = omp_get_num_threads();
+			}
+			std::string file_name = base_name + "." + std::to_string(nthreads) + ".debug";
+#endif
+			return file_name;
+		}
+
+		/*
+		 * @brief Write debug files (tree) for each MPI process
+		 * @param[in]  a_name name of the ouput file (should be different for each MPI process)
+		 */
+		void write_debug_file(std::string a_name)
+		{
+			using namespace MATools::MAOutput;
+			using namespace MATools::MPI;
+
+			std::ofstream myFile (a_name, std::ofstream::out);	
+			MATimerNode* root_timer = MATools::MATimer::get_MATimer_node<ROOT>();
+			assert(root_timer != nullptr);
+			auto rootTime = root_timer->get_duration();
+			rootTime = MATools::MPI::reduce_max(rootTime);
+			auto my_debuging_write_function = [rootTime](MATimerNode* a_ptr, std::ofstream& a_file)
+			{
+				std::string space;
+				std::string motif = "   ";
+
+				for(std::size_t i = 0 ; i < a_ptr->get_level() ; i++) space +=motif;
+				// get timer value
+				auto value = a_ptr->get_duration();
+				a_file << space << a_ptr->get_name() 
+					<< " " << a_ptr->get_iteration()
+					<< " " << value
+					<< std::endl;
+			};
+
+			recursive_call(my_debuging_write_function, root_timer, myFile);
+		}
+
+		/*
+		 * @brief Write a debug file for each MPI process
+		 */
+		void write_debug_file()
+		{
+			auto name = build_current_mpi_name();
+			write_debug_file(name);
 		}
 
 		std::vector<MATools::MATimer::MATimerInfo> get_filtered_timers(std::string a_name)

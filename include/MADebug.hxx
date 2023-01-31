@@ -33,7 +33,24 @@ namespace MATools
 
 				int shift=0;
 				double d = ptr->get_duration();
-				recursive_sorted_call(my_print, sort_comp, ptr, shift, d);
+				//recursive_sorted_call(my_print, sort_comp, ptr, shift, d);
+				recursive_call(my_print, ptr, shift, d);
+			}
+		
+		template<enumTimer T>
+			void debug_write()
+			{
+				MATimerNode*& ptr = get_MATimer_node<T>();
+
+				auto my_print = [](MATimerNode* a_ptr, int& shift, double a_runtime)
+				{
+					a_ptr->print(shift, a_runtime);
+				};
+
+				int shift=0;
+				double d = ptr->get_duration();
+				//recursive_sorted_call(my_print, sort_comp, ptr, shift, d);
+				recursive_call(my_print, ptr, shift, d);
 			}
 		
 		/**

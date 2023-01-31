@@ -38,7 +38,15 @@ add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTime
 
 build_test(test_trace_with_omp)
 build_test(test_trace_with_omp_task)
-set (testlist test_trace test_full_tree_mode test_memory_footprint test_get_filtered_timers test_print_filtered_timers test_print_filtered_timers_unbalance)
+set (testlist 
+	test_trace 
+	test_full_tree_mode 
+	test_memory_footprint 
+	test_get_filtered_timers 
+	test_print_filtered_timers 
+	test_print_filtered_timers_unbalance 
+	test_mpi_debug_unbalanced_timers
+	test_mpi_debug_balanced_timers)
 
 foreach(elem IN LISTS testlist)
 	message("add test ${elem}")

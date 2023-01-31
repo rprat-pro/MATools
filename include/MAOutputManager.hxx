@@ -15,9 +15,12 @@ namespace MATools
 		using MATools::MATimer::MATimerNode;
 
 		std::string build_name();
+		std::string build_current_mpi_name();
 		void print_timetable();
 		void write_file();
 		void write_file(std::string a_name);
+		void write_debug_file();
+		void write_debug_file(std::string);
 		std::vector<MATools::MATimer::MATimerInfo> get_filtered_timers(std::string);
 		void print_filtered_timers(std::string);
 
