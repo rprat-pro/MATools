@@ -3,11 +3,16 @@
 
 namespace MATools
 {
+	/**
+	 * MATimerNode is the storage class corresponding to a node of the MATimer tree.
+	 */
 	namespace MATimer
 	{
 		using duration = std::chrono::duration<double>;
 
-		// constructor
+		/**
+		 * @brief default constructor.
+		 */
 		MATimerNode::MATimerNode() : m_daughter() // only used for root
 		{
 			m_name = "root";
@@ -20,6 +25,9 @@ namespace MATools
 
 		}
 
+		/**
+		 * @brief MATimerNode constructor used to initialize a node with a node name and a mother node.
+		 */
 		MATimerNode::MATimerNode(std::string name, MATimerNode* mother): m_daughter(), m_duration(0)
 		{
 			m_name = name;
@@ -31,6 +39,11 @@ namespace MATools
 #endif
 		}
 
+		/**
+		 * @brief This function is used to find if a daughter node is already defined with this node name. If this node does not exist, a new daughter MATimerNode is added
+		 * @param[in] name name of the desired node
+		 * @return the MATimerNode desired 
+		 */
 		MATimerNode* 
 			MATimerNode::find(std::string name)
 			{
@@ -48,31 +61,52 @@ namespace MATools
 				return myTmp;
 			}
 
+		/**
+		 * @brief Displays a motif several times.
+		 * @param[in] begin column number where the motif starts.
+		 * @param[in] end column number where the motif finishs.
+		 * @param[in] motif the replicated motif, this motif should have a length equal to 1.
+		 */
 		void 
 			MATimerNode::print_replicate(size_t begin, size_t end, std::string motif)
 			{
-				for(size_t i = begin ; i < end ; i++) std::cout << motif;
+				for(size_t i = begin ; i < end ; i++) 
+				{
+					std::cout << motif;
+				}
 			}
 
-
+		/**
+		 * @brief Displays a blank character.
+		 */
 		void 
 			MATimerNode::space()
 			{
 				std::cout << " "; 
 			}
 
+		/**
+		 * @brief Displays a "|".
+		 */
 		void 
 			MATimerNode::column()
 			{
 				std::cout << "|"; 
 			}
 
+		/**
+		 * @brief Displays a return line.
+		 */
 		void 
 			MATimerNode::end_line()
 			{
 				std::cout << std::endl; 
 			}
 
+		/**
+		 * @brief Displays the banner/header.
+		 * @param[in] shift number of blank character displayed
+		 */
 		void 
 			MATimerNode::print_banner(size_t shift)
 			{
@@ -81,7 +115,8 @@ namespace MATools
 #ifndef __MPI
 					MATools::MAOutput::printMessage(" MPI feature is disable for timers, if you use MPI please add -D__MPI ");
 #else
-					if(MATools::MPI::is_master()) {
+					if(MATools::MPI::is_master()) 
+					{
 						MATools::MAOutput::printMessage(" MPI feature activated, rank 0:");
 #endif
 						std::string start_name = " |-- start timetable "; 
@@ -92,6 +127,8 @@ namespace MATools
 						std::string name = " |    name";
 						std::cout << name;
 						print_replicate(name.size(),shift + 1," ");
+
+						// columns name are displayed, columns change if the MPI mode is ued
 						for(size_t i =  0 ; i < nColumns ; i++)
 						{
 							column();
@@ -100,6 +137,7 @@ namespace MATools
 							std::cout << cName[i];
 							space();
 						}
+
 						column(); end_line();
 						space(); column();
 						print_replicate(2, end,"-");
@@ -110,6 +148,10 @@ namespace MATools
 				}
 			}
 
+		/**
+		 * @brief Displays the header.
+		 * @param[in] shift number of blank character displayed
+		 */
 		void 
 			MATimerNode::print_ending(size_t shift)
 			{
@@ -126,12 +168,21 @@ namespace MATools
 				}
 			}
 
+		/**
+		 * @brief Gets of the duration member
+		 * @return pointer of the duration member of a MATimerNode
+		 */
 		duration* 
 			MATimerNode::get_ptr_duration()
 			{
 				return &m_duration;
 			}
-		
+
+		/**
+		 * @brief Displays the local runtime.
+		 * @param[in] shift number of blank character displayed
+		 * @param[in] runtime local duration value
+		 */
 		void 
 			MATimerNode::print_local(size_t shift, double total_time)
 			{
@@ -170,6 +221,11 @@ namespace MATools
 				column();end_line();
 			}
 
+		/**
+		 * @brief Displays the runtime.
+		 * @param[in] shift number of blank character displayed
+		 * @param[in] runtime duration value
+		 */
 		void 
 			MATimerNode::print(size_t shift, double total_time)
 			{
@@ -264,41 +320,69 @@ namespace MATools
 				}
 			}
 
+		/**
+		 * @brief Retruns the MATimerNode name
+		 * @return name
+		 */
 		std::string 
 			MATimerNode::get_name()
 			{
-				return m_name;
+				std::string ret = m_name;
+				return ret;
 			}
 
+		/**
+		 * @brief Retruns the duration
+		 * @return duration value
+		 */
 		double 
 			MATimerNode::get_duration()
 			{
-				return m_duration.count();
+				double ret = m_duration.count();
+				return ret;
 			}
 
+		/**
+		 * @brief Retruns the MATimerNode iteration number
+		 * @return the iteration number
+		 */
 		std::size_t 
 			MATimerNode::get_iteration()
 			{
-				return m_iteration;
+				std::size_t ret = m_iteration;
+				return ret;
 			}
 
+		/**
+		 * @brief Retruns the MATimerNode level
+		 * @return level
+		 */
 		std::size_t 
 			MATimerNode::get_level()
 			{
-				return m_level;
+				std::size_t ret = m_level;
+				return ret;
 			}
 
+		/**
+		 * @brief Retruns a vector of daughter MATimerNode pointers
+		 * @return daughter nodes
+		 */
 		std::vector<MATimerNode*>& 
 			MATimerNode::get_daughter()
 			{
 				return m_daughter;
 			}
 
-
+		/**
+		 * @brief Retruns the mother MATimerNode pointer
+		 * @return mother pointer
+		 */
 		MATimerNode* 
 			MATimerNode::get_mother()
 			{
-				return m_mother;
+				MATimerNode* ret = m_mother;
+				return ret;
 			}
 	}
 };

@@ -6,6 +6,9 @@ namespace MATools
 {
 	namespace MATimer
 	{
+		/**
+		 * @brief initialize a root timer node. This function has to be followed by finalize function. Do not call this function twice.  
+		 */
 		void initialize()
 		{
 #ifdef NO_TIMER
@@ -14,7 +17,7 @@ namespace MATools
 #endif
 			MATools::MAOutput::printMessage("MATimers_LOG: MATimers initialization ");
 			MATimerNode*& root_timer_ptr 	= MATools::MATimer::get_MATimer_node<ROOT>() ;
-			assert(root_timer_ptr == nullptr);	
+			assert(root_timer_ptr == nullptr && "MATimer::initialize has already be called");	
 			root_timer_ptr 			= new MATimerNode(); 
 			MATimerNode*& current 	        = MATools::MATimer::get_MATimer_node<CURRENT>(); 
 			current 			= root_timer_ptr;
@@ -23,6 +26,9 @@ namespace MATools
 		}
 
 
+		/**
+		 * @brief This function displays each timer node and writes a file with the same information.
+		 */
 		void print_and_write_timers()
 		{
 #ifdef NO_TIMER
@@ -34,6 +40,9 @@ namespace MATools
 			MATools::MAOutputManager::print_timetable<ROOT>();
 		}
 
+		/**
+		 * @brief finalize the root timer node. This function has to be called after the intialize function. Do not call this function twice.  
+		 */
 		void finalize()
 		{
 			using namespace MATools::MATimer::Optional;
@@ -46,7 +55,7 @@ namespace MATools
 			if(root_ptr != current_ptr) 
 				printMessage("MATimers_DEBUG_LOG: MATimers are not corretly used, root node is ", root_ptr, " and current node is " , current_ptr);
 			else 
-				printMessage("MATimers_LOG: MATimers finalisation");
+				printMessage("MATimers_LOG: MATimers finalization");
 
 			MATools::MATimer::end_global_timer<ROOT>(); 
 #ifdef __MPI
@@ -62,6 +71,7 @@ namespace MATools
 				MATools::MAOutputManager::write_file(); 
 			}
 			delete root_ptr;
+			root_ptr = nullptr;
 		}
 	};
 };
