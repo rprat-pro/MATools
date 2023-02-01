@@ -183,7 +183,7 @@ More details : test/test_mpi_debug_unbalanced_timers.cxx
 MATools::MAOutputManager::write_debug_file();
 ```
 
-Advice : if you are in a deadlock during the finilization function, you can disabled printing and writing with the following instructions
+Advice : if you are in a deadlock during the finalization function, you can disable printing and writting with the following instructions
 
 
 ```
