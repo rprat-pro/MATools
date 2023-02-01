@@ -110,6 +110,7 @@ This tool does not need an `initialize` or `finalize` routine. To get the memory
 | Collect checkpoints              | In progress |
 | Add checkpoint names             | Todo        |
 
+
 ## MATrace
 
 MATimer provides other tools such as trace generation in paje format readable with VITE. You can access this feature with the namespace `MATimer::MATrace`.
@@ -172,3 +173,20 @@ REMARK : label could be : MPI_ID * NB_THREADS + THREAD_ID
 | Hybrid           | Not planned |
 | Default color    | Done        |
 
+## Debugging tools
+
+### write local timers tree for each MPI process
+
+More details : test/test_mpi_debug_unbalanced_timers.cxx
+
+```
+MATools::MAOutputManager::write_debug_file();
+```
+
+Advice : if you are in a deadlock during the finilization function, you can disabled printing and writing with the following instructions
+
+
+```
+MATools::MATimer::Optional::disable_print_timetable();
+MATools::MATimer::Optional::disable_write_file();
+```
