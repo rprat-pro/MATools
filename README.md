@@ -134,7 +134,7 @@ The `finalize` routine handles writing MATrace files. In an MPI context, all dat
 The default mode of MATrace works in serial and MPI but this tool is disabled. MATrace can be activated with this routine:
 
 ```
-MATools::MATrace::active_MATrace_mode();
+MATools::MATrace::Optional::active_MATrace_mode();
 ```
 This routine has to be called by the MATools::Finalise() routine.
 
