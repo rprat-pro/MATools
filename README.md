@@ -63,7 +63,7 @@ Example :
 This routine has to be called by the MATools::Finalise() routine.
 
 ```
-MATools::MATimer::disable_print_timetable();
+MATools::MATimer::Optional::disable_print_timetable();
 ```
 
 #### Do not write timetable file
@@ -71,7 +71,7 @@ MATools::MATimer::disable_print_timetable();
 This routine has to be called by the MATools::Finalise() routine.
 
 ```
-MATools::MATimer::disable_write_file();
+MATools::MATimer::Optional::disable_write_file();
 ```
 
 #### Use the full tree mode
