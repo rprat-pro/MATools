@@ -39,6 +39,7 @@ add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTime
 build_test(test_trace_with_omp)
 build_test(test_trace_with_omp_task)
 set (testlist 
+	test_minimal_long_name 
 	test_trace 
 	test_full_tree_mode 
 	test_memory_footprint 

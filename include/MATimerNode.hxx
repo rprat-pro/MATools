@@ -45,7 +45,7 @@ namespace MATools
 			 * @param[in] end column number where the motif finishs.
 			 * @param[in] motif the replicated motif, this motif should have a length equal to 1.
 			 */
-			void print_replicate(size_t begin, size_t end, std::string motif);
+			void print_replicate(int a_begin, int a_end, std::string motif);
 
 			/**
 			 * @brief Displays a blank character.

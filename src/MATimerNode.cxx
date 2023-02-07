@@ -1,5 +1,6 @@
 #include<MAToolsMPI.hxx>
 #include<MATimerNode.hxx>
+#include<iomanip>
 
 namespace MATools
 {
@@ -68,11 +69,18 @@ namespace MATools
 		 * @param[in] motif the replicated motif, this motif should have a length equal to 1.
 		 */
 		void 
-			MATimerNode::print_replicate(size_t begin, size_t end, std::string motif)
+			MATimerNode::print_replicate(int a_begin, int a_end, std::string a_motif)
 			{
-				for(size_t i = begin ; i < end ; i++) 
+#ifndef NDEBUG
+				if(a_end < a_begin) 
 				{
-					std::cout << motif;
+					//MATools::MAOutput::printMessage("MATools_LOG: column width is probalby too small and it's not possible to replicated this motif");
+				}
+#endif
+
+				for(int i = a_begin ; i < a_end ; i++) 
+				{
+					std::cout << a_motif;
 				}
 			}
 
@@ -296,15 +304,18 @@ namespace MATools
 					assert(global_max >= global_mean);
 					assert(global_mean >= global_min);
 
-					cValue[1] = std::to_string( global_min);	
-					cValue[2] = std::to_string( global_mean);	
-					cValue[3] = std::to_string( global_max);	
-					cValue[4] = std::to_string( part_time) + "%";	
-					cValue[5] = std::to_string( (global_max/global_mean)-1) + "%";
+					std::cout << std::setprecision(25);
+					const int precisionVal = 25;
+
+					cValue[1] = std::to_string( global_min).substr(0, std::to_string(global_min).find(".") + precisionVal + 1);	
+					cValue[2] = std::to_string( global_mean).substr(0, std::to_string(global_mean).find(".") + precisionVal + 1);	
+					cValue[3] = std::to_string( global_max).substr(0, std::to_string(global_max).find(".") + precisionVal + 1);	
+					cValue[4] = std::to_string( part_time).substr(0, std::to_string(part_time).find(".") + precisionVal + 1) + "%";	
+					cValue[5] = std::to_string( (global_max/global_mean)-1).substr(0, std::to_string((global_max/global_mean)-1).find(".") + precisionVal + 1) + "%";
 				}
 #else
-				cValue[1] = std::to_string( m_duration.count());	
-				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 );	
+				cValue[1] = std::to_string( m_duration.count()).substr(0, std::to_string(m_duration.count()).find(".") + precisionVal + 1);	
+				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 ).substr(0, std::to_string((m_duration.count()/total_time)*100).find(".") + precisionVal + 1);
 #endif
 				if(MATools::MPI::is_master())
 				{
@@ -312,7 +323,7 @@ namespace MATools
 					{
 						column();
 						int size = cValue[i].size();
-						print_replicate(0,(int(cWidth)-size - 1), " ");
+						print_replicate(0,(int(cWidth)- size - 1), " ");
 						std::cout << cValue[i];
 						space();
 					}
