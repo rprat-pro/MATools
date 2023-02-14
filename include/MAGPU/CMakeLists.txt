@@ -39,6 +39,3 @@ target_include_directories(MAGPU PUBLIC ${MAGPU_HEADERS})
 
 add_executable(magpu main.cpp)
 target_link_libraries(magpu PUBLIC MAGPU)
-
-add_executable(magpu_v2 main_v2.cpp)
-target_link_libraries(magpu_v2 PUBLIC MAGPU)
