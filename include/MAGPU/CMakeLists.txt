@@ -4,9 +4,19 @@ cmake_minimum_required(VERSION 3.3)
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
-# set the project name and version
-project(MAGPU VERSION 1.0)
 
+option(CUDA_OPTION "active MAGPUVector with cuda" ON)
+
+if (CUDA_OPTION)
+	# set the project name and version
+	project(MAGPU VERSION 1.0 LANGUAGES CUDA CXX)
+	find_package(CUDA)
+	enable_language(CUDA)
+	add_compile_options(-D__CUDA__)
+else()
+	# set the project name and version
+	project(MAGPU VERSION 1.0)
+endif()
 
 # openmp
 find_package(OpenMP)
@@ -32,10 +42,23 @@ set(MAGPU_HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE MAGPU_SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx")
 file(GLOB_RECURSE MAGPU_HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 
-message(${MAGPU_SRCS})
-
-add_library(MAGPU SHARED ${MAGPU_SRCS})
+cuda_add_library(MAGPU SHARED ${MAGPU_SRCS})
 target_include_directories(MAGPU PUBLIC ${MAGPU_HEADERS})
 
 add_executable(magpu main.cpp)
+
+if (CUDA_OPTION)
+target_link_libraries(MAGPU cuda)
+set_source_files_properties(${MAGPU_SRCS} PROPERTIES LANGUAGE CUDA)
+set_target_properties(MAGPU PROPERTIES CUDA_ARCHITECTURES "80" CUDA_RESOLVE_DEVICE_SYMBOLS ON LINKER_LANGUAGE CXX)
+set_source_files_properties(main.cpp PROPERTIES LANGUAGE CUDA)
+set_target_properties(magpu PROPERTIES CUDA_ARCHITECTURES "80" CUDA_RESOLVE_DEVICE_SYMBOLS ON LINKER_LANGUAGE CXX)
+target_link_libraries(magpu cuda MAGPU)
+else()
 target_link_libraries(magpu PUBLIC MAGPU)
+endif()
+
+
+
+
+add_subdirectory(test)

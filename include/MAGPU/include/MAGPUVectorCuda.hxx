@@ -8,10 +8,10 @@ namespace MATools
 	namespace MAGPU
 	{
 
-		namespace CUDA
+		namespace CUDA_KERNEL
 		{
-			__global__
 				template<typename T>
+			__global__
 				void init(T* a_ptr, std::size_t a_size, const T& a_val)
 				{
 					unsigned int idx = blockIdx.x*blockDim.x+threadIdx.x; ;
@@ -19,8 +19,8 @@ namespace MATools
 						a_ptr[idx] = a_val;
 				}
 
-			__global__
 				template<typename T>
+			__global__
 				void init(T* a_out, std::size_t a_size, T* a_in)
 				{
 					unsigned int idx = blockIdx.x*blockDim.x+threadIdx.x; ;
@@ -30,7 +30,7 @@ namespace MATools
 		}
 
 		template<typename T, MEM_MODE MODE>
-			class MADeviceMemory<T, MODE, GPU_TYPE::SERIAL>
+			class MADeviceMemory<T, MODE, GPU_TYPE::CUDA>
 			{
 				protected:
 
@@ -45,17 +45,6 @@ namespace MATools
 					}
 
 					/**
-					 * @brief Gets device memory pointer
-					 * @return device pointer, this pointer is defined for each specialization
-					 */
-					T* get_device_data()
-					{
-						T* ret = m_device.get();
-						return ret;
-					}
-
-
-					/**
 					 * @brief GPU allocator if MEM_MODE is set to GPU or BOTH
 					 * @param[in] a_size size of the storage
 					 */
@@ -65,7 +54,7 @@ namespace MATools
 						{
 							T* ptr;
 							cudaMalloc((void**)&ptr, a_size*sizeof(T));
-							m_device = std::shared_ptr<T>(ptr, [](T* a_ptr)->void {cudaFree(ptr)});
+							m_device = std::shared_ptr<T>(ptr, [](T* a_ptr){cudaFree(a_ptr);});
 						}
 					}
 
@@ -76,11 +65,11 @@ namespace MATools
 					 */
 					void gpu_init(const T& a_val, const std::size_t a_size)
 					{
-						T* raw_ptr = get_gpu_data();
+						T* raw_ptr = get_device_data();
 						auto stream = get_cuda_stream();
 						const int block_size = 256;
 						const int number_of_blocks = (int)ceil((float)a_size/block_size);
-						init<<<number_of_block, block_size, cuda_stream>>>(raw_ptr, a_size, a_val);
+						CUDA_KERNEL::init<<<number_of_blocks, block_size, 0, stream>>>(raw_ptr, a_size, a_val);
 					}
 
 					/**
@@ -90,11 +79,11 @@ namespace MATools
 					 */
 					void gpu_init(T* a_ptr, const std::size_t a_size)
 					{
-						T* raw_ptr = get_gpu_data();
+						T* raw_ptr = get_device_data();
 						auto stream = get_cuda_stream();
 						const int block_size = 256;
 						const int number_of_blocks = (int)ceil((float)a_size/block_size);
-						init<<<number_of_block, block_size, cuda_stream>>>(raw_ptr, a_size, a_ptr);
+						CUDA_KERNEL::init<<<number_of_blocks, block_size, 0, stream>>>(raw_ptr, a_size, a_ptr);
 					}
 					/**
 					 * @brief initialize MAGPUVector with a device pointer.
@@ -103,7 +92,7 @@ namespace MATools
 					 */
 					void gpu_aliasing(T* a_ptr, unsigned int a_size)
 					{
-						m_device = std::shared_ptr<T>(a_ptr, [](T* a_in) {cudaFree(a_ptr);});
+						m_device = std::shared_ptr<T>(a_ptr, [](T* a_in) {cudaFree(a_in);});
 					}
 
 					/**
@@ -115,6 +104,7 @@ namespace MATools
 						GPU_WORLD(MODE)
 						{
 							T* ret = m_device.get();
+							return ret;
 						}
 						else
 						{
@@ -133,79 +123,55 @@ namespace MATools
 
 					void host_sync()
 					{
-						BOTH_WROLD(MODE)
+						BOTH_WORLD(MODE)
 						{
 							sync();
 							device_to_host();
-						}
-
-					}
-
-					void host_to_device()
-					{
-						BOTH_WORLD()
-						{
-							T* host = get_host_data();
-							T* device = get_device_data();
-							auto stream =  get_cuda_stream();
-							auto size = get_size();
-
-							if(stream != cudaStream_t(0));
-							{ 
-								cudaMemcpyAsync(device, host, size*sizeof(T), cudaMemcpyHostToDevice, stream);
-							}
-							else
-							{ 
-								cudaMemcpy(device, host, size*sizeof(T), cudaMemcpyHostToDevice);
-							}
 						}
 					}
 
 					void gpu_sync()
 					{
-						BOTH_WROLD(MODE)
+						BOTH_WORLD(MODE)
 						{
 							host_to_device();
 						}
 					}
 
-					void host_to_device()
+					void host_to_device(T* a_host)
 					{
-						BOTH_WORLD()
+						BOTH_WORLD(MODE)
 						{
-							T* host = get_host_data();
 							T* device = get_device_data();
 							auto stream =  get_cuda_stream();
-							auto size = get_size();
+							auto size = get_device_size();
 
-							if(stream != cudaStream_t(0));
+							if(stream != cudaStream_t(0))
 							{ 
-								cudaMemcpyAsync(device, host, size*sizeof(T), cudaMemcpyHostToDevice, stream);
+								cudaMemcpyAsync(device, a_host, size*sizeof(T), cudaMemcpyHostToDevice, stream);
 							}
 							else
 							{ 
-								cudaMemcpy(device, host, size*sizeof(T), cudaMemcpyHostToDevice);
+								cudaMemcpy(device, a_host, size*sizeof(T), cudaMemcpyHostToDevice);
 							}
 						}
-
 					}
 
-					void device_to_host()
+					void device_to_host(T* a_host)
 					{
-						BOTH_WORLD()
+						BOTH_WORLD(MODE)
 						{
-							T* host = get_host_data();
 							T* device = get_device_data();
 							auto stream =  get_cuda_stream();
-							auto size = get_size();
+							auto size = get_device_size();
 
-							if(stream != cudaStream_t(0));
+							if(stream != cudaStream_t(0))
 							{
-								cudaMemcpyAsync(host, device, size*sizeof(T), cudaMemcpyDeviceToHost, stream);
+								cudaMemcpyAsync(a_host, device, size*sizeof(T), cudaMemcpyDeviceToHost, stream);
 							}
 							else
 							{
-								cudaMemcpy(host, device, size*sizeof(T), cudaMemcpyDeviceToHost);
+								cudaMemcpy(a_host, device, size*sizeof(T), cudaMemcpyDeviceToHost);
 							}
 						}
 
