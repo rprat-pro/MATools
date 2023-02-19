@@ -1,3 +1,0 @@
-1:run_test_init_cuda_device_version
-3:run_test_aliasing_cuda_device_version
-4:run_test_get_size_cuda_device_version
