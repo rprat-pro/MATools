@@ -1,0 +1,14 @@
+run_test_init_cuda_device_version 0 0
+run_test_resize_cuda_device_version 2 2.09035
+run_test_aliasing_cuda_device_version 0 0
+run_test_get_size_cuda_device_version 0 0
+Testing 0 0
+run_test_init_serial_host_version 2 0.00178545
+run_test_resize_serial_host_version 2 0.00171118
+run_test_aliasing_serial_host_version 2 0.00179735
+run_test_get_size_serial_host_version 2 0.00188486
+Testing framework is working fine 1 0.00434498
+---
+run_test_init_cuda_device_version
+run_test_aliasing_cuda_device_version
+run_test_get_size_cuda_device_version

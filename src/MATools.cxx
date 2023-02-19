@@ -1,5 +1,5 @@
-#include <MATimers.hxx>
-#include <MATrace.hxx>
+#include <MATimers/MATimers.hxx>
+#include <MATrace/MATrace.hxx>
 
 namespace MATools
 {

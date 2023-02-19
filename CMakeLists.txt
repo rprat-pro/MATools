@@ -42,6 +42,9 @@ set(HEADERS ${CMAKE_CURRENT_SOURCE_DIR}/include)
 file(GLOB_RECURSE SRCS "${CMAKE_CURRENT_SOURCE_DIR}/src/*.cxx")
 file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 
+#add_subdirectory(src)
+#add_subdirectory(include)
+
 set(MATOOLS  ${SRCS})
 message(${MATOOLS})
 

@@ -1,13 +1,13 @@
 #pragma once
 
 // features
-#include<MATimers.hxx>
-#include<MATrace.hxx>
-#include<MAMemory.hxx>
+#include<MATimers/MATimers.hxx>
+#include<MATrace/MATrace.hxx>
+#include<Common/MAMemory.hxx>
 
 // options
-#include<MATraceOptional.hxx>
-#include<MATimerOptional.hxx>
+#include<MATrace/MATraceOptional.hxx>
+#include<MATimers/MATimerOptional.hxx>
 
 namespace MATools
 {

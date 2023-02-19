@@ -1,6 +1,6 @@
 #include <vector>
 #include <MATools.hxx>
-#include <MAMemory.hxx>
+#include <Common/MAMemory.hxx>
 #ifdef __MPI
 #include <mpi.h>
 #endif

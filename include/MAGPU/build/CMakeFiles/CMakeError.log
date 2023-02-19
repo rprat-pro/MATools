@@ -1,0 +1,3 @@
+Detecting the CUDA native architecture(s) failed with the following output:
+  No CUDA devices found.
+

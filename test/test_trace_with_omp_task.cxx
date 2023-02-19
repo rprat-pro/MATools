@@ -1,5 +1,4 @@
 #include <MATools.hxx>
-#include <MATraceOptional.hxx>
 #include <unistd.h>
 #include <vector>
 
