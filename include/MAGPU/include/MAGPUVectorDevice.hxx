@@ -7,7 +7,7 @@ namespace MATools
 	namespace MAGPU
 	{
 
-		template<typename T, MEM_MODE MODE, GPU_TYPE GTYPE>
+		template<typename T, GPU_TYPE GTYPE>
 			class MADeviceMemory
 			{
 				/**
