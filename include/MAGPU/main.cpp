@@ -1,11 +1,11 @@
 #include <iostream>
 #include <MAGPUVector.hxx>
 
-bool run_test_init_cuda_device_version()
+bool run_test_init_serial_device_version()
 {
   using namespace MATools::MAGPU;
   constexpr int N = 1000;
-  MAGPUVector<double, MEM_MODE::GPU, GPU_TYPE::CUDA> vector_of_one;
+  MAGPUVector<double, MEM_MODE::GPU, GPU_TYPE::SERIAL> vector_of_one;
 
   double value = 1;
   vector_of_one.init(value, N);
@@ -30,6 +30,6 @@ bool run_test_init_cuda_device_version()
 int main()
 {
   bool success = EXIT_SUCCESS;
-  success &= run_test_init_cuda_device_version();
+  success &= run_test_init_serial_device_version();
   return success;
 }
