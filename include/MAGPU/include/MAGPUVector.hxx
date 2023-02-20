@@ -11,273 +11,276 @@
 
 namespace MATools
 {
-  namespace MAGPU
-  {
-    /**
-     * @brief MAVector is a class with a GPU storage and a CPU Storage depending on the memory mode.  
-     */		
-    template<typename T, MEM_MODE MODE, GPU_TYPE GTYPE>
-      class MAGPUVector : public MAHostMemory<T> , public MADeviceMemory<T, GTYPE>
-    {
-      public:
-
-	/** resize vector */ 
-	void resize(const std::size_t a_size)
+	namespace MAGPU
 	{
-	  CPU_WORLD(MODE) this->host_allocator(a_size);
-	  GPU_WORLD(MODE) this->gpu_allocator(a_size);
-	}
+		/**
+		 * @brief MAVector is a class with a GPU storage and a CPU Storage depending on the memory mode.  
+		 */		
+		template<typename T, MEM_MODE MODE, GPU_TYPE GTYPE>
+			class MAGPUVector : public MAHostMemory<T> , public MADeviceMemory<T, GTYPE>
+		{
+			public:
 
-	/**
-	 * @brief Initializes the MAGPUVector memory and fill it with the a_val value
-	 * @param[in] a_val is the filling value
-	 * @param[in] a_size is the size of the storage
-	 */
-	void init(const T& a_val, const std::size_t a_size)
-	{
-	  resize(a_size);
-	  fill(a_val);
-	}
+				//MAGPUVector() : this->MAHostMemory(), this->MADeviceMemory() {}
+				MAGPUVector() = default;
 
-	/**
-	 * @brief Fills the MAGPUVector memory and fill it with the a_val value
-	 * @param[in] a_val is the filling value
-	 */
-	void fill(const T& a_val)
-	{
-	  CPU_WORLD(MODE) this->host_fill(a_val);
-	  GPU_WORLD(MODE) this->gpu_fill(a_val);
-	}
+				/** resize vector */ 
+				void resize(const std::size_t a_size)
+				{
+					CPU_WORLD(MODE) this->host_allocator(a_size);
+					GPU_WORLD(MODE) this->gpu_allocator(a_size);
+				}
 
-	/**
-	 * @brief Equal operator that fills an MAGPUVector with a same value.
-	 * @param[in] a_val is the filling value
-	 */
-	MAGPUVector& operator=(const T& a_val)
-	{
-	  this->fill(a_val);
-	  return *this;
-	}
+				/**
+				 * @brief Initializes the MAGPUVector memory and fill it with the a_val value
+				 * @param[in] a_val is the filling value
+				 * @param[in] a_size is the size of the storage
+				 */
+				void init(const T& a_val, const std::size_t a_size)
+				{
+					resize(a_size);
+					fill(a_val);
+				}
 
-	/**
-	 * @brief Initializes the MAGPUVector memory and fill it with the values in a_ptr
-	 * @param[in] a_ptr is the pointer of the filling values
-	 * @param[in] a_size is the size of the storage
-	 */
-	void init(T* a_ptr, const std::size_t a_size)
-	{
-	  // We assume that the default way to fill BOTH MEM_MODE is to use an host pointer and to copy the data to the device
-	  CPU_WORLD(MODE)
-	  {
-	    BOTH_WORLD(MODE)
-	    {
-	      this->gpu_allocator(a_size);
-	      this->gpu_init(a_ptr, a_size);
-	    }
-	    this->host_allocator(a_size);
-	    this->host_init(a_ptr, a_size);
-	    return;
-	  }
+				/**
+				 * @brief Fills the MAGPUVector memory and fill it with the a_val value
+				 * @param[in] a_val is the filling value
+				 */
+				void fill(const T& a_val)
+				{
+					CPU_WORLD(MODE) this->host_fill(a_val);
+					GPU_WORLD(MODE) this->gpu_fill(a_val);
+				}
 
-	  GPU_WORLD(MODE)
-	  {
-	    this->gpu_allocator(a_size);
-	    this->gpu_init(a_ptr, a_size);
-	  }
-	}
+				/**
+				 * @brief Equal operator that fills an MAGPUVector with a same value.
+				 * @param[in] a_val is the filling value
+				 */
+				MAGPUVector& operator=(const T& a_val)
+				{
+					this->fill(a_val);
+					return *this;
+				}
 
-	/**
-	 * @brief Initializes the MAGPUVector memory for BOTH mode with two vectors. Both pointers should have the same values.
-	 * @param[in] a_host_ptr is the host pointer
-	 * @param[in] a_gpu_ptr is the host pointer
-	 * @param[in] a_size is the size of the storage
-	 */
-	void init(T* a_host_ptr, T* a_device_ptr, const std::size_t a_size)
-	{
-	  assert( MODE==MEM_MODE::BOTH && "Only possible if MEM_MODE == BOTH");
-	  BOTH_WORLD(MODE)				
-	  {		
-	    this->host_allocator(a_size);
-	    this->host_init(a_host_ptr, a_size);
-	    this->gpu_allocator(a_size);
-	    this->gpu_init(a_device_ptr, a_size);
-	  }
-	  else
-	  {
-	    std::cout << "MATools_Error: wrong usage of MAGPUVector::init(...)" << std::endl;;
-	    std::abort();
-	  }
-	}
+				/**
+				 * @brief Initializes the MAGPUVector memory and fill it with the values in a_ptr
+				 * @param[in] a_ptr is the pointer of the filling values
+				 * @param[in] a_size is the size of the storage
+				 */
+				void init(T* a_ptr, const std::size_t a_size)
+				{
+					// We assume that the default way to fill BOTH MEM_MODE is to use an host pointer and to copy the data to the device
+					CPU_WORLD(MODE)
+					{
+						BOTH_WORLD(MODE)
+						{
+							this->gpu_allocator(a_size);
+							this->gpu_init(a_ptr, a_size);
+						}
+						this->host_allocator(a_size);
+						this->host_init(a_ptr, a_size);
+						return;
+					}
 
-	/**
-	 * @brief Gets size
-	 * @return m_size member
-	 */
-	unsigned int get_size()
-	{
-	  BOTH_WORLD(MODE)
-	  {
-	    unsigned int host_size = this->get_host_size();
-	    unsigned int device_size = this->get_device_size();
-	    assert(host_size == device_size && "host and device size are not the same");
-	    return host_size;
-	  }
+					GPU_WORLD(MODE)
+					{
+						this->gpu_allocator(a_size);
+						this->gpu_init(a_ptr, a_size);
+					}
+				}
 
-	  CPU_WORLD(MODE)
-	  {
-	    unsigned int ret = this->get_host_size();
-	    return ret;
-	  }
+				/**
+				 * @brief Initializes the MAGPUVector memory for BOTH mode with two vectors. Both pointers should have the same values.
+				 * @param[in] a_host_ptr is the host pointer
+				 * @param[in] a_gpu_ptr is the host pointer
+				 * @param[in] a_size is the size of the storage
+				 */
+				void init(T* a_host_ptr, T* a_device_ptr, const std::size_t a_size)
+				{
+					assert( MODE==MEM_MODE::BOTH && "Only possible if MEM_MODE == BOTH");
+					BOTH_WORLD(MODE)				
+					{		
+						this->host_allocator(a_size);
+						this->host_init(a_host_ptr, a_size);
+						this->gpu_allocator(a_size);
+						this->gpu_init(a_device_ptr, a_size);
+					}
+					else
+					{
+						std::cout << "MATools_Error: wrong usage of MAGPUVector::init(...)" << std::endl;;
+						std::abort();
+					}
+				}
 
-	  GPU_WORLD(MODE)
-	  {
-	    unsigned int ret = this->get_device_size();
-	    return ret;
-	  }
-	}
+				/**
+				 * @brief Gets size
+				 * @return m_size member
+				 */
+				unsigned int get_size()
+				{
+					BOTH_WORLD(MODE)
+					{
+						unsigned int host_size = this->get_host_size();
+						unsigned int device_size = this->get_device_size();
+						assert(host_size == device_size && "host and device size are not the same");
+						return host_size;
+					}
 
-	/**
-	 * @brief Sets size
-	 * @param new value of m_size
-	 */
-	void set_size(unsigned int a_size)
-	{
-	  CPU_WORLD(MODE) this->set_host_size(a_size);
-	  GPU_WORLD(MODE) this->set_device_size(a_size);
-	}
+					CPU_WORLD(MODE)
+					{
+						unsigned int ret = this->get_host_size();
+						return ret;
+					}
+
+					GPU_WORLD(MODE)
+					{
+						unsigned int ret = this->get_device_size();
+						return ret;
+					}
+				}
+
+				/**
+				 * @brief Sets size
+				 * @param new value of m_size
+				 */
+				void set_size(unsigned int a_size)
+				{
+					CPU_WORLD(MODE) this->set_host_size(a_size);
+					GPU_WORLD(MODE) this->set_device_size(a_size);
+				}
 
 
-	/**
-	 * @brief initialize MAGPUVector with a pointer depending on the MEM_MODE. BOTH mode is forbidden.
-	 * @param[in] a_ptr pointer on the data storage
-	 */
-	void aliasing(T* a_ptr, unsigned int a_size)
-	{
-	  assert( (MODE != MEM_MODE::BOTH) && " error, this function needs two arguments with MEM_MODE == BOTH."); 
-	  assert(a_ptr != nullptr && "pointer is null !");
+				/**
+				 * @brief initialize MAGPUVector with a pointer depending on the MEM_MODE. BOTH mode is forbidden.
+				 * @param[in] a_ptr pointer on the data storage
+				 */
+				void aliasing(T* a_ptr, unsigned int a_size)
+				{
+					assert( (MODE != MEM_MODE::BOTH) && " error, this function needs two arguments with MEM_MODE == BOTH."); 
+					assert(a_ptr != nullptr && "pointer is null !");
 
-	  CPU_WORLD(MODE) this->host_aliasing(a_ptr, a_size);
-	  GPU_WORLD(MODE) this->gpu_aliasing(a_ptr, a_size);
-	}
+					CPU_WORLD(MODE) this->host_aliasing(a_ptr, a_size);
+					GPU_WORLD(MODE) this->gpu_aliasing(a_ptr, a_size);
+				}
 
-	/**
-	 * @brief initialize MAGPUVector with MEM_MODE. CPU mode and GPU mode are forbidden.
-	 * @param[in] a_host_ptr pointer on the host data storage
-	 * @param[in] a_gpu_ptr pointer on the device data storage
-	 */
-	void aliasing(T* const a_host_ptr, T* const a_gpu_ptr, unsigned int a_size)
-	{
-	  assert( (MODE == MEM_MODE::BOTH) && " error, this function has to be used with MEM_MODE == BOTH.");
-	  assert(a_host_ptr != nullptr && "host pointer is null !");
-	  assert(a_gpu_ptr != nullptr && "gpu pointer is null !");
+				/**
+				 * @brief initialize MAGPUVector with MEM_MODE. CPU mode and GPU mode are forbidden.
+				 * @param[in] a_host_ptr pointer on the host data storage
+				 * @param[in] a_gpu_ptr pointer on the device data storage
+				 */
+				void aliasing(T* const a_host_ptr, T* const a_gpu_ptr, unsigned int a_size)
+				{
+					assert( (MODE == MEM_MODE::BOTH) && " error, this function has to be used with MEM_MODE == BOTH.");
+					assert(a_host_ptr != nullptr && "host pointer is null !");
+					assert(a_gpu_ptr != nullptr && "gpu pointer is null !");
 
-	  this->host_aliasing(a_host_ptr, a_size);
-	  this->gpu_aliasing(a_gpu_ptr, a_size);
-	}
+					this->host_aliasing(a_host_ptr, a_size);
+					this->gpu_aliasing(a_gpu_ptr, a_size);
+				}
 
-	/**
-	 * @brief access host data
-	 * @return Return the pointer on the host data.
-	 */ 
-	T* get_data()
-	{
-	  BOTH_WORLD(MODE)
-	  {
-	    std::cout << "MATools_LOG: Error in get_data(), with MEM_MODE=BOTH, you need to specify which memory you need with get_data(int type), 0 = cpu and 1 = device" << std::endl;
-	    std::abort();
-	  }
+				/**
+				 * @brief access host data
+				 * @return Return the pointer on the host data.
+				 */ 
+				T* get_data()
+				{
+					BOTH_WORLD(MODE)
+					{
+						std::cout << "MATools_LOG: Error in get_data(), with MEM_MODE=BOTH, you need to specify which memory you need with get_data(int type), 0 = cpu and 1 = device" << std::endl;
+						std::abort();
+					}
 
-	  T* ret;
-	  CPU_WORLD(MODE) ret = this->get_host_data();
-	  GPU_WORLD(MODE) ret = this->get_device_data();
+					T* ret;
+					CPU_WORLD(MODE) ret = this->get_host_data();
+					GPU_WORLD(MODE) ret = this->get_device_data();
 
-	  return ret;
-	}
+					return ret;
+				}
 
-	T* get_data(int a_type)
-	{
-	  assert(MODE == MEM_MODE::BOTH && "BOTH MODE is needed to use get_data(int)");
-	  if(a_type == 0)
-	  {
-	    return this->get_host_data();
-	  }
-	  else if (a_type == 1)
-	  {
-	    return this->get_device_data();
-	  }
-	  else
-	  {
-	    std::abort();
-	  }
-	}
+				T* get_data(int a_type)
+				{
+					assert(MODE == MEM_MODE::BOTH && "BOTH MODE is needed to use get_data(int)");
+					if(a_type == 0)
+					{
+						return this->get_host_data();
+					}
+					else if (a_type == 1)
+					{
+						return this->get_device_data();
+					}
+					else
+					{
+						std::abort();
+					}
+				}
 
-	void copy_host_to_device(T* const a_host)
-	{
-	  GPU_WORLD(MODE)
-	  {
-	    this->host_to_device(a_host);
-	  }
-	}
+				void copy_host_to_device(T* const a_host)
+				{
+					GPU_WORLD(MODE)
+					{
+						this->host_to_device(a_host);
+					}
+				}
 
-	/**
-	 * @brief Calls the device synchronization function and return true if the MEM_MODE is set to GPU or BOTH
-	 * @return Returns true if the MEM_MODE is set to GPU or BOTH
-	 */
-	bool sync()
-	{
-	  bool ret = false;
-	  GPU_WORLD(MODE)
-	  {
-	    this->gpu_sync();
-	    ret = true;
-	  }
-	  return ret;
-	}
+				/**
+				 * @brief Calls the device synchronization function and return true if the MEM_MODE is set to GPU or BOTH
+				 * @return Returns true if the MEM_MODE is set to GPU or BOTH
+				 */
+				bool sync()
+				{
+					bool ret = false;
+					GPU_WORLD(MODE)
+					{
+						this->gpu_sync();
+						ret = true;
+					}
+					return ret;
+				}
 
-	void copy_device_to_host(T* const a_host)
-	{
-	  GPU_WORLD(MODE)
-	  {
-	    this->device_to_host(a_host);
-	    this->gpu_sync();
-	  }
-	}
+				void copy_device_to_host(T* const a_host)
+				{
+					GPU_WORLD(MODE)
+					{
+						this->device_to_host(a_host);
+						this->gpu_sync();
+					}
+				}
 
-	bool update_device()
-	{
-	  BOTH_WORLD(MODE)
-	  {
-	    const T* const host = this->get_host_data();
-	    this->copy_host_to_device(host);
-	    return true;
-	  }
-	  return false;
-	}
+				bool update_device()
+				{
+					BOTH_WORLD(MODE)
+					{
+						const T* const host = this->get_host_data();
+						this->copy_host_to_device(host);
+						return true;
+					}
+					return false;
+				}
 
-	bool update_host()
-	{
-	  BOTH_WORLD(MODE)
-	  {
-	    T* const host = this->get_host_data();
-	    this->copy_device_to_host(host);
-	    return true;
-	  }
-	  return false;
-	}
+				bool update_host()
+				{
+					BOTH_WORLD(MODE)
+					{
+						T* const host = this->get_host_data();
+						this->copy_device_to_host(host);
+						return true;
+					}
+					return false;
+				}
 
-	std::vector<T> copy_to_vector()
-	{
-	  GPU_WORLD(MODE)
-	  {
-	    this->gpu_sync();
-	    return this->copy_to_vector_from_device();
-	  }
-	  else
-	  {
-	    return this->copy_to_vector_from_host();
-	  }
-	}
-    };
-  } // namespace MAGPU
+				std::vector<T> copy_to_vector()
+				{
+					GPU_WORLD(MODE)
+					{
+						this->gpu_sync();
+						return this->copy_to_vector_from_device();
+					}
+					else
+					{
+						return this->copy_to_vector_from_host();
+					}
+				}
+		};
+	} // namespace MAGPU
 } //namespace MATools
 

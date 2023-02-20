@@ -4,12 +4,12 @@
 //#include "catch2/catch_all.hpp"
 #include "catch2/catch.hpp"
 
-/*
+
 	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
 bool run_test_default_constructor()
 {
 	using namespace MATools::MAGPU;
-	MAGPUVector<T, MM, GT> vec();
+	MAGPUVector<T, MM, GT> vec = MAGPUVector<T, MM, GT>();
 
 	if(MM == MATools::MAGPU::MEM_MODE::BOTH)
 	{
@@ -17,20 +17,20 @@ bool run_test_default_constructor()
 		auto host = vec.get_data(0);
 		auto devi = vec.get_data(1);
 
-		if(size == 0) return EXIT_FAILURE;
-		if(host == nullptr) return EXIT_FAILURE;
-		if(devi == nullptr) return EXIT_FAILURE;
+		if(size != 0) return EXIT_FAILURE;
+		if(host != nullptr) return EXIT_FAILURE;
+		if(devi != nullptr) return EXIT_FAILURE;
 	}
 	else
 	{
 		auto size = vec.get_size();
 		auto ptr = vec.get_data();
-		if(size == 0) return EXIT_FAILURE;
-		if(ptr == nullptr) return EXIT_FAILURE;
+		if(size != 0) return EXIT_FAILURE;
+		if(ptr != nullptr) return EXIT_FAILURE;
 	}
 	return EXIT_SUCCESS;
 }
-*/
+
 
 	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
 bool run_test_init()
@@ -329,32 +329,33 @@ bool run_test_get_size()
 #endif
 
 #define GPU_TEST_CASE(NAME,TYPE,MEMORY) serial_TESTS(NAME,TYPE,MEMORY)\
-		cuda_TESTS(NAME,TYPE,MEMORY)\
+	cuda_TESTS(NAME,TYPE,MEMORY)\
 	kokkos_TESTS(NAME,TYPE,MEMORY)
 
 #define MEM_TEST_CASE(NAME,TYPE) \
-		GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::CPU)\
+	GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::CPU)\
 	GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::GPU)\
 	GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::BOTH)
 
 
 #define TYPE_TEST_CASE(NAME) \
-		MEM_TEST_CASE(NAME,int)\
+	MEM_TEST_CASE(NAME,int)\
 	MEM_TEST_CASE(NAME,float)\
 	MEM_TEST_CASE(NAME,double)
 
 #define SUPER_TEST_CASE(X) TYPE_TEST_CASE(X)
 
 
-	// Test case is a single test that you run
-	// You give it a name/description and also you give it some tags.
-	TEST_CASE("Testing framework is working fine", "[Catch2]")
+// Test case is a single test that you run
+// You give it a name/description and also you give it some tags.
+TEST_CASE("Testing framework is working fine", "[Catch2]")
 {
 
 	// Tests have to meet some requirements to be considered valid
 	REQUIRE(true);
 }
 
+SUPER_TEST_CASE(default_constructor);
 SUPER_TEST_CASE(init);
 SUPER_TEST_CASE(resize);
 SUPER_TEST_CASE(fill);

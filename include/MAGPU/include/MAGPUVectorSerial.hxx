@@ -12,7 +12,7 @@ namespace MATools
 					/** 
 					 * @brief default constructor
 					 */
-					MADeviceMemory() : m_size(0), m_data(nullptr) {}
+					MADeviceMemory() : m_device_size(0), m_device_data(nullptr) {}
 
 					/**
 					 * @brief GPU allocator if MEM_MODE is set to GPU or BOTH
@@ -21,8 +21,8 @@ namespace MATools
 					void gpu_allocator(const std::size_t a_size)
 					{
 						// just a resize in this case
-						m_data = new T[a_size];
-						m_size = a_size;
+						m_device_data = new T[a_size];
+						m_device_size = a_size;
 					}
 
 					/**
@@ -42,9 +42,9 @@ namespace MATools
 					 */
 					void gpu_fill(const T& a_val)
 					{
-						for(int id = 0 ; id < m_size ; id++)
+						for(int id = 0 ; id < m_device_size ; id++)
 						{
-							m_data[id] = a_val;  
+							m_device_data[id] = a_val;  
 						}
 					}
 
@@ -55,10 +55,10 @@ namespace MATools
 					 */
 					void gpu_init(T* const a_ptr, const std::size_t a_size)
 					{
-						assert(a_size == m_size);
-						for(int id = 0 ; id < m_size ; id++)
+						assert(a_size == m_device_size);
+						for(int id = 0 ; id < m_device_size ; id++)
 						{
-							m_data[id] = a_ptr[id];
+							m_device_data[id] = a_ptr[id];
 						}
 					}
 
@@ -70,8 +70,8 @@ namespace MATools
 					void gpu_aliasing(T* a_ptr, unsigned int a_size)
 					{
 						assert(a_ptr != nullptr);
-						m_size = a_size;
-						m_data = a_ptr;
+						m_device_size = a_size;
+						m_device_data = a_ptr;
 					}
 
 					/**
@@ -80,7 +80,7 @@ namespace MATools
 					 */
 					T* get_device_data()
 					{
-						T* ret = m_data;
+						T* ret = m_device_data;
 						return ret;
 					}
 
@@ -90,16 +90,16 @@ namespace MATools
 
 					void gpu_resize(unsigned int a_size)
 					{
-						if(m_size > a_size)
+						if(m_device_size > a_size)
 						{
-							m_size = a_size;
+							m_device_size = a_size;
 						}
 						else{
 							T * new_ptr = new double [a_size];
-							std::copy (m_data, m_data + m_size, new_ptr);
-							delete m_data;
-							m_data = new_ptr;
-							m_size = a_size;
+							std::copy (m_device_data, m_device_data + m_device_size, new_ptr);
+							delete m_device_data;
+							m_device_data = new_ptr;
+							m_device_size = a_size;
 						}
 					}
 
@@ -107,31 +107,31 @@ namespace MATools
 					{
 
 						gpu_resize(a_size);
-						std::copy(a_host, a_host + a_size, m_data);
+						std::copy(a_host, a_host + a_size, m_device_data);
 					}
 
 					void device_to_host(T* a_host)
 					{
-						std::copy(m_data, m_data + m_size, a_host);
+						std::copy(m_device_data, m_device_data + m_device_size, a_host);
 					}
 
 					/**
 					 * @brief Gets size
-					 * @return m_size member
+					 * @return m_device_size member
 					 */
 					unsigned int get_device_size()
 					{
-						unsigned int size = m_size;
+						unsigned int size = m_device_size;
 						return size;
 					}
 
 					/**
 					 * @brief Sets size -> in this case it's a resize
-					 * @param new value of m_size
+					 * @param new value of m_device_size
 					 */
 					void set_device_size(unsigned int a_size)
 					{
-						m_size = a_size;
+						m_device_size = a_size;
 					}
 
 					std::vector<T> copy_to_vector_from_device()
@@ -145,8 +145,8 @@ namespace MATools
 
 				private :
 					// I can't use a std::vector because it's not possible to use alias it with a pointer
-					T* m_data;
-					int m_size;
+					T* m_device_data;
+					int m_device_size;
 			};
 	};
 };

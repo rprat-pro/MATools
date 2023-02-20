@@ -13,7 +13,7 @@ namespace MATools
 					/** 
 					 * @brief default constructor
 					 */
-					MAHostMemory() : m_size(0), m_host(nullptr) {}
+					MAHostMemory() : m_host_size(0), m_host(nullptr) {}
 
 					/**
 					 * @brief Host allocator if MEM_MODE is set to CPU or BOTH
@@ -90,21 +90,21 @@ namespace MATools
 
 					/**
 					 * @brief Gets size
-					 * @return m_size member
+					 * @return m_host_size member
 					 */
 					unsigned int get_host_size()
 					{
-						unsigned int ret = m_size;
+						unsigned int ret = m_host_size;
 						return ret;
 					}
 
 					/**
 					 * @brief Sets size
-					 * @param new value of m_size
+					 * @param new value of m_host_size
 					 */
 					void set_host_size(unsigned int a_size)
 					{
-						m_size = a_size;
+						m_host_size = a_size;
 					}
 
 
@@ -114,7 +114,7 @@ namespace MATools
 						T* raw_ptr = get_host_data();
 						unsigned int size = get_host_size();
 						ret.resize(size);
-						std::copy(raw_ptr, raw_ptr + m_size, ret.data());
+						std::copy(raw_ptr, raw_ptr + m_host_size, ret.data());
 						return ret;
 					}
 
@@ -122,7 +122,7 @@ namespace MATools
 					/** @brief host data */
 					std::shared_ptr<T> m_host;
 					/** @brief data size */
-					unsigned int m_size;
+					unsigned int m_host_size;
 			};
 	}
 }

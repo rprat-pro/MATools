@@ -1,35 +1,54 @@
 #include <iostream>
 #include <MAGPUVector.hxx>
+#include <MAGPUFunctor.hxx>
+#include <MAGPURunner.hxx>
 
-bool run_test_init_serial_device_version()
+template<typename T, MATools::MAGPU::MEM_MODE MODE, MATools::MAGPU::GPU_TYPE GT>
+bool run_test_runner()
 {
   using namespace MATools::MAGPU;
   constexpr int N = 1000;
-  MAGPUVector<double, MEM_MODE::GPU, GPU_TYPE::SERIAL> vector_of_one;
 
-  double value = 1;
-  vector_of_one.init(value, N);
+  MAGPUVector<T,MODE,GT> res;
+  MAGPUVector<T,MODE,GT> vec1;
+  MAGPUVector<T,MODE,GT> vec2;
+
+  res.init(0.0, N);
+  vec1.init(1.0, N);
+  vec2.init(2.0, N);
+
+	auto add_kernel = [](unsigned int idx, double* const out, double* const in1, double* const in2)
+	{
+		out[idx] = in1[idx] + in2[idx];
+	};
+	
+	MAGPUFunctor<decltype(add_kernel), GPU_TYPE::SERIAL> fun(add_kernel, "add");
+	MAGPURunner<MEM_MODE::CPU, GPU_TYPE::SERIAL> runner;
+	runner(fun, N, res, vec1, vec2);	
+
 
   // check
-  std::vector<double> host = vector_of_one.copy_to_vector();
+  std::vector<T> host = res.copy_to_vector();
 
   for(int id = 0 ; id < N ; id++)
   {
-    if(host[id] != value)
+    if(host[id] != 3.0)
     {
       std::cout << "MATools_LOG: id = "<<id << " and host[id] = " << host[id] << std::endl;
-      std::cout << "MATools_LOG: Error in init for MEM_MODE = GPU and GPU_TYPE = CUDA " << std::endl;
+      std::cout << "MATools_LOG: Error in test runner " << std::endl;
       return EXIT_FAILURE;
     }
   }
 
-  std::cout << "MATools_LOG: Init works correctly for MEM_MODE = GPU and GPU_TYPE = CUDA " << std::endl;
+  std::cout << "MATools_LOG: test runner works correctly " << std::endl;
   return EXIT_SUCCESS;
 }
 
 int main()
 {
   bool success = EXIT_SUCCESS;
-  success &= run_test_init_serial_device_version();
+  using namespace MATools::MAGPU;
+  success &= run_test_runner<double, MEM_MODE::CPU, GPU_TYPE::SERIAL>();
+  success &= run_test_runner<double, MEM_MODE::GPU, GPU_TYPE::SERIAL>();
   return success;
 }
