@@ -280,6 +280,16 @@ namespace MATools
 						return this->copy_to_vector_from_host();
 					}
 				}
+
+				/** 
+				 * @brief Gets memory mode
+				 * @return MEM_MODE value
+				 */
+				MEM_MODE get_memory_mode()
+				{
+					MEM_MODE ret = MODE;
+					return ret;
+				}
 		};
 	} // namespace MAGPU
 } //namespace MATools

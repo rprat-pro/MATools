@@ -4,6 +4,7 @@
 //#include "catch2/catch_all.hpp"
 #include "catch2/catch.hpp"
 
+#include<test_helper.hpp>
 
 	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
 bool run_test_default_constructor()
@@ -31,6 +32,19 @@ bool run_test_default_constructor()
 	return EXIT_SUCCESS;
 }
 
+	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
+bool run_test_get_memory_mode()
+{
+	using namespace MATools::MAGPU;
+	MAGPUVector<T, MM, GT> vec;
+
+	auto my_memory_mode = vec.get_memory_mode();
+
+	if(my_memory_mode != MM)
+		return EXIT_FAILURE;
+
+	return EXIT_SUCCESS;
+}
 
 	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
 bool run_test_init()
@@ -168,68 +182,6 @@ bool run_test_operator_equal_T()
 	return EXIT_SUCCESS;
 }
 
-
-namespace test_helper
-{
-	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
-		struct create
-		{
-			T* operator()(unsigned int N);
-		};
-
-	template<typename T, MATools::MAGPU::GPU_TYPE GT>
-		struct create<T, MATools::MAGPU::MEM_MODE::CPU, GT>
-		{
-			T* operator()(unsigned int N)
-			{
-				T* ret;
-				ret = new T[N];
-				return ret;
-			}
-		};
-
-	template<typename T>
-		struct create<T, MATools::MAGPU::MEM_MODE::GPU, MATools::MAGPU::GPU_TYPE::SERIAL>
-		{
-			T* operator()(unsigned int N)
-			{
-				T* ret;
-				ret = new T[N];
-				return ret;
-			}
-		};
-
-	template<typename T>
-		struct create<T, MATools::MAGPU::MEM_MODE::GPU, MATools::MAGPU::GPU_TYPE::CUDA>
-		{
-			T* operator()(unsigned int N)
-			{
-				T* ret;
-				cudaMalloc(&ret,N*sizeof(T));
-				return ret;
-			}
-		};
-
-
-	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
-		struct destroy
-		{
-			void operator()(T* ret)
-			{
-				delete ret;
-			}
-		};
-
-	template<typename T>
-		struct destroy<T, MATools::MAGPU::MEM_MODE::GPU, MATools::MAGPU::GPU_TYPE::CUDA>
-		{
-			void operator()(T* ret)
-			{
-				cudaFree(ret);
-			}
-		};
-}
-
 	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
 bool run_test_aliasing()
 {
@@ -300,11 +252,9 @@ bool run_test_get_size()
 	return EXIT_FAILURE;
 }
 
-
-
-
-
 #define PRINT(X) #X
+
+//////////////////////// MACRO TYPE MEMORY AND GPU //////////////////////////////////
 
 #define MY_TEST_CASE(NAME,TYPE,MEMORY,GPUTYPE) TEST_CASE( PRINT(test_[NAME]_[TYPE]_[MEMORY]_[GPUTYPE]),"[MAGPU]") \
 {\
@@ -312,7 +262,6 @@ bool run_test_get_size()
 	bool success = run_test_##NAME <TYPE, MEMORY, GPUTYPE>();\
 	REQUIRE(success ==  EXIT_SUCCESS);\
 };\
-
 
 #define serial_TESTS(NAME,TYPE,MEMORY) MY_TEST_CASE(NAME, TYPE, MEMORY, MATools::MAGPU::GPU_TYPE::SERIAL)
 
@@ -346,6 +295,40 @@ bool run_test_get_size()
 #define SUPER_TEST_CASE(X) TYPE_TEST_CASE(X)
 
 
+//////////////////////// MACRO TYPE AND GPU //////////////////////////////////
+
+#define MY_LIGHT_TEST_CASE(NAME,TYPE,GPUTYPE) TEST_CASE( PRINT(test_[TYPE]_[NAME]_[GPUTYPE]),"[MAGPU]") \
+{\
+	using namespace MATools::MAGPU;\
+	bool success = run_test_##NAME <TYPE, GPUTYPE>();\
+	REQUIRE(success ==  EXIT_SUCCESS);\
+};\
+
+
+#define serial_LIGHT_TESTS(NAME,TYPE) MY_LIGHT_TEST_CASE(NAME, TYPE, MATools::MAGPU::GPU_TYPE::SERIAL)
+
+#ifdef __CUDA__
+#define cuda_LIGHT_TESTS(NAME,TYPE) MY_LIGHT_TEST_CASE(NAME, TYPE, MATools::MAGPU::GPU_TYPE::CUDA)
+#else
+#define cuda_LIGHT_TESTS(NAME,TYPE)
+#endif
+
+#ifdef __KOKKOS__
+#define kokkos_LIGHT_TESTS(NAME,TYPE) MY_LIGHT_TEST_CASE(NAME, TYPE, MATools::MAGPU::GPU_TYPE::KOKKOS)
+#else
+#define kokkos_LIGHT_TESTS(NAME,TYPE)
+#endif
+
+
+#define GPU_LIGHT_TEST_CASE(NAME,TYPE) serial_LIGHT_TESTS(NAME,TYPE)\
+	cuda_LIGHT_TESTS(NAME,TYPE)\
+	kokkos_LIGHT_TESTS(NAME,TYPE)
+
+#define TYPE_GPU_TEST_CASE(NAME) \
+	GPU_LIGHT_TEST_CASE(NAME,int)\
+	GPU_LIGHT_TEST_CASE(NAME,float)\
+	GPU_LIGHT_TEST_CASE(NAME,double)
+
 // Test case is a single test that you run
 // You give it a name/description and also you give it some tags.
 TEST_CASE("Testing framework is working fine", "[Catch2]")
@@ -357,9 +340,12 @@ TEST_CASE("Testing framework is working fine", "[Catch2]")
 
 SUPER_TEST_CASE(default_constructor);
 SUPER_TEST_CASE(init);
+SUPER_TEST_CASE(get_memory_mode);
 SUPER_TEST_CASE(resize);
 SUPER_TEST_CASE(fill);
 SUPER_TEST_CASE(operator_equal_T);
 SUPER_TEST_CASE(aliasing);
 SUPER_TEST_CASE(get_size);
 
+
+#include <test_MAGPUFunctor.cpp>
