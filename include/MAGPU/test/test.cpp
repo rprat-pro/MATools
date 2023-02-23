@@ -349,3 +349,4 @@ SUPER_TEST_CASE(get_size);
 
 
 #include <test_MAGPUFunctor.cpp>
+#include <test_MAGPURunner.cpp>

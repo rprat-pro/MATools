@@ -44,6 +44,16 @@ namespace MATools
 				a[idx] = b;
 			}
 
+			
+			template<typename T>
+			void add_sub_mult_div(unsigned int idx, T* const a, const T* const b)
+			{
+				add(idx, a, b);
+				sub(idx, a, b);
+				mult(idx, a, b);
+				div(idx, a, b);
+			}
+
 			template<GPU_TYPE GT, typename Functor> 
 				MAGPUFunctor<Functor, GT> create_functor(Functor& a_functor, std::string a_name = "default_name")
 				{

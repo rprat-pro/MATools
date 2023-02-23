@@ -19,3 +19,16 @@ catch_discover_tests(MyLibTests)
 
 add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}
                   DEPENDS MyLibTests)
+
+
+
+include(../cmake/modules/tfel.cmake)
+function(add_tfel exe)
+  target_include_directories(${exe} PUBLIC ${TFEL_INCLUDE_PATH} ${MAGPU_HEADERS})
+  target_link_directories(${exe} PUBLIC ${TFEL_LIBRARY_PATH})
+  target_link_libraries(${exe} TFELException MAGPU)
+endfunction()
+add_executable(elasticity main_elasticity.cpp)
+add_tfel(elasticity)
+
+add_test(NAME mfront_elasticity COMMAND elasticity)

@@ -268,6 +268,10 @@ namespace MATools
 					return false;
 				}
 
+				/**
+				 * @brief Copies the data in a new vector depending on the memory mode. Note that if you are using BOTH mode, this function return the data stored in the device memory. If you want to copy the data stored in the host memory, you need to use the function copy_to_vector_from_host directly.
+				 * @return a std::vector with a copy of the data
+				 */
 				std::vector<T> copy_to_vector()
 				{
 					GPU_WORLD(MODE)
@@ -280,6 +284,8 @@ namespace MATools
 						return this->copy_to_vector_from_host();
 					}
 				}
+
+
 
 				/** 
 				 * @brief Gets memory mode

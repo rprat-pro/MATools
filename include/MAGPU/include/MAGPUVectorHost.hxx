@@ -108,6 +108,7 @@ namespace MATools
 					}
 
 
+				public:
 					std::vector<T> copy_to_vector_from_host()
 					{
 						std::vector<T> ret;

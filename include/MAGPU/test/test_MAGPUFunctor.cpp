@@ -28,14 +28,62 @@ bool run_test_functor_empty()
 }
 
 	template<typename T, MATools::MAGPU::MEM_MODE MM, MATools::MAGPU::GPU_TYPE GT>
-bool run_test_functor_add()
+bool run_test_functor_add_sub_mul_div()
 {
 	using namespace MATools::MAGPU;
-	constexpr auto my_func = Ker::add<T>;
-	auto functor = Ker::create_functor<GT> (my_func, "add"); 
+	auto tmp_add = Ker::add<T>;
+	auto tmp_sub = Ker::sub<T>;
+	auto tmp_mul = Ker::mult<T>;
+	auto tmp_div = Ker::div<T>;
+	auto my_add = Ker::create_functor<GT> (tmp_add, "add"); 
+	auto my_sub = Ker::create_functor<GT> (tmp_sub, "sub"); 
+	auto my_mul = Ker::create_functor<GT> (tmp_mul, "mul"); 
+	auto my_div = Ker::create_functor<GT> (tmp_div, "div"); 
 
 	if(MM == MATools::MAGPU::MEM_MODE::BOTH)
 	{
+		constexpr MEM_MODE MG = MEM_MODE::GPU;	
+		constexpr MEM_MODE MC = MEM_MODE::CPU;	
+		constexpr T value = 4;
+		constexpr int idx = 0;
+
+		// host
+		test_helper::create<T,MC,GT> h_allocator;
+		test_helper::destroy<T,MC,GT> h_destructor;
+		test_helper::copier<T,MC,GT> h_copy ;
+		test_helper::mini_runner<MC,GT> h_launcher;
+
+		T* h_two = h_allocator(2,1);
+		T* h_res = h_allocator(value,1);
+
+		h_launcher(my_add, idx, h_res, h_two);
+		h_launcher(my_sub, idx, h_res, h_two);
+		h_launcher(my_mul, idx, h_res, h_two);
+		h_launcher(my_div, idx, h_res, h_two);
+
+		std::vector<T> host_res(1,0);
+		h_copy(host_res.data(), h_res, 1);
+
+		// device
+		test_helper::create<T,MG,GT> d_allocator;
+		test_helper::destroy<T,MG,GT> d_destructor;
+		test_helper::copier<T,MG,GT> d_copy ;
+		test_helper::mini_runner<MG,GT> d_launcher;
+
+		T* d_two = d_allocator(2,1);
+		T* d_res = d_allocator(value,1);
+
+		d_launcher(my_add, idx, d_res, d_two);
+		d_launcher(my_sub, idx, d_res, d_two);
+		d_launcher(my_mul, idx, d_res, d_two);
+		d_launcher(my_div, idx, d_res, d_two);
+
+		std::vector<T> devi_res(1,0);
+		d_copy(devi_res.data(), d_res, 1);
+
+		// check
+		if(host_res[0] != value) return EXIT_FAILURE;
+		if(devi_res[0] != value) return EXIT_FAILURE;
 	}
 	else
 	{
@@ -43,7 +91,9 @@ bool run_test_functor_add()
 		test_helper::destroy<T,MM,GT> destructor;
 		test_helper::copier<T,MM,GT> _copy ;
 		T* two = allocator(2,1);
-		T* res = allocator(1,1);
+
+		T value = 4;
+		T* res = allocator(value,1);
 
 		assert(two != nullptr);
 		assert(res != nullptr);
@@ -51,13 +101,16 @@ bool run_test_functor_add()
 		test_helper::mini_runner<MM,GT> launcher;
 
 		int idx = 0;
-	  launcher(functor, idx, res, two);
+		launcher(my_add, idx, res, two);
+		launcher(my_sub, idx, res, two);
+		launcher(my_mul, idx, res, two);
+		launcher(my_div, idx, res, two);
 
 		std::vector<T> host(1,0);
 
 		_copy(host.data(), res, 1);
 
-		if(host[0] != 3)
+		if(host[0] != value)
 		{
 			std::cout << " error, host should be equal to 3, host = " << host[0] << std::endl;
 			destructor(two);
@@ -73,4 +126,4 @@ bool run_test_functor_add()
 
 TYPE_GPU_TEST_CASE(create_functor);
 TYPE_GPU_TEST_CASE(functor_empty);
-SUPER_TEST_CASE(functor_add);
+SUPER_TEST_CASE(functor_add_sub_mul_div);

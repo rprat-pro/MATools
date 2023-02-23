@@ -57,7 +57,4 @@ else()
 target_link_libraries(magpu PUBLIC MAGPU)
 endif()
 
-
-
-
 add_subdirectory(test)
