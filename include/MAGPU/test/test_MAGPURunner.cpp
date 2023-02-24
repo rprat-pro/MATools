@@ -18,7 +18,7 @@ bool run_test_runner_with_MAGPUVector_MAGPUFunctor()
 	vec1.init(1.0, n);
 	vec2.init(2.0, n);
 
-	auto add_kernel = [](unsigned int idx, T* const out, T* const in1, T* const in2, T val )
+	auto add_kernel = [] __host__ __device__ (unsigned int idx, T* const out, T* const in1, T* const in2, T val ) -> void
 	{
 		out[idx] = in1[idx] + in2[idx] + val;
 	};
@@ -79,7 +79,7 @@ bool run_test_runner_full_test()
 	res.init(0.0, n);
 	vec2.init(2.0, n);
 
-	auto kernel_add_sub_mul_div = Ker::add_sub_mult_div;
+	auto kernel_add_sub_mul_div = Ker::add_sub_mult_div<T>;
 	auto my_kernel = Ker::create_functor<GT>(kernel_add_sub_mul_div, "full"); 
 
 

@@ -129,7 +129,7 @@ namespace MATools
 					 */
 					void gpu_aliasing(T* a_ptr, unsigned int a_size)
 					{
-						m_device = std::shared_ptr<T>(a_ptr, [](T* a_in) {cudaFree(a_in);});
+						m_device = std::shared_ptr<T>(a_ptr, [](T* a_in) {});
 					}
 
 					/**

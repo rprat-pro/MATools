@@ -72,7 +72,7 @@ namespace MATools
 				 */
 				template<typename... Args>
 					__host__ __device__
-					void operator()(unsigned int a_idx, Args...&& a_args)
+					void operator()(unsigned int a_idx, Args&&... a_args)
 					{
 						m_kernel(a_idx, std::forward<Args>(a_args)...);
 					}
@@ -93,7 +93,7 @@ namespace MATools
 				 */
 				GPU_TYPE get_gpu_type()
 				{
-					GPU_TYPE ret = GPU_TYPE::SERIAL;
+					GPU_TYPE ret = GPU_TYPE::CUDA;
 					return ret;
 				}
 
