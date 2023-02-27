@@ -35,9 +35,14 @@ target_include_directories(${exe} PUBLIC ${TFEL_INCLUDE_PATH} ${MAGPU_HEADERS})
 target_link_directories(${exe} PUBLIC ${TFEL_LIBRARY_PATH})
 target_link_libraries(${exe} TFELException MAGPU)
   endif()
-  endfunction()
-add_executable(elasticity elasticity.cxx)
+endfunction()
 
-add_tfel(elasticity)
-
+  add_executable(elasticity elasticity.cxx)
+  add_tfel(elasticity)
 add_test(NAME mfront_elasticity COMMAND elasticity)
+
+  add_executable(elasticity_v2 elasticity_v2.cxx)
+  add_tfel(elasticity_v2)
+add_test(NAME mfront_elasticity_v2 COMMAND elasticity_v2)
+
+

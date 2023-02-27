@@ -8,6 +8,20 @@
 #define MAGPU_DECORATION
 #endif
 
+#define DEFINE_KERNEL(NAME) MAGPU_DECORATION\
+  void kernel_##NAME 
+
+#define END_KERNEL(NAME) struct functor_##NAME {\
+  template<typename... Args>\
+  MAGPU_DECORATION\
+  void operator() (Args&&... a_args) const\
+  {\
+    kernel_##NAME(std::forward<Args>(a_args)...);\
+  };\
+};\
+const functor_##NAME NAME;
+
+
 namespace MATools
 {
   namespace MAGPU
@@ -15,57 +29,59 @@ namespace MATools
     namespace Ker
     {
       template<typename T>
-	MAGPU_DECORATION
-	void reset(unsigned int idx, T* const out)
-	{
-	  out[idx] = 0;
-	}
+        DEFINE_KERNEL(resetF)(unsigned int idx, T* const out)
+        { 
+          out[idx] = 0; 
+        }
+      END_KERNEL(resetF)
+
 
       template<typename T>
-	MAGPU_DECORATION
-	void add(unsigned int idx, T* const a, const T* const b)
+	DEFINE_KERNEL(addF)(unsigned int idx, T* const a, const T* const b)
 	{
 	  a[idx] += b[idx];
-	}	
+	}
+      END_KERNEL(addF)
 
       template<typename T>
-	MAGPU_DECORATION
-	void sub(unsigned int idx, T* const a, const T* const b)
+	DEFINE_KERNEL(subF)(unsigned int idx, T* const a, const T* const b)
 	{
 	  a[idx] -= b[idx];
 	}
+      END_KERNEL(subF)
 
       template<typename T>
-	MAGPU_DECORATION
-	void mult(unsigned int idx, T* const a, const T* const b)
+	DEFINE_KERNEL(multF)(unsigned int idx, T* const a, const T* const b)
 	{
 	  a[idx] *= b[idx];
 	}
+      END_KERNEL(multF)
 
       template<typename T>
-	MAGPU_DECORATION
-	void div(unsigned int idx, T* const a, const T* const b)
+	DEFINE_KERNEL(divF)(unsigned int idx, T* const a, const T* const b)
 	{
 	  a[idx] /= b[idx];
 	}
+      END_KERNEL(divF)
+
 
       template<typename T>
-	MAGPU_DECORATION
-	void fill(unsigned int idx, T* const a, const T& b)
+	DEFINE_KERNEL(fillF)(unsigned int idx, T* const a, const T& b)
 	{
 	  a[idx] = b;
 	}
+      END_KERNEL(fillF)
 
 
       template<typename T>
-	MAGPU_DECORATION
-	void add_sub_mult_div(unsigned int idx, T* const a, const T* const b)
+	DEFINE_KERNEL(add_sub_mult_divF)(unsigned int idx, T* const a, const T* const b)
 	{
-	  add<T>(idx, a, b);
-	  sub<T>(idx, a, b);
-	  mult<T>(idx, a, b);
-	  div<T>(idx, a, b);
+	  addF(idx, a, b);
+	  subF(idx, a, b);
+	  multF(idx, a, b);
+	  divF(idx, a, b);
 	}
+      END_KERNEL(add_sub_mult_divF)
 
       template<GPU_TYPE GT, typename Functor> 
 	MAGPUFunctor<Functor, GT> create_functor(Functor& a_functor, std::string a_name = "default_name")

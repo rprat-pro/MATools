@@ -8,10 +8,8 @@
 bool run_test_create_functor()
 {
   using namespace MATools::MAGPU;
-  constexpr auto my_func = Ker::reset<T>;
+  constexpr auto my_func = Ker::resetF;
   auto functor = Ker::create_functor<GT> (my_func, "reset"); 
-
-
   if(functor.get_name() != "reset") return EXIT_FAILURE;
   return EXIT_SUCCESS;
 }
@@ -21,7 +19,7 @@ bool run_test_functor_empty()
 {
   using namespace MATools::MAGPU;
   constexpr auto empty_function = [](unsigned int idx) {} ;
-  MAGPUFunctor<decltype(empty_function), MATools::MAGPU::GPU_TYPE::SERIAL> my_functor(empty_function);
+  MAGPUFunctor<decltype(empty_function), GT> my_functor(empty_function);
   my_functor(123456789);
   if(my_functor.get_name() != "default_name") return EXIT_FAILURE;
   return EXIT_SUCCESS;
@@ -32,14 +30,10 @@ bool run_test_functor_add_sub_mul_div()
 {
   using namespace MATools::MAGPU;
   std::cout << MM << " -- " << GT << std::endl;
-  auto tmp_add = Ker::add<T>;
-  auto tmp_sub = Ker::sub<T>;
-  auto tmp_mul = Ker::mult<T>;
-  auto tmp_div = Ker::div<T>;
-  auto my_add = Ker::create_functor<GT> (tmp_add, "add"); 
-  auto my_sub = Ker::create_functor<GT> (tmp_sub, "sub"); 
-  auto my_mul = Ker::create_functor<GT> (tmp_mul, "mul"); 
-  auto my_div = Ker::create_functor<GT> (tmp_div, "div"); 
+  auto my_add = Ker::create_functor<GT> (Ker::addF, "add"); 
+  auto my_sub = Ker::create_functor<GT> (Ker::subF, "sub"); 
+  auto my_mul = Ker::create_functor<GT> (Ker::multF, "mul"); 
+  auto my_div = Ker::create_functor<GT> (Ker::divF, "div"); 
 
   if(MM == MATools::MAGPU::MEM_MODE::BOTH)
   {
@@ -107,24 +101,20 @@ bool run_test_functor_add_sub_mul_div()
     // define runner
     test_helper::mini_runner<MM,GT> launcher;
 
-    cudaDeviceSynchronize();
     // run
     int idx = 0;
     launcher(my_add, idx, res, two);
-    //    launcher(my_add, idx, res, two);
-    //    launcher(my_sub, idx, res, two);
-    //    launcher(my_mul, idx, res, two);
-    //    launcher(my_div, idx, res, two);	
+    launcher(my_sub, idx, res, two);
+    launcher(my_mul, idx, res, two);
+    launcher(my_div, idx, res, two);	
 
     // check results : res = ( ( value + 2 - 2 ) * 2 ) / 2 = value
     std::vector<T> host(1,666);
     T* rawPtr = host.data();
 
-    cudaDeviceSynchronize();
     _copy(rawPtr, res, 1);
 
-    cudaDeviceSynchronize();
-    if(host[0] != value + 2)
+    if(host[0] != value)
     {
       std::cout << " error, host should be equal to 4, host = " << host[0] << std::endl;
       destructor(two);
