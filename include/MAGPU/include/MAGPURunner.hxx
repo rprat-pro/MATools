@@ -74,12 +74,6 @@ namespace MATools
 	return a_data[a_idx];
       }
 
-
-    template<typename Functor, typename... Args>
-      void tmp(const Functor& a_functor, Args&&... a_args)
-      {
-	a_functor.launch_test(a_args...);
-      }
     /**
      * @brief Function that iterates from 0 to a_size over elements. The functor doesn't know the value of idx (the shift).
      * @param [in] a_functor is the functor applied for all elements
@@ -90,8 +84,7 @@ namespace MATools
       void host_launcher_test(const Functor& a_functor, size_t a_size, Args&&... a_args)
       {
 	for(size_t idx = 0 ; idx < a_size ; idx++)
-	  a_functor(eval_data(idx, a_args)...);
-	  //tmp(a_functor, eval_data(idx, a_args)...);
+	  a_functor.launch_test(eval_data(idx, a_args)...);
       }
 
 
@@ -146,11 +139,6 @@ namespace MATools
 	  }
       };
 
-	template<typename Functor, typename... Args>
-	  void launcher_test(Functor& a_functor, unsigned int a_size, Args&&... a_args)
-	  {
-	    host_launcher_test(a_functor, a_size,  get_data<GPU>(a_args)...); 
-	  }
 
     template<>
       struct MAGPURunner<MEM_MODE::GPU, GPU_TYPE::SERIAL>
@@ -185,6 +173,11 @@ namespace MATools
 	 * @param [in] a_size is the number of elements
 	 * @param [inout] a_args are the parameters of the functor
 	 */
+	template<typename Functor, typename... Args>
+	  void launcher_test(Functor& a_functor, unsigned int a_size, Args&&... a_args)
+	  {
+	    host_launcher_test(a_functor, a_size,  get_data<GPU>(a_args)...); 
+	  }
 
       };
 

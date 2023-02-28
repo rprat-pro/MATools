@@ -16,7 +16,7 @@
 template<typename Stensor, typename T>
 DEFINE_KERNEL(elasticity_version3)(
     Stensor& a_sig, const Stensor& a_eto, const Stensor& a_deto, 
-    const T a_lambda, const T a_mu, const unsigned short a_s, const Stensor& a_id)
+    const T& a_lambda, const T& a_mu, const unsigned short a_s, const Stensor& a_id)
 {
   const auto& e = a_eto + a_deto;
   a_sig = a_lambda * (e(0)+e(1)+e(2)) * a_id + 2 * a_mu * e;
@@ -29,7 +29,7 @@ using namespace tfel::math;
 bool run_test_elasticity_version3()
 {
   using namespace MATools::MAGPU;
-  using template_value = double; // remplace typename T
+  using template_value = double; // replace typename T
   constexpr bool use_qt = false;
   using real = std::conditional_t<use_qt, qt<NoUnit, template_value>, template_value>;
   using stress = std::conditional_t<use_qt, qt<Stress, template_value>, template_value>;
@@ -45,7 +45,7 @@ bool run_test_elasticity_version3()
 
   // MAGPU stuff
   auto functor = Ker::create_functor<GT> (elasticity_version3, "elasticity_v3");
-  const MAGPURunner<MODE, GT> runner;
+  MAGPURunner<MODE, GT> runner;
 
   // init problem
   constexpr int size = 1000;
@@ -58,8 +58,7 @@ bool run_test_elasticity_version3()
   deto.init(stensor<N, T>(2.0), size);
 
   // run kernel
-  //runner.launcher_test(functor, size, sig, eto, deto, lambda, mu, s, id);	
-  launcher_test(functor, size, sig, eto, deto, lambda, mu, s, id);	
+  runner.launcher_test(functor, size, sig, eto, deto, lambda, mu, s, id);	
 
   // check
   std::vector<stensor<N,T>> host = sig.copy_to_vector();

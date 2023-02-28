@@ -32,7 +32,16 @@ namespace MATools
 	  }
 
 	/**
-	 * @brief apply m_kernel on the idx ieme element
+	 * @brief apply m_kernel
+	 */
+	template<typename... Args>
+	  void launch_test(Args&&... a_args)
+	  {
+	    m_kernel(std::forward<Args>(a_args)...);
+	  }
+
+	/**
+	 * @brief apply m_kernel 
 	 */
 	template<typename... Args>
 	  void launch_test(Args&&... a_args) const
