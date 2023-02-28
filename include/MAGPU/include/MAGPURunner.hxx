@@ -1,6 +1,7 @@
 #pragma once
 
 #include <MAGPUVector.hxx>
+#include <MAGPUDefineMacros.hxx>
 
 namespace MATools
 {
@@ -48,6 +49,53 @@ namespace MATools
       }
 
     /**
+     * @brief Gets object if the object is not a pointer
+     * @param [in] a_idx not used if the object is not a pointer 
+     * @param [in] a_data is the object returned 
+     * @return the object a_data declared as parameter
+     */
+    template<typename T>
+      MAGPU_DECORATION
+      T&& eval_data(size_t a_idx, T&& a_data)
+      {
+	return a_data;
+      }
+
+    /**
+     * @brief Gets the reference on the idx-ieme object
+     * @param [in] a_idx is the shift on a_data
+     * @param [in] a_data is a pointer
+     * @return the object a_data[a_idx]
+     */
+    template<typename T>
+      MAGPU_DECORATION
+      T& eval_data(size_t a_idx, T* const a_data)
+      {
+	return a_data[a_idx];
+      }
+
+
+    template<typename Functor, typename... Args>
+      void tmp(const Functor& a_functor, Args&&... a_args)
+      {
+	a_functor.launch_test(a_args...);
+      }
+    /**
+     * @brief Function that iterates from 0 to a_size over elements. The functor doesn't know the value of idx (the shift).
+     * @param [in] a_functor is the functor applied for all elements
+     * @param [in] a_size is the number of elements
+     * @param [inout] a_args are the parameters of the functor
+     */
+    template<typename Functor, typename... Args>
+      void host_launcher_test(const Functor& a_functor, size_t a_size, Args&&... a_args)
+      {
+	for(size_t idx = 0 ; idx < a_size ; idx++)
+	  a_functor(eval_data(idx, a_args)...);
+	  //tmp(a_functor, eval_data(idx, a_args)...);
+      }
+
+
+    /**
      * @brief Non-specialized version of the MAGPURunner class, this class is used to launch a functor on the CPU or GPU depending on the gpu parallelization type.
      *	It's possible to not used MAGPUFunctor and MAGPUVector even if it's designed to use it.	 
      */
@@ -73,12 +121,36 @@ namespace MATools
 	      a_functor(it, a_args...);
 	  }
 
+	/**
+	 * @brief This operator is a FORALL function that iterates over the elements of vector(s) (a_args). 
+	 * @param [in] a_functor is the functor applied for all elements
+	 * @param [in] a_size is the number of elements
+	 * @param [inout] a_args are the parameters of the functor
+	 */
 	template<typename Functor, typename... Args>
 	  void operator()(Functor& a_functor, unsigned int a_size, Args&&... a_args)
 	  {
 	    host(a_functor, a_size,  get_data<MEM_MODE::CPU>(a_args)...);
 	  }
+
+	/**
+	 * @brief test launcher is a FORALL function that iterates over the elements of vectors. The functor doesn't know the value of idx (the shift).
+	 * @param [in] a_functor is the functor applied for all elements
+	 * @param [in] a_size is the number of elements
+	 * @param [inout] a_args are the parameters of the functor
+	 */
+	template<typename Functor, typename... Args>
+	  void launcher_test(Functor& a_functor, unsigned int a_size, Args&&... a_args)
+	  {
+	    host_launcher_test(a_functor, a_size,  get_data<MEM_MODE::CPU>(a_args)...);
+	  }
       };
+
+	template<typename Functor, typename... Args>
+	  void launcher_test(Functor& a_functor, unsigned int a_size, Args&&... a_args)
+	  {
+	    host_launcher_test(a_functor, a_size,  get_data<GPU>(a_args)...); 
+	  }
 
     template<>
       struct MAGPURunner<MEM_MODE::GPU, GPU_TYPE::SERIAL>
@@ -95,11 +167,25 @@ namespace MATools
 	  }
 
 
+	/**
+	 * @brief This operator is a FORALL function that iterates over the elements of vector(s) (a_args). 
+	 * @param [in] a_functor is the functor applied for all elements
+	 * @param [in] a_size is the number of elements
+	 * @param [inout] a_args are the parameters of the functor
+	 */
 	template<typename Functor, typename... Args>
 	  void operator()(Functor& a_functor, unsigned int a_size, Args&&... a_args)
 	  {
 	    serial(a_functor, a_size,  get_data<MEM_MODE::GPU>(a_args)...);
 	  }
+
+	/**
+	 * @brief test launcher is a FORALL function that iterates over the elements of vectors. The functor doesn't know the value of idx (the shift).
+	 * @param [in] a_functor is the functor applied for all elements
+	 * @param [in] a_size is the number of elements
+	 * @param [inout] a_args are the parameters of the functor
+	 */
+
       };
 
 #ifdef __CUDA__
@@ -141,10 +227,19 @@ namespace MATools
 	  a_functor(idx, a_args...);
       }
 
+
+    template<typename Functor, typename... Args>
+      __global__
+      void cuda_launcher_test(Functor a_functor, size_t a_size, Args... a_args)
+      {
+	unsigned int idx = blockDim.x * blockIdx.x + threadIdx.x;
+	if(idx < a_size)
+	  a_functor(eval_data(idx, a_args)...);
+      }
+
     template<>
       struct MAGPURunner<MEM_MODE::GPU, GPU_TYPE::CUDA>
       {
-
 	// CUDA STUFF
 	const size_t cudaThreads = 256;
 
@@ -159,18 +254,44 @@ namespace MATools
 	  }
 	}
 
-
+	/**
+	 * @brief This operator is a FORALL function that iterates over the elements of vector(s) (a_args). 
+	 * @param [in] a_functor is the functor applied for all elements
+	 * @param [in] a_size is the number of elements
+	 * @param [inout] a_args are the parameters of the functor
+	 */
 	template<typename Functor, typename... Args>
 	  void operator()(Functor& a_functor, unsigned int a_size, Args&&... a_args)
 	  {
+	    // cuda stuff
 	    auto stream = get_cuda_stream(std::forward<Args>(a_args)...);  // TODO : currently it returns the default stream
 	    const size_t cudaBlocks = (a_size + cudaThreads - 1) / cudaThreads;
 #ifdef __VERBOSE_LAUNCHER
 	    std::cout << " CUDA: " << a_functor.get_name() << std::endl;
 	    std::cout << " stats - blocks:" << cudaBlocks << " - threads: " << cudaThreads << " - number of elements: " << a_size << std::endl;
 #endif
-
+	    //launcher
 	    cuda_launcher<<<cudaBlocks, cudaThreads, 0, stream>>> (a_functor, a_size, get_data<MEM_MODE::GPU>(a_args)...);
+	  }
+
+	/**
+	 * @brief test launcher is a FORALL function that iterates over the elements of vectors. The functor doesn't know the value of idx (the shift).
+	 * @param [in] a_functor is the functor applied for all elements
+	 * @param [in] a_size is the number of elements
+	 * @param [inout] a_args are the parameters of the functor
+	 */
+	template<typename Functor, typename... Args>
+	  void launcher_test(Functor& a_functor, unsigned int a_size, Args&&... a_args)
+	  {
+	    // cuda stuff
+	    auto stream = get_cuda_stream(std::forward<Args>(a_args)...);  // TODO : currently it returns the default stream
+	    const size_t cudaBlocks = (a_size + cudaThreads - 1) / cudaThreads;
+#ifdef __VERBOSE_LAUNCHER
+	    std::cout << " CUDA: " << a_functor.get_name() << std::endl;
+	    std::cout << " stats - blocks:" << cudaBlocks << " - threads: " << cudaThreads << " - number of elements: " << a_size << std::endl;
+#endif
+	    //launcher
+	    cuda_launcher_test<<<cudaBlocks, cudaThreads, 0, stream>>> (a_functor, a_size, get_data<MEM_MODE::GPU>(a_args)...);
 	  }
       };
 #endif //__CUDA__

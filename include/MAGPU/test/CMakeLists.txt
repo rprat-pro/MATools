@@ -45,4 +45,7 @@ add_test(NAME mfront_elasticity COMMAND elasticity)
   add_tfel(elasticity_v2)
 add_test(NAME mfront_elasticity_v2 COMMAND elasticity_v2)
 
+  add_executable(elasticity_v3 elasticity_v3.cxx)
+  add_tfel(elasticity_v3)
+add_test(NAME mfront_elasticity_v3 COMMAND elasticity_v3)
 
