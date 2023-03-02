@@ -96,6 +96,16 @@ namespace MATools
 	  }
 
 	/**
+	 * @brief apply m_kernel 
+	 */
+	template<typename... Args>
+	  __host__ __device__
+	  void launch_test(Args&&... a_args) const
+	  {
+	    m_kernel(std::forward<Args>(a_args)...);
+	  }
+
+	/**
 	 * @brief Gets name
 	 * @return current name
 	 */

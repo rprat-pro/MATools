@@ -30,5 +30,10 @@ namespace MATools
 			GPU,
 			BOTH
 		};
+
+		/* some renames */
+		constexpr auto mem_cpu = MATools::MAGPU::MEM_MODE::CPU;
+		constexpr auto mem_gpu = MATools::MAGPU::MEM_MODE::GPU;
+		constexpr auto mem_cpu_and_gpu = MATools::MAGPU::MEM_MODE::BOTH;
 	}
 }

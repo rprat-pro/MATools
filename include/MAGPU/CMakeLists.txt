@@ -7,6 +7,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 option(CUDA_OPTION "active MAGPUVector with cuda" ON)
 option(KOKKOS_OPTION "active MAGPUVector with kokkos" OFF)
+option(VERBOSE_OPTION "help for verbose" ON)
+
+if(VERBOSE_OPTION)
+	add_compile_options(-D__VERBOSE_MAGPU)
+endif()
 
 if (CUDA_OPTION)
 	# set the project name and version
@@ -57,4 +62,5 @@ else()
 target_link_libraries(magpu PUBLIC MAGPU)
 endif()
 
+add_subdirectory(examples)
 add_subdirectory(test)

@@ -90,29 +90,40 @@ namespace MATools
 
 					void gpu_resize(unsigned int a_size)
 					{
-						if(m_device_size > a_size)
+						if(m_device_size > a_size) /* */
 						{
 							m_device_size = a_size;
 						}
-						else{
-							T * new_ptr = new double [a_size];
-							std::copy (m_device_data, m_device_data + m_device_size, new_ptr);
-							delete m_device_data;
-							m_device_data = new_ptr;
-							m_device_size = a_size;
+						else{ /* */
+							T * new_ptr = new T [a_size];
+							if(m_device_data == nullptr) // scenario : only host memory has been defined with an extern storage
+							{
+							  m_device_data = new_ptr;
+							}
+							else
+							{
+							  std::cout << " It's not possible to enlarge the memory a MAGPUVector that has already been defined" << std::endl;
+							  std::abort();
+							  /* the following code did a copy on a larger vector, this feature has beed removed */
+							  /*
+							     std::copy (m_device_data, m_device_data + m_device_size, new_ptr);
+							     delete m_device_data;
+							     m_device_data = new_ptr;
+							     m_device_size = a_size;
+							     */
+							}
 						}
 					}
 
 					void host_to_device(T* a_host, unsigned int a_size)
 					{
-
-						gpu_resize(a_size);
-						std::copy(a_host, a_host + a_size, m_device_data);
+					  gpu_resize(a_size);
+					  std::copy(a_host, a_host + a_size, m_device_data);
 					}
 
 					void device_to_host(T* a_host)
 					{
-						std::copy(m_device_data, m_device_data + m_device_size, a_host);
+					  std::copy(m_device_data, m_device_data + m_device_size, a_host);
 					}
 
 					/**
@@ -121,8 +132,8 @@ namespace MATools
 					 */
 					unsigned int get_device_size()
 					{
-						unsigned int size = m_device_size;
-						return size;
+					  unsigned int size = m_device_size;
+					  return size;
 					}
 
 					/**
@@ -131,22 +142,22 @@ namespace MATools
 					 */
 					void set_device_size(unsigned int a_size)
 					{
-						m_device_size = a_size;
+					  m_device_size = a_size;
 					}
 
 					std::vector<T> copy_to_vector_from_device()
 					{
-						std::vector<T> ret;
-						unsigned int size = get_device_size();
-						ret.resize(size);
-						device_to_host(ret.data());
-						return ret;
+					  std::vector<T> ret;
+					  unsigned int size = get_device_size();
+					  ret.resize(size);
+					  device_to_host(ret.data());
+					  return ret;
 					}
 
 				private :
 					// I can't use a std::vector because it's not possible to use alias it with a pointer
 					T* m_device_data;
 					int m_device_size;
-			};
-	};
+      };
+  };
 };

@@ -37,12 +37,12 @@ namespace MATools
 	  T* ret;
 	  if constexpr (RUNNER_MODE == MEM_MODE::CPU)
 	  {
-	    ret = a_in.get_data(0);
+	    ret = a_in.get_data(mem_cpu);
 	    return ret;
 	  }
 	  if constexpr (RUNNER_MODE == MEM_MODE::GPU)
 	  {
-	    ret = a_in.get_data(1);
+	    ret = a_in.get_data(mem_gpu);
 	    return ret;
 	  }
 	}
@@ -106,7 +106,7 @@ namespace MATools
 	template<typename Functor, typename... Args>
 	  void host(Functor& a_functor, size_t a_size, Args&&... a_args) const
 	  {
-#ifdef __VERBOSE_LAUNCHER
+#ifdef __VERBOSE_MAGPU
 	    std::cout << " HOST: " << a_functor.m_name << std::endl;
 #endif
 
@@ -227,7 +227,7 @@ namespace MATools
       {
 	unsigned int idx = blockDim.x * blockIdx.x + threadIdx.x;
 	if(idx < a_size)
-	  a_functor(eval_data(idx, a_args)...);
+	  a_functor.launch_test(eval_data(idx, a_args)...);
       }
 
     template<>
@@ -259,7 +259,7 @@ namespace MATools
 	    // cuda stuff
 	    auto stream = get_cuda_stream(std::forward<Args>(a_args)...);  // TODO : currently it returns the default stream
 	    const size_t cudaBlocks = (a_size + cudaThreads - 1) / cudaThreads;
-#ifdef __VERBOSE_LAUNCHER
+#ifdef __VERBOSE_MAGPU
 	    std::cout << " CUDA: " << a_functor.get_name() << std::endl;
 	    std::cout << " stats - blocks:" << cudaBlocks << " - threads: " << cudaThreads << " - number of elements: " << a_size << std::endl;
 #endif
@@ -279,12 +279,31 @@ namespace MATools
 	    // cuda stuff
 	    auto stream = get_cuda_stream(std::forward<Args>(a_args)...);  // TODO : currently it returns the default stream
 	    const size_t cudaBlocks = (a_size + cudaThreads - 1) / cudaThreads;
-#ifdef __VERBOSE_LAUNCHER
+#ifdef __VERBOSE_MAGPU
 	    std::cout << " CUDA: " << a_functor.get_name() << std::endl;
 	    std::cout << " stats - blocks:" << cudaBlocks << " - threads: " << cudaThreads << " - number of elements: " << a_size << std::endl;
 #endif
+
+#ifdef __VERBOSE_MAGPU
+	    cudaEvent_t cstart;
+	    cudaEvent_t cstop;
+	    cudaEventCreate(&cstart);
+	    cudaEventCreate(&cstop);
+	    cudaEventRecord(cstart);
+#endif
 	    //launcher
 	    cuda_launcher_test<<<cudaBlocks, cudaThreads, 0, stream>>> (a_functor, a_size, get_data<MEM_MODE::GPU>(a_args)...);
+
+#ifdef __VERBOSE_MAGPU
+	    cudaEventRecord(cstop);
+	    cudaDeviceSynchronize();
+	    cudaEventSynchronize(cstop);
+	    float milliseconds = 0;
+	    cudaEventElapsedTime(&milliseconds, cstart, cstop);
+	    auto seconds = milliseconds*0.001;
+	    gpuErrchk( cudaPeekAtLastError());
+	    std::cout << " " << a_functor.get_name() << "("<< a_size << ") " << ": " << a_size / seconds << " elements/s "<< std::endl;
+#endif
 	  }
       };
 #endif //__CUDA__

@@ -151,7 +151,7 @@ namespace MATools
 
 
 				/**
-				 * @brief initialize MAGPUVector with a pointer depending on the MEM_MODE. BOTH mode is forbidden.
+				 * @brief initialize a MAGPUVector with a pointer depending on the MEM_MODE. BOTH mode is forbidden.
 				 * @param[in] a_ptr pointer on the data storage
 				 */
 				void aliasing(T* a_ptr, unsigned int a_size)
@@ -164,18 +164,46 @@ namespace MATools
 				}
 
 				/**
+				 * @brief initialize a MAGPUVector with a pointer depending on the MEM_MODE defined in template. Used with Both mode
+				 * @param[in] other is defined the memory type 
+				 * @param[in] a_ptr is the pointer on the data storage
+				 * @param[in] a_size is the number of elements
+				 */
+				void define (const MEM_MODE other_mode, T* a_ptr, unsigned int a_size)
+				{
+					assert(  (MODE == MEM_MODE::BOTH) && (other_mode != MEM_MODE::BOTH) || (other_mode == MODE) );
+					if(other_mode == MEM_MODE::CPU) this->host_aliasing(a_ptr, a_size);
+					if(other_mode == MEM_MODE::GPU) this->gpu_aliasing(a_ptr, a_size);
+				}
+
+				/**
+				 * @brief Initializes a MAGPUVector with a pointer depending on the MEM_MODE defined in template and updates the other memory. Used with Both mode
+				 * @param[in] other is defined the memory type 
+				 * @param[in] a_ptr is the pointer on the data storage
+				 * @param[in] a_size is the number of elements
+				 */
+				void define_and_update(const MEM_MODE other_mode, T* a_ptr, unsigned int a_size)
+				{
+
+				  assert(  (MODE == MEM_MODE::BOTH) && (other_mode != MEM_MODE::BOTH) || (other_mode == MODE) );
+				  define(other_mode, a_ptr, a_size);
+				  if(other_mode == mem_cpu) update_device();
+				  if(other_mode == mem_gpu) update_host();
+				}
+
+				/**
 				 * @brief initialize MAGPUVector with MEM_MODE. CPU mode and GPU mode are forbidden.
 				 * @param[in] a_host_ptr pointer on the host data storage
 				 * @param[in] a_gpu_ptr pointer on the device data storage
 				 */
 				void aliasing(T* const a_host_ptr, T* const a_gpu_ptr, unsigned int a_size)
 				{
-					assert( (MODE == MEM_MODE::BOTH) && " error, this function has to be used with MEM_MODE == BOTH.");
-					assert(a_host_ptr != nullptr && "host pointer is null !");
-					assert(a_gpu_ptr != nullptr && "gpu pointer is null !");
+				  assert( (MODE == MEM_MODE::BOTH) && " error, this function has to be used with MEM_MODE == BOTH.");
+				  assert(a_host_ptr != nullptr && "host pointer is null !");
+				  assert(a_gpu_ptr != nullptr && "gpu pointer is null !");
 
-					this->host_aliasing(a_host_ptr, a_size);
-					this->gpu_aliasing(a_gpu_ptr, a_size);
+				  this->host_aliasing(a_host_ptr, a_size);
+				  this->gpu_aliasing(a_gpu_ptr, a_size);
 				}
 
 				/**
@@ -184,42 +212,42 @@ namespace MATools
 				 */ 
 				T* get_data()
 				{
-					BOTH_WORLD(MODE)
-					{
-						std::cout << "MATools_LOG: Error in get_data(), with MEM_MODE=BOTH, you need to specify which memory you need with get_data(int type), 0 = cpu and 1 = device" << std::endl;
-						std::abort();
-					}
+				  BOTH_WORLD(MODE)
+				  {
+				    std::cout << "MATools_LOG: Error in get_data(), with MEM_MODE=BOTH, you need to specify which memory you need with get_data(int type), 0 = cpu and 1 = device" << std::endl;
+				    std::abort();
+				  }
 
-					T* ret;
-					CPU_WORLD(MODE) ret = this->get_host_data();
-					GPU_WORLD(MODE) ret = this->get_device_data();
+				  T* ret;
+				  CPU_WORLD(MODE) ret = this->get_host_data();
+				  GPU_WORLD(MODE) ret = this->get_device_data();
 
-					return ret;
+				  return ret;
 				}
 
-				T* get_data(int a_type)
+				T* get_data(const MEM_MODE other_mode)
 				{
-					assert(MODE == MEM_MODE::BOTH && "BOTH MODE is needed to use get_data(int)");
-					if(a_type == 0)
-					{
-						return this->get_host_data();
-					}
-					else if (a_type == 1)
-					{
-						return this->get_device_data();
-					}
-					else
-					{
-						std::abort();
-					}
+				  assert(MODE == MEM_MODE::BOTH && "BOTH MODE is needed to use get_data(int)");
+				  if(other_mode == MEM_MODE::CPU)
+				  {
+				    return this->get_host_data();
+				  }
+				  else if (other_mode == MEM_MODE::GPU)
+				  {
+				    return this->get_device_data();
+				  }
+				  else
+				  {
+				    std::abort();
+				  }
 				}
 
-				void copy_host_to_device(T* const a_host)
+				void copy_host_to_device(T* const a_host, unsigned int a_host_size)
 				{
-					GPU_WORLD(MODE)
-					{
-						this->host_to_device(a_host);
-					}
+				  GPU_WORLD(MODE)
+				  {
+				    this->host_to_device(a_host, a_host_size);
+				  }
 				}
 
 				/**
@@ -228,44 +256,45 @@ namespace MATools
 				 */
 				bool sync()
 				{
-					bool ret = false;
-					GPU_WORLD(MODE)
-					{
-						this->gpu_sync();
-						ret = true;
-					}
-					return ret;
+				  bool ret = false;
+				  GPU_WORLD(MODE)
+				  {
+				    this->gpu_sync();
+				    ret = true;
+				  }
+				  return ret;
 				}
 
 				void copy_device_to_host(T* const a_host)
 				{
-					GPU_WORLD(MODE)
-					{
-						this->device_to_host(a_host);
-						this->gpu_sync();
-					}
+				  GPU_WORLD(MODE)
+				  {
+				    this->device_to_host(a_host);
+				    this->gpu_sync();
+				  }
 				}
 
 				bool update_device()
 				{
-					BOTH_WORLD(MODE)
-					{
-						const T* const host = this->get_host_data();
-						this->copy_host_to_device(host);
-						return true;
-					}
-					return false;
+				  BOTH_WORLD(MODE)
+				  {
+				    T* const host = this->get_host_data();
+				    const unsigned int host_size = this->get_host_size();
+				    this->copy_host_to_device(host, host_size);
+				    return true;
+				  }
+				  return false;
 				}
 
 				bool update_host()
 				{
-					BOTH_WORLD(MODE)
-					{
-						T* const host = this->get_host_data();
-						this->copy_device_to_host(host);
-						return true;
-					}
-					return false;
+				  BOTH_WORLD(MODE)
+				  {
+				    T* const host = this->get_host_data();
+				    this->copy_device_to_host(host);
+				    return true;
+				  }
+				  return false;
 				}
 
 				/**
@@ -274,15 +303,15 @@ namespace MATools
 				 */
 				std::vector<T> copy_to_vector()
 				{
-					GPU_WORLD(MODE)
-					{
-						this->gpu_sync();
-						return this->copy_to_vector_from_device();
-					}
-					else
-					{
-						return this->copy_to_vector_from_host();
-					}
+				  GPU_WORLD(MODE)
+				  {
+				    this->gpu_sync();
+				    return this->copy_to_vector_from_device();
+				  }
+				  else
+				  {
+				    return this->copy_to_vector_from_host();
+				  }
 				}
 
 
@@ -293,8 +322,8 @@ namespace MATools
 				 */
 				MEM_MODE get_memory_mode()
 				{
-					MEM_MODE ret = MODE;
-					return ret;
+				  MEM_MODE ret = MODE;
+				  return ret;
 				}
 		};
 	} // namespace MAGPU

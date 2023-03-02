@@ -4,7 +4,7 @@
 //#include "catch2/catch_all.hpp"
 #include "catch2/catch.hpp"
 
-#include<test_helper.hpp>
+#include <test_helper.hpp>
 
 #ifdef __CUDA
 #define TEST_DECORATION __host__ __device__
@@ -17,11 +17,11 @@ bool run_test_default_constructor()
   using namespace MATools::MAGPU;
   MAGPUVector<T, MM, GT> vec = MAGPUVector<T, MM, GT>();
 
-  if(MM == MATools::MAGPU::MEM_MODE::BOTH)
+  if(MM == mem_cpu_and_gpu)
   {
     auto size = vec.get_size();
-    auto host = vec.get_data(0);
-    auto devi = vec.get_data(1);
+    auto host = vec.get_data(mem_cpu);
+    auto devi = vec.get_data(mem_gpu);
 
     if(size != 0) return EXIT_FAILURE;
     if(host != nullptr) return EXIT_FAILURE;
@@ -72,9 +72,9 @@ bool run_test_init()
     }
   }
 
-  if(MM == MATools::MAGPU::MEM_MODE::BOTH)
+  if(MM == mem_cpu_and_gpu)
   {
-    auto ptr = vector_of_one.get_data(0);
+    auto ptr = vector_of_one.get_data(mem_cpu);
     for(int id = 0 ; id < N ; id++)
     {
       if(vec[id] != ptr[id])
@@ -98,10 +98,10 @@ bool run_test_resize()
   vector_of_one.resize(N);
 
   // check
-  if(MM == MATools::MAGPU::MEM_MODE::BOTH)
+  if(MM == mem_cpu_and_gpu)
   {
-    auto host_ptr = vector_of_one.get_data(0);
-    auto devi_ptr = vector_of_one.get_data(1);
+    auto host_ptr = vector_of_one.get_data(mem_cpu);
+    auto devi_ptr = vector_of_one.get_data(mem_gpu);
     if(host_ptr == nullptr || devi_ptr == nullptr) EXIT_FAILURE;
     if(host_ptr==devi_ptr) return EXIT_FAILURE;
   }
@@ -138,9 +138,9 @@ bool run_test_fill()
     }
   }
 
-  if(MM == MATools::MAGPU::MEM_MODE::BOTH)
+  if(MM == mem_cpu_and_gpu)
   {
-    auto ptr = vector_of_one.get_data(0);
+    auto ptr = vector_of_one.get_data(mem_cpu);
     for(int id = 0 ; id < N ; id++)
     {
       if(vec[id] != ptr[id])
@@ -173,9 +173,9 @@ bool run_test_operator_equal_T()
     }
   }
 
-  if(MM == MATools::MAGPU::MEM_MODE::BOTH)
+  if(MM == mem_cpu_and_gpu)
   {
-    auto ptr = vector_of_one.get_data(0);
+    auto ptr = vector_of_one.get_data(mem_cpu);
     for(int id = 0 ; id < N ; id++)
     {
       if(vec[id] != ptr[id])
@@ -211,8 +211,8 @@ bool run_test_aliasing()
     vec.aliasing(host,devi,N);
 
     // check
-    auto host_ptr = vec.get_data(0);
-    auto devi_ptr = vec.get_data(1);
+    auto host_ptr = vec.get_data(mem_cpu);
+    auto devi_ptr = vec.get_data(mem_gpu);
 
     assert(host_ptr == host);
     assert(devi_ptr == devi);
@@ -294,9 +294,9 @@ bool run_test_get_size()
   kokkos_TESTS(NAME,TYPE,MEMORY)
 
 #define MEM_TEST_CASE(NAME,TYPE) \
-  GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::CPU)\
-  GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::GPU)\
-  GPU_TEST_CASE(NAME, TYPE, MATools::MAGPU::MEM_MODE::BOTH)
+  GPU_TEST_CASE(NAME, TYPE, mem_cpu)\
+  GPU_TEST_CASE(NAME, TYPE, mem_gpu)\
+  GPU_TEST_CASE(NAME, TYPE, mem_cpu_and_gpu)
 
 
 #define TYPE_TEST_CASE(NAME) \
