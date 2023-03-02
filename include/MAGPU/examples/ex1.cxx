@@ -32,7 +32,7 @@ DEFINE_KERNEL(behavior_law)(
 {
   const auto& e = a_eto + a_deto;
   a_sig = a_lambda * (e(0)+e(1)+e(2)) * a_id + 2 * a_mu * e;
-  ex1_check(a_sig);
+  a_error = ex1_check(a_sig);
 }
 END_KERNEL(behavior_law)
 
