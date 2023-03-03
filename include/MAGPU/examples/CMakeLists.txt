@@ -1,6 +1,6 @@
 
 
-
+enable_testing()
 
   include(../cmake/modules/tfel.cmake)
   function(add_tfel exe)
