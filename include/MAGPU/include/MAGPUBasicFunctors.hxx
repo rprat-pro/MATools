@@ -64,12 +64,6 @@ namespace MATools
 	}
       END_KERNEL(add_sub_mult_divF)
 
-      template<GPU_TYPE GT, typename Functor> 
-	MAGPUFunctor<Functor, GT> create_functor(Functor& a_functor, std::string a_name = "default_name")
-	{
-	  MAGPUFunctor<Functor, GT> ret(a_functor, a_name);
-	  return ret;
-	}
 
     }
   }

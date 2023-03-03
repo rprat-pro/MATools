@@ -84,7 +84,7 @@ bool run_test_elasticity()
   deto.init(2.0, s*size);
 
   auto kernel = initElasticity<3, false, T>() ;
-  auto functor = Ker::create_functor<GT> (kernel, "elasticity");
+  auto functor = create_functor<GT> (kernel, "elasticity");
 
   MAGPURunner<MODE, GT> runner;
 

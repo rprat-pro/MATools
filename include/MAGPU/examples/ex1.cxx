@@ -60,7 +60,7 @@ bool run_example_1()
   // MAGPU stuff
   using _vector  = MAGPUVector<stensor<N, T>, mem_cpu_and_gpu, GT>;
   using _checker = MAGPUVector<bool, mem_cpu_and_gpu, GT>;
-  auto functor = Ker::create_functor<GT> (behavior_law, "behavior_law");
+  auto functor = create_functor<GT> (behavior_law, "behavior_law");
   MAGPURunner<mem_gpu, GT> runner;
 
   // init problem

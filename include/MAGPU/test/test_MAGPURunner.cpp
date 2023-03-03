@@ -79,7 +79,7 @@ bool run_test_runner_full_test()
 	res.init(0.0, n);
 	vec2.init(2.0, n);
 
-	auto my_kernel = Ker::create_functor<GT>(Ker::add_sub_mult_divF, "full"); 
+	auto my_kernel = create_functor<GT>(Ker::add_sub_mult_divF, "full"); 
 
 
 	if constexpr (MODE != MEM_MODE::BOTH)

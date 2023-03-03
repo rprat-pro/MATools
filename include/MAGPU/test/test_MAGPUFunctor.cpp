@@ -1,7 +1,8 @@
-
 #pragma once
+
 #include <MAGPUBasicFunctors.hxx>
 #include <MAGPUFunctor.hxx>
+#include <MAGPUDefineMacros.hxx>
 #include <test_helper.hpp>
 
   template<typename T, MATools::MAGPU::GPU_TYPE GT>
@@ -9,7 +10,7 @@ bool run_test_create_functor()
 {
   using namespace MATools::MAGPU;
   constexpr auto my_func = Ker::resetF;
-  auto functor = Ker::create_functor<GT> (my_func, "reset"); 
+  auto functor = create_functor<GT> (my_func, "reset"); 
   if(functor.get_name() != "reset") return EXIT_FAILURE;
   return EXIT_SUCCESS;
 }
@@ -30,10 +31,10 @@ bool run_test_functor_add_sub_mul_div()
 {
   using namespace MATools::MAGPU;
   std::cout << MM << " -- " << GT << std::endl;
-  auto my_add = Ker::create_functor<GT> (Ker::addF, "add"); 
-  auto my_sub = Ker::create_functor<GT> (Ker::subF, "sub"); 
-  auto my_mul = Ker::create_functor<GT> (Ker::multF, "mul"); 
-  auto my_div = Ker::create_functor<GT> (Ker::divF, "div"); 
+  auto my_add = create_functor<GT> (Ker::addF, "add"); 
+  auto my_sub = create_functor<GT> (Ker::subF, "sub"); 
+  auto my_mul = create_functor<GT> (Ker::multF, "mul"); 
+  auto my_div = create_functor<GT> (Ker::divF, "div"); 
 
   if(MM == MATools::MAGPU::MEM_MODE::BOTH)
   {

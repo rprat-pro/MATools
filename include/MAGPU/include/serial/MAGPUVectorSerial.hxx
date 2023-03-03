@@ -6,7 +6,7 @@ namespace MATools
   {
     // equivalent to a vector
     template<typename T>
-      class MADeviceMemory<T, GPU_TYPE::SERIAL>
+      class MADeviceMemory<T, GPU_TYPE::SERIAL> : public MAGPUAllocator<T, GPU_TYPE::SERIAL>, public MAGPUCopier<GPU_TYPE::SERIAL>
       {
 	protected:
 	  /** 
@@ -118,12 +118,12 @@ namespace MATools
 	  void host_to_device(T* a_host, unsigned int a_size)
 	  {
 	    gpu_resize(a_size);
-	    this->copy_to_device(m_device_data, a_host, a_size)
+	    this->copy_to_device(m_device_data, a_host, a_size);
 	  }
 
 	  void device_to_host(T* a_host)
 	  {
-	    this->copy_to_host(a_host, m_device_data, a_size);
+	    this->copy_to_host(a_host, m_device_data, m_device_size);
 	  }
 
 	  /**

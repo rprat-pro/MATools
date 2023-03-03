@@ -44,7 +44,7 @@ bool run_test_elasticity_version3()
   constexpr auto mu = tfel::material::computeMu(young, nu);
 
   // MAGPU stuff
-  auto functor = Ker::create_functor<GT> (elasticity_version3, "elasticity_v3");
+  auto functor = create_functor<GT> (elasticity_version3, "elasticity_v3");
   MAGPURunner<MODE, GT> runner;
 
   // init problem

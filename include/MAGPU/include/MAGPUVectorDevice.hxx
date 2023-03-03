@@ -64,5 +64,5 @@ namespace MATools
   }
 }
 
-#include<MAGPUVectorSerial.hxx>
-#include<MAGPUVectorCuda.hxx>
+#include<serial/MAGPUVectorSerial.hxx>
+#include<cuda/MAGPUVectorCuda.hxx>
