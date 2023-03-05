@@ -1,8 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPUBasicFunctors.hxx>
-#include <MAGPURunner.hxx>
+#include <MAGPUTools.hxx>
 
 #include <cstdlib>
 #include "TFEL/Math/Array/View.hxx"
@@ -113,8 +110,12 @@ int main()
 {
   bool success = EXIT_SUCCESS;
   using namespace MATools::MAGPU;
+  success &= run_test_elasticity_version2<double, MEM_MODE::GPU, GPU_TYPE::SERIAL>();
+  success &= run_test_elasticity_version2<double, MEM_MODE::CPU, GPU_TYPE::SERIAL>();
+#ifdef __CUDA__
   success &= run_test_elasticity_version2<double, MEM_MODE::GPU, GPU_TYPE::CUDA>();
   success &= run_test_elasticity_version2<double, MEM_MODE::CPU, GPU_TYPE::CUDA>();
+#endif
   if(success == EXIT_SUCCESS) std::cout << "Ok!" << std::endl;
   else std::cout << "Not ok!" << std::endl;
   return success;

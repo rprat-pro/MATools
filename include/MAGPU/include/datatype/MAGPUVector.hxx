@@ -5,9 +5,9 @@
 #include <cassert>
 #include <iostream>
 
-#include <MAGPUTypes.hxx>
-#include <MAGPUVectorHost.hxx>
-#include <MAGPUVectorDevice.hxx>
+#include <datatype/MAGPUTypes.hxx>
+#include <host/MAGPUVectorHost.hxx>
+#include <datatype/MAGPUVectorDevice.hxx>
 
 namespace MATools
 {

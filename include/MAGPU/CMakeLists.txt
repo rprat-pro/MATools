@@ -5,7 +5,7 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 
-option(CUDA_OPTION "active MAGPUVector with cuda" ON)
+option(CUDA_OPTION "active MAGPUVector with cuda" OFF)
 option(KOKKOS_OPTION "active MAGPUVector with kokkos" OFF)
 option(VERBOSE_OPTION "help for verbose" ON)
 

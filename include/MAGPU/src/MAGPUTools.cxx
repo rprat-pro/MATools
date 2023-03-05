@@ -1,4 +1,4 @@
-#include <MAGPUVector.hxx>
+#include <MAGPUTools.hxx>
 
 namespace MATools
 {

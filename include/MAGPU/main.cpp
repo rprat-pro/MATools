@@ -1,7 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPURunner.hxx>
+#include <MAGPUTools.hxx>
 
 
 int main()

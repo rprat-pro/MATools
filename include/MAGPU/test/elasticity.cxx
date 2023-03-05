@@ -1,8 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPUBasicFunctors.hxx>
-#include <MAGPURunner.hxx>
+#include <MAGPUTools.hxx>
 
 #include <cstdlib>
 #include "TFEL/Math/Array/View.hxx"
@@ -89,7 +86,6 @@ bool run_test_elasticity()
   MAGPURunner<MODE, GT> runner;
 
   runner(functor, size, sig, eto, deto);	
-  cudaDeviceSynchronize();
   // check
   std::vector<T> host = sig.copy_to_vector();
 

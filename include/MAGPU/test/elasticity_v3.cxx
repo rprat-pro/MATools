@@ -1,8 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPUBasicFunctors.hxx>
-#include <MAGPURunner.hxx>
+#include <MAGPUTools.hxx>
 
 #include <cstdlib>
 #include "TFEL/Math/Array/View.hxx"

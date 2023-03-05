@@ -1,8 +1,8 @@
 #pragma once
 
-#include <MAGPUTypes.hxx>
-#include <MAGPUAllocator.hxx>
-#include <MAGPUCopier.hxx>
+#include <datatype/MAGPUTypes.hxx>
+#include <datatype/MAGPUAllocator.hxx>
+#include <datatype/MAGPUCopier.hxx>
 
 namespace MATools
 {

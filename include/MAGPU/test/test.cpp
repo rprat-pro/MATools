@@ -1,5 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
+#include <MAGPUTools.hxx>
 #define CATCH_CONFIG_MAIN  // This tells Catch to provide a main() - only do this in one cpp fil
 //#include "catch2/catch_all.hpp"
 #include "catch2/catch.hpp"

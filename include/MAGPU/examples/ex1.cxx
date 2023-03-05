@@ -1,8 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPUBasicFunctors.hxx>
-#include <MAGPURunner.hxx>
+#include <MAGPUTools.hxx>
 
 #include <cstdlib>
 #include "TFEL/Math/Array/View.hxx"
@@ -119,7 +116,10 @@ int main()
 {
   bool success = true;
   using namespace MATools::MAGPU;
+  success &= run_example_1<double, GPU_TYPE::SERIAL>();
+#ifdef __CUDA__
   success &= run_example_1<double, GPU_TYPE::CUDA>();
+#endif
   if(success == true) std::cout << "Ok!" << std::endl;
   else std::cout << "Not ok!" << std::endl;
   return success;

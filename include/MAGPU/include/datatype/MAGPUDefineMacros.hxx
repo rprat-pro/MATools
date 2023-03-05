@@ -1,6 +1,6 @@
 #pragma once
 
-#include<MAGPUFunctor.hxx>
+#include<datatype/MAGPUFunctor.hxx>
 
 /* ***************** */
 /* MAGPU decorations */

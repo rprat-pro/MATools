@@ -1,5 +1,8 @@
 #pragma once
 
+#include <cassert>
+#include <algorithm>
+
 namespace MATools
 {
   namespace MAGPU

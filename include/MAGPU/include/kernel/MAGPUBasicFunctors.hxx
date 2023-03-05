@@ -1,7 +1,7 @@
 #pragma once
 
-#include <MAGPUFunctor.hxx>
-#include <MAGPUDefineMacros.hxx>
+#include <datatype/MAGPUFunctor.hxx>
+#include <datatype/MAGPUDefineMacros.hxx>
 
 namespace MATools
 {

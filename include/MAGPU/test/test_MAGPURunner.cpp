@@ -1,7 +1,5 @@
 #include <iostream>
-#include <MAGPUVector.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPURunner.hxx>
+#include <MAGPUTools.hxx>
 
 	template<typename T, MATools::MAGPU::MEM_MODE MODE, MATools::MAGPU::GPU_TYPE GT>
 bool run_test_runner_with_MAGPUVector_MAGPUFunctor()
@@ -18,7 +16,11 @@ bool run_test_runner_with_MAGPUVector_MAGPUFunctor()
 	vec1.init(1.0, n);
 	vec2.init(2.0, n);
 
+#ifdef __CUDA__
 	auto add_kernel = [] __host__ __device__ (unsigned int idx, T* const out, T* const in1, T* const in2, T val ) -> void
+#else
+	auto add_kernel = [] (unsigned int idx, T* const out, T* const in1, T* const in2, T val ) -> void
+#endif
 	{
 		out[idx] = in1[idx] + in2[idx] + val;
 	};

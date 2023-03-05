@@ -1,6 +1,6 @@
 #pragma once
 
-#include <MAGPUTypes.hxx>
+#include <datatype/MAGPUTypes.hxx>
 
 namespace MATools
 {

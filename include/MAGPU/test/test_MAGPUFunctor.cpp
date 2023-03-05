@@ -1,8 +1,6 @@
 #pragma once
 
-#include <MAGPUBasicFunctors.hxx>
-#include <MAGPUFunctor.hxx>
-#include <MAGPUDefineMacros.hxx>
+#include <MAGPUTools.hxx>
 #include <test_helper.hpp>
 
   template<typename T, MATools::MAGPU::GPU_TYPE GT>
