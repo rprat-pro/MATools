@@ -65,9 +65,10 @@ endforeach(header)
 
 
 install(TARGETS MATools
-	DESTINATION lib
-	        PUBLIC_HEADER
-	DESTINATION include/
+	DESTINATION lib)
+
+install(DIRECTORY ${HEADERS}/
+	DESTINATION include
 )
 
 
