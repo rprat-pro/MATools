@@ -24,8 +24,6 @@ jobs:
       run: sudo apt-get install -y libtclap-dev
 
     - name: Configure CMake
-      # Configure CMake in a 'build' subdirectory. `CMAKE_BUILD_TYPE` is only required if you are using a single-configuration generator such as make.
-      # See https://cmake.org/cmake/help/latest/variable/CMAKE_BUILD_TYPE.html?highlight=cmake_build_type
       run: cmake -DMATOOLS_TESTING=ON -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
 
@@ -35,7 +33,15 @@ jobs:
 
     - name: Test
       working-directory: ${{github.workspace}}/build
-      # Execute tests defined by the CMake configuration.  
-      # See https://cmake.org/cmake/help/latest/manual/ctest.1.html for more detail
       run: ctest -C --rerun-failed --output-on-failure ${{env.BUILD_TYPE}}
-      
+
+    - name: Configure CMake no MPI
+      run: cmake -DMATOOLS_MPI=OFF -DMATOOLS_TESTING=ON -B ${{github.workspace}}/build-no-mpi -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build no MPI
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build-no-mpi --config ${{env.BUILD_TYPE}}
+
+    - name: Test no MPI
+      working-directory: ${{github.workspace}}/build-no-mpi
+      run: ctest -C --rerun-failed --output-on-failure ${{env.BUILD_TYPE}}
