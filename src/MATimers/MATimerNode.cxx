@@ -314,6 +314,8 @@ namespace MATools
 					cValue[5] = std::to_string( (global_max/global_mean)-1).substr(0, std::to_string((global_max/global_mean)-1).find(".") + precisionVal + 1) + "%";
 				}
 #else
+					std::cout << std::setprecision(25);
+					const int precisionVal = 25;
 				cValue[1] = std::to_string( m_duration.count()).substr(0, std::to_string(m_duration.count()).find(".") + precisionVal + 1);	
 				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 ).substr(0, std::to_string((m_duration.count()/total_time)*100).find(".") + precisionVal + 1);
 #endif
