@@ -59,9 +59,9 @@ if(MATOOLS_MPI)
 endif()
 
 target_compile_options(MATools PRIVATE -fPIC)
-foreach(header ${HDRS})
-	set_property(TARGET MATools APPEND PROPERTY PUBLIC_HEADER ${header})
-endforeach(header)
+#foreach(header ${HDRS})
+#	set_property(TARGET MATools APPEND PROPERTY PUBLIC_HEADER ${header})
+#endforeach(header)
 
 
 install(TARGETS MATools
