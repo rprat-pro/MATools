@@ -9,6 +9,7 @@ project(MATools VERSION 1.0)
 
 option(MATOOLS_TESTING "add tests" OFF)
 option(MATOOLS_MPI "add tests" ON)
+option(MATOOLS_STATIC_LIB "add tests" OFF)
 
 
 if(MATOOLS_MPI)
@@ -48,15 +49,20 @@ file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 set(MATOOLS  ${SRCS})
 message(${MATOOLS})
 
+
+if(MATOOLS_STATIC_LIB)
+add_library(MATools STATIC ${MATOOLS})
+else()
 add_library(MATools SHARED ${MATOOLS})
-#add_library(MATools STATIC ${MATOOLS})
+endif()
+
 target_include_directories(MATools PUBLIC ${HEADERS})
+
 if(MATOOLS_MPI)
-	#target_link_libraries(MATools PRIVATE MPI_C)
 	target_link_libraries(MATools PRIVATE mpi)
 	target_include_directories(MATools PRIVATE ${MPI_C_INCLUDE_PATH}) 
-
 endif()
+
 
 target_compile_options(MATools PRIVATE -fPIC)
 #foreach(header ${HDRS})
