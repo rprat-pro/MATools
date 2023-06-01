@@ -397,6 +397,17 @@ namespace MATools
 				MATimerNode* ret = m_mother;
 				return ret;
 			}
+
+		/** @brief This function displays information about one timer node */
+		void MATimerNode::debug_info()
+		{
+			std::cout << " node name : " << get_name() << std::endl;
+			std::cout << " mother node address : " << get_mother() << std::endl;
+			std::cout << " number of daughter nodes : " << m_daughter.size() << std::endl;
+			std::cout << " level : " << get_level() << std::endl;
+			std::cout << " number of iterations : " << get_iteration() << std::endl;
+			std::cout << " current duration : " << get_duration() << std::endl;
+		}
 	}
 };
 

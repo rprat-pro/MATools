@@ -135,6 +135,10 @@ namespace MATools
 #ifdef __MPI
 			void inc_mpi() {m_nb_mpi++;} 
 #endif
+
+			/** @brief This function displays information about one timer node */
+			void debug_info();
+
 			private:
 
 			/** @brief name of the measured section */
@@ -162,10 +166,19 @@ namespace MATools
 		 * @see enumTimer
 		 */
 		template<enumTimer T>
-			extern MATimerNode*& get_MATimer_node()
+			MATimerNode*& get_MATimer_node()
+			//extern MATimerNode*& get_MATimer_node()
 			{
 				static MATimerNode* __current;
 				return __current;
+			}
+		template<enumTimer T>
+			void debug_MATimer_node()
+			{
+				static_assert(T == enumTimer::ROOT || T == enumTimer::CURRENT);
+				auto node = get_MATimer_node<T>();
+				std::cout << node << std::endl;
+				node->debug_info();
 			}
 	};
 };
