@@ -3,11 +3,11 @@
 
 // variables 
 #ifdef __MPI
-const size_t cWidth = 20;
-const size_t nColumns=6;
-const std::string cName[nColumns]={"number Of Calls","min(s)", "mean(s)", "max(s)" ,"part(%)", "imb(%)"}; // [1-Imax/Imean]% 
+const size_t cWidth = 20; // Column width
+const size_t nColumns=6; // Number of columns
+const std::string cName[nColumns]={"number Of calls","min (s)", "mean (s)", "max (s)" ,"time ratio (%)", "imb (%)"}; // [1-Imax/Imean]% 
 #else
-const size_t cWidth =20;
-const size_t nColumns=3;
-const std::string cName[nColumns]={"number Of Calls", "max(s)," ,"part(%)"};
-#endif
+const size_t cWidth =20; //< Column width
+const size_t nColumns=3; //< Number of columns
+const std::string cName[nColumns]={"number Of calls", "duration (s)" ,"time ratio (%)"}; //< Column names
+#endif /* __MPI */
