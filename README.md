@@ -196,7 +196,7 @@ WARNING: The OpenMP mode does not work correctly with MPI. If you are using MPI+
 
 Comment: The label can be calculated as follows: `MPI_ID * NB_THREADS + THREAD_ID`.
 
-### ### Status of developments 
+### Status of developments 
 
 | MATrace feature  | Status      |
 |------------------|-------------|
