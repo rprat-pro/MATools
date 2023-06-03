@@ -1,10 +1,10 @@
 # MATools library
 
-MATools is a library poviding tools such as MATimers (timers in hierarchical form), MATrace (Trace generation for VITE) or MAMemory (print the memory footprint). 
+MATools is a library that offers various tools, including MATimers (timers in hierarchical form), MATrace (Trace generation for VITE), and MAMemory (memory footprint printing).
 
 ## MATimer
 
-MATimer aimes to capture the time spent in a scope/routine as many times as they are called. Timer are represented with a tree. These Timers work with MPI too and min time, mean time, max time, % of runtime and imbalance are shown for each scope/routine.
+MATimers are designed to track the execution time of a scope/routine whenever they are called. They are organized in a tree structure. Additionally, MATimers are compatible with MPI. They provide information such as the minimum time, average time, maximum time, percentage of execution time, and imbalance for each scope/routine.
 
 ### Minimal requirement 
 
@@ -17,12 +17,11 @@ MATools::MATimer::initialize();
 
 MATools::MATimer::finalize();
 ```
-
-These functions create the root MATimerNode and capture your application runtime.
+By using these functions, the root MATimerNode is created, allowing you to capture the runtime of your application.
 
 ### MATimers API
 
-At the beginning of your function/routine, put one of these instructions:
+At the beginning of your function/routine, you can use one of the following instructions to capture a section:
 
 ```
 START_TIMER("section_name");
@@ -34,16 +33,15 @@ or
 Catch_Time_Section("section_name");
 ```
 
-And the nested version in a section captured by a macro START_TIMER or 
+For nested sections, you can use the macro START_TIMER or Catch_Time_Section with:
 
 ```
 Catch_Nested_Time_Section("nested_section_name");
 ```
 
-Limitation: only one instruction per scope.
-Limitation: these timers are not thread-safe.
+Please note the following limitations: only one instruction is allowed per scope, and these timers are not thread-safe.
 
-Another way to capture a section is to use the `chrono_section([&](args){...})` function that returns the duration (double). It is also possible to add a chrono_section in the timers tree with `add_capture_chrono_section("name", [&](args){...})`.
+Another approach to capturing a section is by using the chrono_section([&](args){...}) function, which returns the duration as a double. Additionally, you can add a chrono_section to the timers tree using the add_capture_chrono_section("name", [&](args){...}) function.
 
 ### Output
 
