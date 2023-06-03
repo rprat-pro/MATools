@@ -71,9 +71,6 @@ endif()
 
 
 target_compile_options(MATools PRIVATE -fPIC)
-#foreach(header ${HDRS})
-#	set_property(TARGET MATools APPEND PROPERTY PUBLIC_HEADER ${header})
-#endforeach(header)
 
 
 install(TARGETS MATools
@@ -83,6 +80,9 @@ install(DIRECTORY ${HEADERS}/
 	DESTINATION include
 )
 
+install(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/share/cmake/
+	DESTINATION .
+)
 
 if(MATOOLS_TESTING)
 	enable_testing()

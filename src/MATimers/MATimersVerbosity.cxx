@@ -1,4 +1,6 @@
 #include <MATimers/MATimersVerbosity.hxx>
+#include <MAOutput/MAOutput.hxx>
+#include <cassert>
 
 namespace MATools
 {
@@ -15,7 +17,7 @@ namespace MATools
 			using namespace MATools::MAOutput;
 			assert( a_node_level>=0 );
 			assert( a_name !="" );
-			constexpr std::string level_string = "--";
+			const std::string level_string = "--";
 			std::string message = "Verbosity_message:";
 			for(int i=0 ; i<a_node_level ; i++)
 			{
