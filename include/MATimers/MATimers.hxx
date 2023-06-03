@@ -1,5 +1,6 @@
 #pragma once
 
+#ifndef NO_TIMER
 #include <iostream>
 #include <cassert>
 
@@ -27,36 +28,8 @@ namespace MATools
 		 * @brief finalize the root timer node. This function has to be called after the intialize function. Do not call this function twice.  
 		 */
 		void finalize();
-
-		/**
-		 * @brief This function captures the runtime of a given section.
-		 * @param [in] lambda section that the user wants to measure.
-		 * @return The runtime of lambda 
-		 */
-		template<typename Lambda>
-			double chrono_section(Lambda&& lambda)
-			{
-				double ret;
-				BasicTimer time;
-				time.start();
-				lambda();
-				time.end();
-				ret = time.get_duration();
-				return ret;	
-			}
 	};
 };
+#endif /* NO_TIMER */
 
-
-
-#ifdef NO_TIMER
-// do nothing
-#define START_TIMER(XNAME) 
-
-#else
-
-#define START_TIMER(XNAME) auto& current = MATools::MATimer::get_MATimer_node<CURRENT>();\
-																					 assert(current != nullptr && "do not use an undefined MATimerNode");\
-																					 current = current->find(XNAME); \
-																					 MATools::MATimer::Timer tim(current->get_ptr_duration());
-#endif
+#include <MATimers/MATimers_API.hxx>
