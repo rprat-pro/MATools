@@ -43,15 +43,15 @@ Please note the following limitations: only one instruction is allowed per scope
 
 Another approach to capturing a section is by using the chrono_section([&](args){...}) function, which returns the duration as a double. Additionally, you can add a chrono_section to the timers tree using the add_capture_chrono_section("name", [&](args){...}) function.
 
-### Output
+### MATimers Output
 
-There are two possibilities for outputs, a file or in the terminal. By default, timers are sorted by their times for a given MATimerNode level.
+There are two options for outputs, a file or in a unix shell. By default, the timers are sorted based on their times within a given MATimerNode level.
 
-#### File
+#### File option
 
-The MATimers write file routine creates a file `MATimers.number_of_threads.perf` or `MATimers.number_of_MPI.perf` that contains your timers.
+The MATimers write file routine generates a file named MATimers.number_of_threads.perf or MATimers.number_of_MPI.perf, which contains the recorded timers.
 
-#### Shell
+#### Shell option
 
 Example :
 
@@ -67,15 +67,16 @@ Example :
  |             |--> func1  |                120 |           0.000009 |           4.549541 |
  |-- end timetable -----------------------------------------------------------------------|
 ```
-#### Verbosity
+#### MATimers Verbosity
 
-Verbosity level are defined during the compilation. 
+The verbosity levels are defined during compilation. Here are the different levels and their descriptions:
+
 
 | Level       | Description      |
 |-------------|------------------|
-| level1                       | This level displays the timer name in function of the current MATimersNode level when the start_timer or catch_time_section is called        |
+| level1                       | TThis level displays the timer name based on the current MATimerNode level when the start_timer or catch_time_section is called.      |
 
-Example of output with verbosity level = 1, note that only the master rank displays these information whith MPI.
+Example output with verbosity level = 1 (Note: Only the master rank displays this information with MPI).
 
 ```
 MATimers_LOG: MATimers initialization 
@@ -84,29 +85,30 @@ Verbosity_message:---- > func2
 Verbosity_message:------ > func1
 MATimers_LOG: MATimers finalization
 ```
+### MATimers Options
 
+In order to modify the behavior of MATimers, you can utilize the following options:
+Disable printing the timetable
 
-### MATimer Options
+#### Disable printing the timetable
 
-#### Do not print timetable
-
-This routine has to be called by the MATools::Finalize() routine.
+To prevent the timetable from being printed, this routine should be called within the MATools::Finalize() routine.
 
 ```
 MATools::MATimer::Optional::disable_print_timetable();
 ```
 
-#### Do not write timetable file
+#### Disable writing the timetable file
 
-This routine has to be called by the MATools::Finalize() routine.
+To prevent the timetable from being written to a file, this routine should be called within the `MATools::Finalize()` routine.
 
 ```
 MATools::MATimer::Optional::disable_write_file();
 ```
 
-#### Use the full tree mode
+#### Enable the full tree mode
 
-This option has to be activated if all mpi processes do not built the same timers tree. Example : Master/slave scheme. This routine has to be called by the MATools::Finalise() routine.
+This option should be activated when all MPI processes do not build the same timers tree, such as in a master/slave scheme. This routine should be called within the `MATools::Finalize()` routine.
 
 ```
 active_full_tree_mode();
@@ -122,14 +124,14 @@ active_full_tree_mode();
 | Hybrid                           | not planned |
 | Unbalanced timers trees with MPI | Done        |
 
+
 ## MAMemory
 
-MAMemory provides a flexible way to add memory checkpoints to print the memory usage at different points of the code. This tool is based on rusage.
+MAMemory offers a flexible approach to incorporate memory checkpoints in order to track memory usage at various points in the code. This tool utilizes `rusage` for memory-related measurements. `rusage` is a structure in programming that provides information about resource usage by a process or thread.
 
-### How to use it
+### Usage
 
-This tool does not need an `initialize` or `finalize` routine. To get the memory usage at only one point, the `MATools::MAMemory::print_memory_footprint` creates a temporary memory checkpoint and prints the total memory usage size. 
-
+Unlike other tools, MAMemory does not require an initialize or finalize routine. To obtain the memory usage at a specific point, you can utilize the `MATools::MAMemory::print_memory_footprint` function. This function creates a temporary memory checkpoint and displays the total memory usage size.
 
 ### Status of developments 
 
@@ -143,11 +145,11 @@ This tool does not need an `initialize` or `finalize` routine. To get the memory
 
 ## MATrace
 
-MATimer provides other tools such as trace generation in paje format readable with VITE. You can access this feature with the namespace `MATimer::MATrace`.
+MATools provides additional tools, including trace generation in the paje format, which can be read with VITE. This feature can be accessed using the namespace `MATools::MATrace`. VITE is a visualization tool commonly used for analyzing and visualizing traces and performance data generated by parallel and distributed applications. It provides a graphical interface that allows users to explore and understand the behavior of their applications by visualizing the execution flow, communication patterns, and performance metrics.
 
 ### How to use it
 
-MATrace `initialize` and `finalize` are respectively hidden in the MATimer `initialize` and `finalize`. MATrace feature furnishes two routines to capture a task: start and stop. The general way to use it is :
+The initialization and finalization routines for MATrace are hidden within the `MATools::initialize` and `MATools::finalize` functions, respectively. MATrace offers two routines, start and stop, to capture a task. The general approach for using MATrace is as follows:
 
 ```
 MATools::MATrace::start()
@@ -155,7 +157,7 @@ do_something();
 MATools::MATrace::stop("kernel_name");
 ```
 
-The `finalize` routine handles writing MATrace files. In an MPI context, all data are sent to the master process that writes the MATrace.txt file.
+The `finalize` routine is responsible for writing the MATrace files. In an MPI context, all the data is sent to the master process, which then writes the `MATrace.txt` text file.
 
 ### MATrace Options
 
