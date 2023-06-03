@@ -1,6 +1,6 @@
 # MATools library
 
-MATools is a library poviding tools such as MATimers (timers in hierarchical form) or MATrace (Trace generation for VITE). 
+MATools is a library poviding tools such as MATimers (timers in hierarchical form), MATrace (Trace generation for VITE) or MAMemory (print the memory footprint). 
 
 ## MATimer
 
@@ -20,16 +20,30 @@ MATools::MATimer::finalize();
 
 These functions create the root MATimerNode and capture your application runtime.
 
-### Place your timers
+### MATimers API
 
-At the beginning of your function/routine, put this instruction :
+At the beginning of your function/routine, put one of these instructions:
 
 ```
 START_TIMER("section_name");
 ```
 
+or
+
+```
+Catch_Time_Section("section_name");
+```
+
+And the nested version in a section captured by a macro START_TIMER or 
+
+```
+Catch_Nested_Time_Section("nested_section_name");
+```
+
 Limitation: only one instruction per scope.
 Limitation: these timers are not thread-safe.
+
+Another way to capture a section is to use the `chrono_section([&](args){...})` function that returns the duration (double). It is also possible to add a chrono_section in the timers tree with `add_capture_chrono_section("name", [&](args){...})`.
 
 ### Output
 
@@ -55,12 +69,30 @@ Example :
  |             |--> func1  |                120 |           0.000009 |           4.549541 |
  |-- end timetable -----------------------------------------------------------------------|
 ```
+#### Verbosity
+
+Verbosity level are defined during the compilation. 
+
+| Level       | Description      |
+|-------------|------------------|
+| level1                       | This level displays the timer name in function of the current MATimersNode level when the start_timer or catch_time_section is called        |
+
+Example of output with verbosity level = 1, note that only the master rank displays these information whith MPI.
+
+```
+MATimers_LOG: MATimers initialization 
+Verbosity_message:-- > func3
+Verbosity_message:---- > func2
+Verbosity_message:------ > func1
+MATimers_LOG: MATimers finalization
+```
+
 
 ### MATimer Options
 
 #### Do not print timetable
 
-This routine has to be called by the MATools::Finalise() routine.
+This routine has to be called by the MATools::Finalize() routine.
 
 ```
 MATools::MATimer::Optional::disable_print_timetable();
@@ -68,7 +100,7 @@ MATools::MATimer::Optional::disable_print_timetable();
 
 #### Do not write timetable file
 
-This routine has to be called by the MATools::Finalise() routine.
+This routine has to be called by the MATools::Finalize() routine.
 
 ```
 MATools::MATimer::Optional::disable_write_file();
