@@ -163,16 +163,16 @@ The `finalize` routine is responsible for writing the MATrace files. In an MPI c
 
 #### Activate MATrace
 
-The default mode of MATrace works in serial and MPI but this tool is disabled. MATrace can be activated with this routine:
+By default, MATrace is disabled for both serial and MPI modes. To activate MATrace, you can use the following routine:
 
 ```
 MATools::MATrace::Optional::active_MATrace_mode();
 ```
-This routine has to be called by the MATools::Finalise() routine.
+Please note that this routine should be called before the MATools::Finalize() routine.
 
 #### Activate OpenMP mode
 
-This is special mode of MATrace, tasks are labelled by a thread id instead of an mpi process id. We use a different way to capture chrono sections: 
+OpenMP mode is a special mode in MATrace where tasks are labeled by thread ID instead of MPI process ID. In this mode, a different approach is used to capture chrono sections. Here's an example:
 
 ```
 #pragma omp parallel ...
@@ -182,18 +182,19 @@ This is special mode of MATrace, tasks are labelled by a thread id instead of an
  MATools::MATrace::omp_stop("kernel_name");
 }
 ```
-This mode can only be activated if the MATrace mode is used: 
+To activate the OpenMP mode, the MATrace mode must already be activated using the following routines:
 
 ```
 MATools::MATrace::active_MATrace_mode();
 MATools::MATrace::active_omp_mode();
 ```
 
-These routines have to be called by the first omp_start() routine.
+These routines must be called before the first omp_start() routine.
 
-WARNING : The OpenMP mode does not work correctly with MPI. If you use MPI+OpenMP, the trace would be generated with all tasks and sent on the master node but, as tasks are labelled with threads id with this mode, tasks will be overlapped for a same thread id. 
+WARNING: The OpenMP mode does not work correctly with MPI. If you are using MPI+OpenMP, the trace will be generated with all tasks and sent to the master node. However, tasks may overlap for the same thread ID since tasks are labeled with thread IDs in this mode.
 
-REMARK : label could be : MPI_ID * NB_THREADS + THREAD_ID
+
+Comment: The label can be calculated as follows: `MPI_ID * NB_THREADS + THREAD_ID`.
 
 ### ### Status of developments 
 
@@ -207,18 +208,20 @@ REMARK : label could be : MPI_ID * NB_THREADS + THREAD_ID
 
 ## Debugging tools
 
+For debugging purposes, you have the option to write the local timers tree for each MPI process. This can provide valuable information for identifying issues.
+
 ### write local timers tree for each MPI process
 
-More details : test/test_mpi_debug_unbalanced_timers.cxx
+For more detailed information and examples, you can refer to the file test/test_mpi_debug_unbalanced_timers.cxx.
 
 ```
 MATools::MAOutputManager::write_debug_file();
 ```
 
-Advice : if you are in a deadlock during the finalization function, you can disable printing and writting with the following instructions
-
+Advice: If you encounter a deadlock during the finalization function, you can disable printing and writing by using the following instructions:
 
 ```
 MATools::MATimer::Optional::disable_print_timetable();
 MATools::MATimer::Optional::disable_write_file();
 ```
+These instructions will prevent the printing and writing of the timers' data, which can help in troubleshooting deadlock situations.
