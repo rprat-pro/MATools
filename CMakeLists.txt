@@ -10,13 +10,20 @@ project(MATools VERSION 1.0)
 option(MATOOLS_TESTING "add tests" OFF)
 option(MATOOLS_MPI "add tests" ON)
 option(MATOOLS_STATIC_LIB "add tests" OFF)
+option(MATOOLS_VERBOSITY_LEVEL_1 "add verbosity level 1" OFF)
 
+if(MATOOLS_VERBOSITY_LEVEL_1)
+	add_definitions(-DMATIMERS_VEROBSITY_LEVEL_1)
+endif()
 
 if(MATOOLS_MPI)
 	find_package(MPI REQUIRED)
-	add_definitions(-DOMPI_SKIP_MPICXX)
-	add_compile_options(-D__MPI)
-	include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+	if(MPI_FOUND)
+		message("-- MPI feature is activated")
+		add_definitions(-DOMPI_SKIP_MPICXX)
+		add_compile_options(-D__MPI)
+		include_directories(SYSTEM ${MPI_INCLUDE_PATH})
+	endif()
 endif()
 
 # openmp
@@ -47,7 +54,6 @@ file(GLOB_RECURSE HDRS "${CMAKE_CURRENT_SOURCE_DIR}/include/*.hxx")
 #add_subdirectory(include)
 
 set(MATOOLS  ${SRCS})
-message(${MATOOLS})
 
 
 if(MATOOLS_STATIC_LIB)

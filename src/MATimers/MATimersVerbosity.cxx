@@ -11,7 +11,7 @@ namespace MATools
 		 */
 		void print_verbosity_level_1(std::string a_name, int a_node_level)
 		{
-#ifdef MATIMER_VEROBSITY_LEVEL_1
+#ifdef MATIMERS_VEROBSITY_LEVEL_1
 			using namespace MATools::MAOutput;
 			assert( a_node_level>=0 );
 			assert( a_name !="" );
@@ -22,7 +22,7 @@ namespace MATools
 				message += level_string;
 			}
 			printMessage(message,">", a_name);
-#endif /* MATIMER_VEROBSITY_LEVEL_1 */
+#endif /* MATIMERS_VEROBSITY_LEVEL_1 */
 		}
 	}
 }

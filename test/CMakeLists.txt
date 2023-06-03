@@ -9,7 +9,6 @@ else()
 	endfunction()
 endif()
 
-message(${LIBS})
 function(build_test name)
 	add_executable(check_${name} ${name}.cxx)
 	target_include_directories(check_${name} PUBLIC ${HEADERS} ${TCLAP_INCLUDE_DIR})
@@ -50,7 +49,7 @@ set (testlist
 	test_mpi_debug_balanced_timers)
 
 foreach(elem IN LISTS testlist)
-	message("add test ${elem}")
+	message("---> add test ${elem}")
 	build_test(${elem})
 	add_test_mpi(${elem})
 endforeach()
