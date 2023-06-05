@@ -11,17 +11,19 @@ class Matools(AutotoolsPackage):
     version("1.0", mat100="ae480a40004560fe26e7c7be05337d1290a1ad60")
 
     depends_on("cmake")
-    depends_on("mpi", when="+mpi")
+    depends_on("openmpi", when="+mpi")
     depends_on("vite", when="+trace")
 
     build_system("cmake", "autotools", default="cmake")
 
     variant("mpi", default=False, description="Support for MPI")
+    variant("static", default=False, description="Using static library")
     variant("trace", default=False, description="add install for VITE trace")
 
 
     def cmake_args(self):
         args = [
             self.define_from_variant("MATOOLS_MPI", "mpi"),
+            self.define_from_variant("MATOOLS_STATIC_LIB", "static"),
         ]
         return args
