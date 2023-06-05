@@ -2,6 +2,61 @@
 
 MATools is a library that offers various tools, including MATimers (timers in hierarchical form), MATrace (Trace generation for VITE), and MAMemory (memory footprint printing).
 
+- Installation
+- MATimer
+- MATrace
+- MAMemory
+- Debugging tools
+
+## Installation 
+
+### MATools installation with cmake
+
+Command lines
+
+```
+cd MATools
+mkdir build
+cd $build
+cmake -DMATOOLS_MPI=OFF -DCMAKE_INSTALL_PREFIX=../install ..
+make install -j 8
+export MATools_DIR=${BASE_PATH}/MATools/install/
+export MATools_INCLUDE_DIR=${MATools_DIR}/include
+export MATools_LIBRARY_DIR=${MATools_DIR}/lib
+```
+
+### MATools installation with spack
+
+#### Add the MATools spack repository
+
+```
+spack add MATools/spack_repo
+```
+
+#### Installation wihthout mpi
+
+```
+spack install matools 
+```
+
+#### Installation with mpi
+
+```
+spack install matools+mpi 
+```
+
+Do not forget to define MATools_DIR:
+
+```
+spack load matools
+export MATools_DIR=$(spack find --loaded -p --format ":" matools | tr -d " :")
+echo $MATools_DIR
+```
+
+### Add MATools in your project
+
+You need to set the environment variable `MATools_DIR` to the install directory and add `find_package(MATools)` in your `CMakeLists.txt`.
+
 ## MATimer
 
 MATimers are designed to track the execution time of a scope/routine whenever they are called. They are organized in a tree structure. Additionally, MATimers are compatible with MPI. They provide information such as the minimum time, average time, maximum time, percentage of execution time, and imbalance for each scope/routine.
