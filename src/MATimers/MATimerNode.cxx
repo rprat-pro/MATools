@@ -4,12 +4,29 @@
 
 namespace MATools
 {
+
+
+
+  
 	/**
 	 * MATimerNode is the storage class corresponding to a node of the MATimer tree.
 	 */
 	namespace MATimer
 	{
 		using duration = std::chrono::duration<double>;
+	  template<>
+	  MATimerNode*& get_MATimer_node<enumTimer::CURRENT>()
+			{
+				static MATimerNode* __current;
+				return __current;
+			}
+
+	  template<>
+	  MATimerNode*& get_MATimer_node<enumTimer::ROOT>()
+			{
+				static MATimerNode* __current;
+				return __current;
+			}
 
 		/**
 		 * @brief default constructor.

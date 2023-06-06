@@ -1,3 +1,4 @@
+
 #pragma once
 
 #include <chrono>
@@ -166,12 +167,15 @@ namespace MATools
 		 * @see enumTimer
 		 */
 		template<enumTimer T>
-			MATimerNode*& get_MATimer_node()
-			//extern MATimerNode*& get_MATimer_node()
-			{
-				static MATimerNode* __current;
-				return __current;
-			}
+		MATimerNode*& get_MATimer_node();
+
+
+	  template<>
+	  MATimerNode*& get_MATimer_node<enumTimer::CURRENT>();
+
+	  template<>
+	  MATimerNode*& get_MATimer_node<enumTimer::ROOT>();
+	  
 		template<enumTimer T>
 			void debug_MATimer_node()
 			{
