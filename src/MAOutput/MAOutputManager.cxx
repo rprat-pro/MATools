@@ -4,6 +4,9 @@ namespace MATools
 {
 	namespace MAOutputManager
 	{
+		/** 
+		 * @brief This function builds the default file name in function of the packages loaded (MPI or OpenMP
+		 */
 		std::string build_name()
 		{
 			using namespace MATools::MPI;
@@ -12,28 +15,38 @@ namespace MATools
 			int mpiSize = get_mpi_size();
 			MPI_Comm_size(MPI_COMM_WORLD,&mpiSize);
 			std::string file_name = base_name + "." + std::to_string(mpiSize) + ".perf";
-#else
+#else /* no MPI */
+
+#ifdef _OPENMP
 			std::size_t nthreads=0;
 #pragma omp parallel
 			{
 				nthreads = omp_get_num_threads();
 			}
 			std::string file_name = base_name + "." + std::to_string(nthreads) + ".perf";
-#endif
+#else /* no OpenMP */
+			std::string file_name = base_name + ".perf";
+#endif /* OpenMP */
+#endif /* MPI */
 			return file_name;
 		}
-		
+
+		/** 
+		 * @brief This function writes a (timers) file with the default name.
+		 */
 		void write_file()
 		{
 			auto name = build_name();
 			write_file(name);
 		}
 
+		/** 
+		 * @brief This function writes a (timers) file name a_name
+		 */
 		void write_file(std::string a_name)
 		{
 			using namespace MATools::MAOutput;
 			using namespace MATools::MPI;
-			//using MATools::MPI::reduce_max;
 
 			std::ofstream myFile (a_name, std::ofstream::out);	
 			MATimerNode* root_timer = MATools::MATimer::get_MATimer_node<ROOT>();
@@ -115,7 +128,7 @@ namespace MATools
 			recursive_call(my_debuging_write_function, root_timer, myFile);
 		}
 
-		/*
+		/**
 		 * @brief Write a debug file for each MPI process
 		 */
 		void write_debug_file()
@@ -124,6 +137,9 @@ namespace MATools
 			write_debug_file(name);
 		}
 
+		/**
+		 * @brief This function get a vector of MATimerInfo for a given filtered name.
+		 */
 		std::vector<MATools::MATimer::MATimerInfo> get_filtered_timers(std::string a_name)
 		{
 			using namespace MATools::MAOutput;
@@ -159,6 +175,9 @@ namespace MATools
 			return ret;
 		}
 
+		/**
+		 * @brief This function prints timers according to a filtered name
+		 */
 		void print_filtered_timers(std::string a_name)
 		{
 			auto filtered_timers = get_filtered_timers(a_name);
