@@ -12,6 +12,33 @@ namespace MATools
 {
 	namespace MATrace
 	{
+		/**
+		 * @brief This function returns the current thread id according to the omp thread number if OpenMP is activated, 0 otherwise.
+		 */
+		const int get_thread_id()
+		{
+#ifdef _OPENMP
+			const int ret = omp_get_thread_num();
+#else
+			const int ret = 0;
+#endif /* OpenMP */
+			return ret;
+		}
+
+		/**
+		 * @brief This function returns the number of threads if OpenMP is activated, 1 otherwise.
+		 */
+		const int get_number_of_threads()
+		{
+#ifdef _OPENMP
+			const int ret = omp_get_num_threads();
+#else
+			const int ret = 1;
+#endif /* OpenMP */
+			return ret;
+		}
+
+
 		void start()
 		{
 			auto& start = get_MATrace_point();
@@ -34,13 +61,13 @@ namespace MATools
 		void omp_start()
 		{
 			auto& start = get_MATrace_omp_point();
-			auto id = omp_get_thread_num();
+			const auto id = get_thread_id();
 			start[id] = MATrace_point();
 		}
 
 		void omp_stop(std::string a_name)
 		{
-			auto id = omp_get_thread_num();
+			auto id = get_thread_id();
 			auto end = MATrace_point();
 			auto start = get_MATrace_omp_point();
 			auto ref = get_ref_MATrace_point();
@@ -52,14 +79,14 @@ namespace MATools
 			auto& omp_MATrace = get_omp_MATrace();
 			omp_MATrace[id].push_back(section);
 		}
-	
+
 		void init_omp_trace()
 		{
 			auto& omp_trace = get_omp_MATrace();
 			size_t num_threads;
 #pragma omp parallel
 			{	
-				num_threads = omp_get_num_threads();
+				num_threads = get_number_of_threads();
 				omp_trace.resize(num_threads);
 #pragma omp for
 				for(unsigned int id = 0 ; id < omp_trace.size() ; id++)
@@ -147,7 +174,7 @@ namespace MATools
 			if(Optional::is_omp_mode())
 			{
 #pragma omp parallel
-				mpi_size = omp_get_num_threads();
+				mpi_size = get_number_of_threads();
 			}
 			else
 			{
@@ -170,7 +197,7 @@ namespace MATools
 			if(Optional::is_omp_mode())
 			{
 #pragma omp parallel
-				mpi_size = omp_get_num_threads();
+				mpi_size = get_number_of_threads();
 			}
 			else
 			{
@@ -188,7 +215,7 @@ namespace MATools
 		void finalize()
 		{
 			using namespace MATools::MPI;
-			
+
 			// no MATrace
 			if(!Optional::is_MATrace_mode())
 			{
@@ -208,7 +235,7 @@ namespace MATools
 #ifdef __MPI
 			const int local_size = local_MATrace.size();
 			int local_byte_size = sizeof(MATrace_section) * local_size;
-			
+
 			// update proc id
 			const auto my_rank = get_rank();
 			bool omp_mode = Optional::is_omp_mode();
@@ -231,7 +258,7 @@ namespace MATools
 					&local_byte_size, 1, MPI_INT, 
 					sizes.data(), 1, MPI_INT, 
 					0, MPI_COMM_WORLD
-				  );
+					);
 
 			int total_byte_size = 0;
 			int acc = 0;
@@ -247,7 +274,7 @@ namespace MATools
 					local_MATrace.data(), local_byte_size, MPI_CHAR, 
 					recv.data(), sizes.data(), dists.data(), MPI_CHAR, 
 					0, MPI_COMM_WORLD
-				   );
+					);
 
 
 			MATrace_section * ptr = (MATrace_section*)recv.data() ;

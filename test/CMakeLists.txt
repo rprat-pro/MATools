@@ -31,12 +31,16 @@ add_test(NAME test_timers_case_5 COMMAND checkTimers -c 5 -r 0)
 add_test(NAME test_timers_case_1_robustness COMMAND checkTimers -c 1 -r 1)
 add_test(NAME test_timers_case_2_robustness COMMAND checkTimers -c 2 -r 1)
 add_test(NAME test_timers_case_3_robustness COMMAND checkTimers -c 3 -r 1)
-add_test(NAME test_timers_case_1_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 1 -r 1)
-add_test(NAME test_timers_case_2_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 2 -r 1)
-add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 3 -r 1)
+if(MATOOLS_MPI)
+	add_test(NAME test_timers_case_1_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 1 -r 1)
+	add_test(NAME test_timers_case_2_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 2 -r 1)
+	add_test(NAME test_timers_case_3_robustness_4mpi COMMAND mpirun -n 4 ./checkTimers -c 3 -r 1)
+endif()
 
-build_test(test_trace_with_omp)
-build_test(test_trace_with_omp_task)
+if(OPENMP_FOUND)
+	build_test(test_trace_with_omp)
+	build_test(test_trace_with_omp_task)
+endif()
 set (testlist 
 	test_minimal_long_name 
 	test_trace 

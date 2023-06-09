@@ -87,12 +87,16 @@ namespace MATools
 			int mpi_rank = get_rank();
 			std::string file_name = base_name + "." + std::to_string(mpi_rank) + ".debug";
 #else
+#ifdef _OPENMP
 			std::size_t nthreads=0;
 #pragma omp parallel
 			{
 				nthreads = omp_get_num_threads();
 			}
 			std::string file_name = base_name + "." + std::to_string(nthreads) + ".debug";
+#else /* no OpenMP */
+			std::string file_name = base_name + ".debug";
+#endif /* OpenMP */
 #endif
 			return file_name;
 		}

@@ -16,7 +16,7 @@ int main(int argc, char * argv[])
 
 	int n_threads;
 #pragma omp parallel
-	n_threads = omp_get_num_threads();
+	n_threads = omp_get_num_thread();
 
 	std::vector<double> in(n_threads, n_threads);
 	std::vector<double> out(n_threads, n_threads);
