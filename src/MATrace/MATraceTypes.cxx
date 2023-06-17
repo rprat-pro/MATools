@@ -31,9 +31,9 @@ namespace MATools
 			int rank;
 			MPI_Comm_rank(MPI_COMM_WORLD, &rank);
 			m_proc = rank;
-#else 
+#else /* __MPI */ 
 			m_proc = 0;
-#endif
+#endif /* __MPI */
 		}
 
 		void MATrace_point::set_proc(int a_rank)
@@ -86,6 +86,13 @@ namespace MATools
 			}
 		}
 
+		/**
+		 * @brief Constructor for MATrace_section.
+		 * @param a_name The name of the time section captured.
+		 * @param a_ref The reference MATrace_point.
+		 * @param a_start The start MATrace_point.
+		 * @param a_end The end MATrace_point.
+		 */
 		MATrace_section::MATrace_section(char a_name[64], const MATrace_point& a_ref, const MATrace_point& a_start, const MATrace_point& a_end)
 		{
 			std::chrono::duration<double> duration ;
@@ -102,19 +109,30 @@ namespace MATools
 
 			// set proc id and name
 			m_proc_id = a_ref.get_proc();
-			strncpy(m_name, a_name, 64);
+			strncpy(m_name, a_name, 63);
 			m_name[63]='\0'; // warning issue without this line
 		}
 
+		/**
+		 * @brief Writes the MATrace_section to the output file stream.
+		 * This function writes the MATrace_section to the specified output file stream.
+		 * @param a_out The output file stream to write to.
+		 */
 		void MATrace_section::write(std::ofstream& a_out)
 		{
-			a_out   << m_name       << " "
+			a_out << m_name   << " "
 				<< m_proc_id    << " "
 				<< m_start      << " "
 				<< m_end        << " "
 				<< std::endl;
 		}
 
+		/**
+		 * @brief Writes the MATrace_section to the output file stream with VITE event information.
+		 * This function writes the MATrace_section, along with the VITE event information, to the specified output file stream.
+		 * @param a_out The output file stream to write to.
+		 * @param a_ve The VITE event information.
+		 */
 		void MATrace_section::write(std::ofstream& a_out, vite_event& a_ve)
 		{
 			a_out   << a_ve[m_name] << " "
@@ -129,10 +147,14 @@ namespace MATools
 				<< std::endl;
 		}
 
-		void MATrace_section::set_proc(int a_rank)
+		/**
+		 * @brief Sets the process ID for the MATrace_section.
+		 * This function sets the process ID for the MATrace_section.
+		 * @param a_rank The process ID to set.
+		 */
+		void MATrace_section::set_proc(const int a_rank)
 		{
 			m_proc_id = a_rank;
 		}
-
 	}
 };

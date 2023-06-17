@@ -41,20 +41,52 @@ namespace MATools
 				std::map<std::string,int> m_data;
 		};
 
+
+		/**
+		 * @brief The MATrace_section class represents a time section section captured (MPI or OpenMP).
+		 * This class provides information such as name, start and end points, and process ID.
+		 */
 		class MATrace_section
 		{
 			public:
+				/**
+				 * @brief Constructor for MATrace_section.
+				 * @param a_name The name of the time section captured.
+				 * @param a_ref The reference MATrace_point.
+				 * @param a_start The start MATrace_point.
+				 * @param a_end The end MATrace_point.
+				 */
 				MATrace_section(char a_name[64], const MATrace_point& a_ref, const MATrace_point& a_start, const MATrace_point& a_end);
-				void write(std::ofstream& a_out);
-				void write(std::ofstream& a_out, vite_event& a_ve);
-				void set_proc(int a_rank);
 
-				int m_proc_id;
-				double m_start;
-				double m_end;
-				char m_name[64];
-		};
-		
+				/**
+				 * @brief Writes the MATrace_section to the output file stream.
+				 * This function writes the MATrace_section to the specified output file stream.
+				 * @param a_out The output file stream to write to.
+				 */
+				void write(std::ofstream& a_out);
+
+				/**
+				 * @brief Writes the MATrace_section to the output file stream with VITE event information.
+				 * This function writes the MATrace_section, along with the VITE event information, to the specified output file stream.
+				 * @param a_out The output file stream to write to.
+				 * @param a_ve The VITE event information.
+				 */
+				void write(std::ofstream& a_out, vite_event& a_ve);
+
+				/**
+				 * @brief Sets the process ID for the MATrace_section.
+				 * This function sets the process ID for the MATrace_section.
+				 * @param a_rank The process ID to set.
+				 */
+				void set_proc(int const a_rank);
+
+				int m_proc_id; /**< The process ID for the MATrace_section. */
+				double m_start; /**< The start time of the MATrace_section. */
+				double m_end; /**< The end time of the MATrace_section. */
+				char m_name[64]; /**< The name of the MATrace_section. */
+		};	
+
+
 		typedef std::vector<MATrace_section> Trace;
 	};
 };

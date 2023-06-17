@@ -22,6 +22,7 @@ namespace MATools
 #else
 			const int ret = 0;
 #endif /* OpenMP */
+			assert(ret >= 0);
 			return ret;
 		}
 
@@ -35,10 +36,11 @@ namespace MATools
 #else
 			const int ret = 1;
 #endif /* OpenMP */
+			assert(ret > 0);
 			return ret;
 		}
 
-
+		
 		void start()
 		{
 			auto& start = get_MATrace_point();
@@ -48,12 +50,12 @@ namespace MATools
 		void stop(std::string a_name)
 		{
 			auto end = MATrace_point();
-			auto start = get_MATrace_point();
-			auto ref = get_ref_MATrace_point();
+			auto& start = get_MATrace_point();
+			auto& ref = get_ref_MATrace_point();
 			char name[64];
-			strncpy(name, a_name.c_str(), 64);
+			strncpy(name, a_name.c_str(), 63);
 			name[63]='\0'; // warning issue without this line
-			auto section = MATrace_section(name, ref, start, end);
+			MATrace_section section(name, ref, start, end);
 			auto& local_MATrace = get_local_MATrace();
 			local_MATrace.push_back(section);
 		}
@@ -67,10 +69,10 @@ namespace MATools
 
 		void omp_stop(std::string a_name)
 		{
-			auto id = get_thread_id();
+			const auto id = get_thread_id();
 			auto end = MATrace_point();
-			auto start = get_MATrace_omp_point();
-			auto ref = get_ref_MATrace_point();
+			auto& start = get_MATrace_omp_point();
+			auto& ref = get_ref_MATrace_point();
 			char name[64];
 			strncpy(name, a_name.c_str(), 64);
 			name[63]='\0'; // warning issue without this line
@@ -87,11 +89,11 @@ namespace MATools
 #pragma omp parallel
 			{	
 				num_threads = get_number_of_threads();
-				omp_trace.resize(num_threads);
-#pragma omp for
-				for(unsigned int id = 0 ; id < omp_trace.size() ; id++)
-					omp_trace[id] = Trace();
 			}
+			omp_trace.resize(num_threads);
+#pragma omp parallel for
+			for(unsigned int id = 0 ; id < omp_trace.size() ; id++)
+				omp_trace[id] = Trace();
 			auto& omp_points = get_MATrace_omp_point();
 			omp_points.resize(num_threads);
 		}
@@ -101,7 +103,7 @@ namespace MATools
 			auto start = get_ref_MATrace_point();
 			start.set_proc();
 			auto& local_MATrace = get_local_MATrace();
-			local_MATrace.reserve(120000); 
+			local_MATrace.reserve(12000000); // not really useful 
 		}
 
 		void header(std::ofstream& out, vite_event& event)
@@ -208,7 +210,9 @@ namespace MATools
 #endif
 			}
 			for(int i = 0 ; i < mpi_size ; i++)
+			{
 				out << "8 " << last << " C_Thread" << i << " CT_Thread" << std::endl;
+			}
 			out <<"8 " << last << " C_Prog CT_Prog" << std::endl;
 		}
 
@@ -278,10 +282,10 @@ namespace MATools
 
 
 			MATrace_section * ptr = (MATrace_section*)recv.data() ;
-#else
+#else /* __MPI */ 
 			MATrace_section * ptr = local_MATrace.data();
 			int total_size = local_MATrace.size();
-#endif
+#endif /* __MPI */
 
 			// write trace header -> trace core -> end
 			if(is_master())
@@ -292,7 +296,6 @@ namespace MATools
 					event.add(ptr[it].m_name);
 
 				header(out,event);
-
 
 				for(int it = 0 ; it < total_size ; it++)
 					ptr[it].write(out, event);

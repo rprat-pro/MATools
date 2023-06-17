@@ -169,7 +169,6 @@ namespace MATools
 		template<enumTimer T>
 		MATimerNode*& get_MATimer_node();
 
-
 	  template<>
 	  MATimerNode*& get_MATimer_node<enumTimer::CURRENT>();
 

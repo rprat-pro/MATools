@@ -4,27 +4,34 @@
 
 void task(double* out, double* in, int n)
 {
-	int thread = omp_get_thread_num();
-	MATools::MATrace::omp_start();
+	using namespace MATools::MATrace;
+	const int thread = omp_get_thread_num();
+	assert(thread>=0);
+	omp_start();
 	for(int i = 0; i < n ; i++)
 	{
 		out[thread] += in[thread];
 	}
-	MATools::MATrace::omp_stop("task");
+	omp_stop("task");
 }
 
 int main(int argc, char * argv[]) 
 {
+	using namespace MATools::MATrace;
+	Optional::active_MATrace_mode();
+	Optional::active_omp_mode();
 	MATools::initialize(&argc, &argv);
-	MATools::MATrace::Optional::active_MATrace_mode();
-	MATools::MATrace::Optional::active_omp_mode();
 
-	int n_threads;
+	int n_threads = -1;
 #pragma omp parallel
-	n_threads = omp_get_num_threads();
+	{
+		n_threads = omp_get_num_threads();
+	}
+	assert(n_threads >= 1);
 
 	std::vector<double> in(n_threads, n_threads);
 	std::vector<double> out(n_threads, n_threads);
+
 	constexpr int N = 1000;
 	constexpr int L = 1000;
 
@@ -34,10 +41,11 @@ int main(int argc, char * argv[])
 	{
 #pragma omp task
 		{
-
 			task(out.data(), in.data(), L);
 		}
 	}
+#pragma omp barrier
+
 	MATools::finalize();	
 	return 0;
 }

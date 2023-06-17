@@ -32,4 +32,3 @@ namespace MATools
 };
 #endif /* NO_TIMER */
 
-#include <MATimers/MATimers_API.hxx>

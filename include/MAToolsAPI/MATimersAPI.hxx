@@ -1,4 +1,5 @@
 #pragma once
+#include <MATimers/MATimers.hxx>
 #include <MATimers/MATimersVerbosity.hxx>
 
 #ifdef NO_TIMER
@@ -24,7 +25,6 @@ double chrono_section(Lambda&& lambda_function) {}
 void add_capture_chrono_section(std::string a_name, Lambda&& a_lambda_function) {}
 
 #else /* NO_TIMER */
-
 
 #define Catch_Time_Section(XNAME)\
 	auto& current = MATools::MATimer::get_MATimer_node<CURRENT>();\
@@ -72,3 +72,50 @@ void add_capture_chrono_section(std::string a_name, Lambda&& a_lambda_function)
 	a_lambda_function();
 }
 #endif /* NO_TIMER */
+
+/** Create an object MATimersManager:
+ * To enhance your application's functionality, you need to create an object called "MATimersManager" and place it at the beginning of your application. 
+ * The MATimersManager serves as a tool for monitoring and analyzing the performance of your application. 
+ * By initializing it at the outset, you can ensure that all relevant metrics and data are captured from the start and throughout the execution of your application. 
+ * This allows for comprehensive profiling and optimization of your application's performance.
+ */
+class MATimersManager
+{
+	public:
+		/**
+		 * @brief Constructor for MATimersManager.
+		 * Initializes the MATimersManager by initializing the timer.
+		 */
+		MATimersManager() 
+		{
+			MATools::MATimer::initialize();
+		}
+
+		/**
+		 * @brief Disables printing of the timetable.
+		 * This function disables the printing of the timetable during profiling.
+		 */
+		void disable_timetable()
+		{
+			MATools::MATimer::Optional::disable_print_timetable();
+		}
+
+		/**
+		 * @brief Disables writing data to a file.
+		 * This function disables writing profiling data to a file.
+		 */
+		void disable_write_file()
+		{
+			MATools::MATimer::Optional::disable_write_file();
+		}
+
+		/**
+		 * @brief Destructor for MATimersManager.
+		 * Finalizes the MATimersManager by cleaning up the timer resources.
+		 */
+		~MATimersManager() 
+		{
+			MATools::MATimer::finalize();
+		}
+};
+

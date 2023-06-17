@@ -3,11 +3,32 @@
 #include <cassert>
 
 
+/**
+ * @namespace MATools
+ * @brief Namespace containing utility tools for various purposes.
+ */
 namespace MATools
 {
+	/**
+	 * @namespace MPI
+	 * @brief Namespace containing MPI-related utilities.
+	 */
 	namespace MPI
 	{
 		constexpr int master=0;
+
+		bool check_mpi_initialized()
+		{
+#ifdef __MPI
+			int val = -1;
+			MPI_Initialized(&val);
+			assert(ret != -1 && "error in check mpi init");
+			bool ret = val == 1 ? true : false;
+#else
+			bool ret = false;
+#endif
+			return ret;
+		}
 
 		int get_rank()
 		{

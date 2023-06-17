@@ -43,6 +43,7 @@ if(OPENMP_FOUND)
 endif()
 set (testlist 
 	test_minimal_long_name 
+	test_timer_matimers_manager
 	test_trace 
 	test_full_tree_mode 
 	test_memory_footprint 
