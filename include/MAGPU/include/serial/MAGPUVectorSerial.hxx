@@ -88,76 +88,77 @@ namespace MATools
 	  {
 	  }
 
-	  void gpu_resize(unsigned int a_size)
-	  {
-	    if(m_device_size > a_size) /* */
-	    {
-	      m_device_size = a_size;
-	    }
-	    else{ /* */
-	      T * new_ptr = new T [a_size];
-	      if(m_device_data == nullptr) // scenario : only host memory has been defined with an extern storage
-	      {
-		m_device_data = new_ptr;
-	      }
-	      else
-	      {
-		std::cout << " It's not possible to enlarge the memory a MAGPUVector that has already been defined" << std::endl;
-		std::abort();
-		/* the following code did a copy on a larger vector, this feature has beed removed */
-		/*
-		   std::copy (m_device_data, m_device_data + m_device_size, new_ptr);
-		   delete m_device_data;
-		   m_device_data = new_ptr;
-		   m_device_size = a_size;
-		   */
-	      }
-	    }
-	  }
+		void gpu_resize(unsigned int a_size)
+		{
+			if(m_device_size > a_size) /* */
+			{
+				m_device_size = a_size;
+			}
+			else if(a_size > m_device_size)
+			{
+				T * new_ptr = new T [a_size];
+				if(m_device_data == nullptr) // scenario : only host memory has been defined with an extern storage
+				{
+					m_device_data = new_ptr;
+				}
+				else
+				{
+					//std::cout << " It's not possible to enlarge the memory a MAGPUVectorDeviceCuda that has already been defined" << std::endl;
+					//std::abort();
+					/* the following code did a copy on a larger vector, this feature has beed removed */
 
-	  void host_to_device(T* a_host, unsigned int a_size)
-	  {
-	    gpu_resize(a_size);
-	    this->copy_to_device(m_device_data, a_host, a_size);
-	  }
+					std::copy (m_device_data, m_device_data + m_device_size, new_ptr);
+					delete m_device_data;
+					m_device_data = new_ptr;
+					m_device_size = a_size;
 
-	  void device_to_host(T* a_host)
-	  {
-	    this->copy_to_host(a_host, m_device_data, m_device_size);
-	  }
+				}
+			}
+		}
 
-	  /**
-	   * @brief Gets size
-	   * @return m_device_size member
-	   */
-	  unsigned int get_device_size()
-	  {
-	    unsigned int size = m_device_size;
-	    return size;
-	  }
+		void host_to_device(T* a_host, unsigned int a_size)
+		{
+			gpu_resize(a_size);
+			this->copy_to_device(m_device_data, a_host, a_size);
+		}
 
-	  /**
-	   * @brief Sets size -> in this case it's a resize
-	   * @param new value of m_device_size
-	   */
-	  void set_device_size(unsigned int a_size)
-	  {
-	    m_device_size = a_size;
-	  }
+		void device_to_host(T* a_host)
+		{
+			this->copy_to_host(a_host, m_device_data, m_device_size);
+		}
 
-	  std::vector<T> copy_to_vector_from_device()
-	  {
-	    std::vector<T> ret;
-	    unsigned int size = get_device_size();
-	    ret.resize(size);
-	    device_to_host(ret.data());
-	    return ret;
-	  }
+		/**
+		 * @brief Gets size
+		 * @return m_device_size member
+		 */
+		unsigned int get_device_size()
+		{
+			unsigned int size = m_device_size;
+			return size;
+		}
+
+		/**
+		 * @brief Sets size -> in this case it's a resize
+		 * @param new value of m_device_size
+		 */
+		void set_device_size(unsigned int a_size)
+		{
+			m_device_size = a_size;
+		}
+
+		std::vector<T> copy_to_vector_from_device()
+		{
+			std::vector<T> ret;
+			unsigned int size = get_device_size();
+			ret.resize(size);
+			device_to_host(ret.data());
+			return ret;
+		}
 
 	private :
-	  // I can't use a std::vector because it's not possible to use alias it with a pointer
-	  T* m_device_data;
-	  int m_device_size;
-      };
-  };
+		// I can't use a std::vector because it's not possible to use alias it with a pointer
+		T* m_device_data = nullptr;
+		int m_device_size;
+			};
+	};
 };

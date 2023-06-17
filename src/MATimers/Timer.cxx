@@ -70,5 +70,27 @@ namespace MATools
 			double ret = measure.count();
 			return ret;
 		}
+
+		HybridTimer::HybridTimer(const std::string a_name)
+		{
+			using namespace MATools::MATimer;
+			auto* ptr_matimer_current_node = MATools::MATimer::get_MATimer_node<CURRENT>();
+			assert(ptr_matimer_current_node != nullptr && "do not use an undefined MATimerNode");
+			auto* ptr_matimer_node = ptr_matimer_current_node->find(a_name);
+			assert(ptr_matimer_node != nullptr && "do not use an undefined MATimerNode");
+			this->m_node = ptr_matimer_node;
+		}
+
+		void HybridTimer::start_time_section()
+		{
+			this->start();
+		}
+
+		void HybridTimer::end_time_section()
+		{
+			this->end();
+			this->m_node->update_count();
+			this->m_node->get_ptr_duration()[0] += this->m_stop - this->m_start;
+		}
 	};
 };

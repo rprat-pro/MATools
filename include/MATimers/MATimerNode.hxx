@@ -32,11 +32,18 @@ namespace MATools
 			MATimerNode(std::string name, MATimerNode* mother);
 
 			/**
+			 * @brief Updates the iteration count.
+			 * This function updates the iteration count of the MATimerNode by adding the provided count value.
+			 * @param a_count The count value to add. Default value is 1.
+			 */
+			void update_count();
+
+			/**
 			 * @brief This function is used to find if a daughter node is already defined with this node name. If this node does not exist, a new daughter MATimerNode is added.
 			 * @param[in] name name of the desired node
 			 * @return the MATimerNode desired
 			 */
-			MATimerNode* find(std::string name);
+			MATimerNode* find(const std::string name);
 
 			// printer functions
 
@@ -167,14 +174,14 @@ namespace MATools
 		 * @see enumTimer
 		 */
 		template<enumTimer T>
-		MATimerNode*& get_MATimer_node();
+			MATimerNode*& get_MATimer_node();
 
-	  template<>
-	  MATimerNode*& get_MATimer_node<enumTimer::CURRENT>();
+		template<>
+			MATimerNode*& get_MATimer_node<enumTimer::CURRENT>();
 
-	  template<>
-	  MATimerNode*& get_MATimer_node<enumTimer::ROOT>();
-	  
+		template<>
+			MATimerNode*& get_MATimer_node<enumTimer::ROOT>();
+
 		template<enumTimer T>
 			void debug_MATimer_node()
 			{

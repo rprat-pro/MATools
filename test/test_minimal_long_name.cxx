@@ -24,5 +24,6 @@ int main(int argc, char * argv[])
 	func_long_name();
 
 	MATools::finalize();
+	MATools::MPI::mpi_finalize();
 	return 0;
 }

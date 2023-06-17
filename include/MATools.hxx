@@ -12,8 +12,8 @@
 namespace MATools
 {
 	void initialize();
-	void initialize(int*,  char***, bool = true);
-	void finalize(bool = true);
+	void initialize(int*,  char***);
+	void finalize();
 }
 
 // API

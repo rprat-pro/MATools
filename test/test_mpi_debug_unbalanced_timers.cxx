@@ -16,5 +16,6 @@ int main(int argc, char * argv[])
 
 	MATools::MAOutputManager::write_debug_file();
 	MATools::finalize();
+	MATools::MPI::mpi_finalize();
 	return 0;
 }

@@ -17,12 +17,47 @@ namespace MATools
 	{
 		constexpr int master=0;
 
+		void mpi_initialize([[maybe_unused]] int *argc, [[maybe_unused]]char ***argv)
+		{
+#ifdef __MPI
+			const auto is_init = check_mpi_initialized(); 			
+			if(!is_init)
+			{
+				MPI_Init(argc,argv);
+			}
+#endif /* __MPI */
+		}
+
+		void mpi_finalize()
+		{
+#ifdef __MPI
+			const auto is_final = check_mpi_finalized(); 			
+			if(!is_final)
+			{
+				MPI_Finalize();
+			}
+#endif /* __MPI */
+		}
+
 		bool check_mpi_initialized()
 		{
 #ifdef __MPI
 			int val = -1;
 			MPI_Initialized(&val);
-			assert(ret != -1 && "error in check mpi init");
+			assert(val != -1 && "error in check mpi init");
+			bool ret = val == 1 ? true : false;
+#else
+			bool ret = false;
+#endif
+			return ret;
+		}
+
+		bool check_mpi_finalized()
+		{
+#ifdef __MPI
+			int val = -1;
+			MPI_Finalized(&val);
+			assert(val != -1 && "error in check mpi finalize");
 			bool ret = val == 1 ? true : false;
 #else
 			bool ret = false;

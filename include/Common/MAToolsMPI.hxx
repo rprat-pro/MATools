@@ -18,6 +18,21 @@ namespace MATools
 	namespace MPI
 	{
 		/**
+		 * @brief Initializes the MPI environment.
+		 * 
+		 * This function initializes the MPI (Message Passing Interface) environment. The parameters `argc` and `argv` are unused.
+		 * @param argc The number of command line arguments (unused).
+		 * @param argv The command line arguments (unused).
+		 */
+		void mpi_initialize([[maybe_unused]] int *argc, [[maybe_unused]] char ***argv);
+
+		/**
+		 * @brief Finalizes the MPI environment.
+		 * This function finalizes the MPI (Message Passing Interface) environment.
+		 */
+		void mpi_finalize();
+
+		/**
 		 * @brief Checks if MPI is initialized using MPI_Initialized routine.
 		 * This function checks if MPI (Message Passing Interface) is initialized.
 		 * @return True if MPI is initialized, false otherwise.

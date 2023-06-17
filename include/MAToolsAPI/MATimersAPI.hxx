@@ -30,6 +30,7 @@ void add_capture_chrono_section(std::string a_name, Lambda&& a_lambda_function) 
 	auto& current = MATools::MATimer::get_MATimer_node<CURRENT>();\
 	assert(current != nullptr && "do not use an undefined MATimerNode");\
 	current = current->find(XNAME);\
+	current -> update_count();\
 	MATools::MATimer::print_verbosity_level_1(XNAME, current->get_level());\
 	MATools::MATimer::Timer non_generic_name(current->get_ptr_duration());
 
@@ -37,6 +38,7 @@ void add_capture_chrono_section(std::string a_name, Lambda&& a_lambda_function) 
 	auto& nested_current = MATools::MATimer::get_MATimer_node<CURRENT>();\
 	assert(nested_current != nullptr && "do not use an undefined nested MATimerNode");\
 	nested_current = nested_current->find(XNAME);\
+	nested_current -> update_count();\
 	MATools::MATimer::print_verbosity_level_1(XNAME, nested_current->get_level());\
 	MATools::MATimer::Timer non_nested_generic_name(nested_current->get_ptr_duration());
 
@@ -92,6 +94,16 @@ class MATimersManager
 		}
 
 		/**
+		 * @brief Constructor for MATimersManager.
+		 * Initializes the MATimersManager by initializing the timer.
+		 */
+		MATimersManager([[maybe_unused]] int *argc, [[maybe_unused]]char ***argv) 
+		{
+			MATools::MPI::mpi_initialize(argc,argv);
+			MATools::MATimer::initialize();
+		}
+
+		/**
 		 * @brief Disables printing of the timetable.
 		 * This function disables the printing of the timetable during profiling.
 		 */
@@ -116,6 +128,7 @@ class MATimersManager
 		~MATimersManager() 
 		{
 			MATools::MATimer::finalize();
+			MATools::MPI::mpi_finalize();
 		}
 };
 

@@ -182,13 +182,13 @@ namespace MATools
 				 * @param[in] a_ptr is the pointer on the data storage
 				 * @param[in] a_size is the number of elements
 				 */
-				void define_and_update(const MEM_MODE other_mode, T* a_ptr, unsigned int a_size)
+				void define_and_update(const MEM_MODE my_mode, T* a_ptr, unsigned int a_size)
 				{
 
-				  assert(  (MODE == MEM_MODE::BOTH) && (other_mode != MEM_MODE::BOTH) || (other_mode == MODE) );
-				  define(other_mode, a_ptr, a_size);
-				  if(other_mode == mem_cpu) update_device();
-				  if(other_mode == mem_gpu) update_host();
+				  assert(  (MODE == MEM_MODE::BOTH) && (my_mode != MEM_MODE::BOTH) || (my_mode == MODE) );
+				  define(my_mode, a_ptr, a_size);
+				  if(my_mode == mem_cpu) update_device();
+				  if(my_mode == mem_gpu) update_host();
 				}
 
 				/**
@@ -279,22 +279,25 @@ namespace MATools
 				  BOTH_WORLD(MODE)
 				  {
 				    T* const host = this->get_host_data();
-				    const unsigned int host_size = this->get_host_size();
-				    this->copy_host_to_device(host, host_size);
-				    return true;
-				  }
-				  return false;
+						const unsigned int host_size = this->get_host_size();
+						this->gpu_resize(host_size);				    
+						this->copy_host_to_device(host, host_size);
+						return true;
+					}
+					return false;
 				}
 
 				bool update_host()
 				{
-				  BOTH_WORLD(MODE)
-				  {
-				    T* const host = this->get_host_data();
-				    this->copy_device_to_host(host);
-				    return true;
-				  }
-				  return false;
+					BOTH_WORLD(MODE)
+					{
+						T* const host = this->get_host_data();
+						const unsigned int device_size = this->get_device_size();
+						this->host_resize(device_size);				    
+						this->copy_device_to_host(host);
+						return true;
+					}
+					return false;
 				}
 
 				/**
@@ -303,15 +306,15 @@ namespace MATools
 				 */
 				std::vector<T> copy_to_vector()
 				{
-				  GPU_WORLD(MODE)
-				  {
-				    this->gpu_sync();
-				    return this->copy_to_vector_from_device();
-				  }
-				  else
-				  {
-				    return this->copy_to_vector_from_host();
-				  }
+					GPU_WORLD(MODE)
+					{
+						this->gpu_sync();
+						return this->copy_to_vector_from_device();
+					}
+					else
+					{
+						return this->copy_to_vector_from_host();
+					}
 				}
 
 
@@ -322,8 +325,8 @@ namespace MATools
 				 */
 				MEM_MODE get_memory_mode()
 				{
-				  MEM_MODE ret = MODE;
-				  return ret;
+					MEM_MODE ret = MODE;
+					return ret;
 				}
 		};
 	} // namespace MAGPU

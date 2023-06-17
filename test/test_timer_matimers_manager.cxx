@@ -18,7 +18,7 @@ void func_name()
 
 int main(int argc, char * argv[]) 
 {
-	MATimersManager timers;
+	MATimersManager timers(&argc, &argv);
 	func_name();
 	return 0;
 }

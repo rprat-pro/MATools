@@ -67,7 +67,6 @@ namespace MATools
 
 			private:
 
-				// TODO : use shared_ptr
 				/** @brief pointer on a duration item stored in a MATimerNode */
 				duration * m_duration; 
 		};
@@ -95,6 +94,28 @@ namespace MATools
 				double get_duration();
 		};	
 
+		class HybridTimer : public BasicTimer
+		{
+			public:
+				/**
+				 * @brief This function sets m_start to the current time point.
+				 */
+				void start_time_section();
+
+				/**
+				 * @brief This function sets m_stop to the current time point.
+				 */
+				void end_time_section();
+
+				/**
+				 * @brief Constructor used with MATimerNode.
+				 * @param [in] pointor on a duration that should be stored in a MATimerNode.
+				 */ 
+				HybridTimer(const std::string a_name);
+				
+				/** @brief pointer on a duration item stored in a MATimerNode */
+				MATimerNode * m_node; 
+		};
 
 		/**
 		 * @brief Gets an unique Timer for an enumTimer (ROOT)

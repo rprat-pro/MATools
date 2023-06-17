@@ -1,7 +1,6 @@
 #include <iostream>
 #include <MAGPUTools.hxx>
 
-
 int main()
 {
 	bool success = EXIT_SUCCESS;

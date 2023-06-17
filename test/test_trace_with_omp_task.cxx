@@ -18,9 +18,9 @@ void task(double* out, double* in, int n)
 int main(int argc, char * argv[]) 
 {
 	using namespace MATools::MATrace;
+	MATools::initialize(&argc, &argv);
 	Optional::active_MATrace_mode();
 	Optional::active_omp_mode();
-	MATools::initialize(&argc, &argv);
 
 	int n_threads = -1;
 #pragma omp parallel
@@ -44,8 +44,8 @@ int main(int argc, char * argv[])
 			task(out.data(), in.data(), L);
 		}
 	}
-#pragma omp barrier
 
 	MATools::finalize();	
+	MATools::MPI::mpi_finalize();
 	return 0;
 }

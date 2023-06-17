@@ -1,13 +1,10 @@
-#include<Common/MAToolsMPI.hxx>
-#include<MATimers/MATimerNode.hxx>
-#include<iomanip>
+#include <Common/MAToolsMPI.hxx>
+#include <MATimers/MATimerNode.hxx>
+#include <iomanip>
+#include <algorithm>
 
 namespace MATools
 {
-
-
-
-  
 	/**
 	 * MATimerNode is the storage class corresponding to a node of the MATimer tree.
 	 */
@@ -40,7 +37,6 @@ namespace MATools
 #ifdef __MPI
 			m_nb_mpi = 1;
 #endif
-
 		}
 
 		/**
@@ -49,7 +45,7 @@ namespace MATools
 		MATimerNode::MATimerNode(std::string name, MATimerNode* mother): m_daughter(), m_duration(0)
 		{
 			m_name = name;
-			m_iteration = 1;
+			m_iteration = 0;
 			m_level = mother->m_level + 1;
 			m_mother = mother;
 #ifdef __MPI
@@ -58,15 +54,45 @@ namespace MATools
 		}
 
 		/**
+		 * @brief Updates the iteration count.
+		 * This function updates the iteration count of the MATimerNode by adding the provided count value.
+		 * @param a_count The count value to add. Default value is 1.
+		 */
+		void MATimerNode::update_count()
+		{
+			m_iteration ++;
+		}
+
+		/**
 		 * @brief This function is used to find if a daughter node is already defined with this node name. If this node does not exist, a new daughter MATimerNode is added
 		 * @param[in] name name of the desired node
 		 * @return the MATimerNode desired 
 		 */
 		MATimerNode* 
-			MATimerNode::find(std::string name)
+			MATimerNode::find(const std::string name)
 			{
+
+				struct comp
+				{
+					comp(const std::string a_value) : m_value(a_value) {}
+
+					inline
+					bool operator()(MATimerNode* a_item)
+					{
+						if(a_item->get_name() == m_value) return true;
+						else return false;
+					}
+					std::string m_value;
+				};
+
 				assert(this != nullptr);
-				for(auto it = m_daughter.begin() ; it < m_daughter.end() ; it++)
+				auto it = std::find_if(m_daughter.begin(), m_daughter.end(), comp(name));
+				if(it != m_daughter.end())
+				{
+					return (*it);
+				}
+
+/*				for(auto it = m_daughter.begin() ; it < m_daughter.end() ; it++)
 				{
 					if((*it)->m_name == name)
 					{
@@ -74,8 +100,10 @@ namespace MATools
 						return (*it);
 					}
 				}
+*/
 				MATimerNode* myTmp = new MATimerNode(name, this);
 				m_daughter.push_back(myTmp);
+
 				return myTmp;
 			}
 
@@ -331,8 +359,8 @@ namespace MATools
 					cValue[5] = std::to_string( (global_max/global_mean)-1).substr(0, std::to_string((global_max/global_mean)-1).find(".") + precisionVal + 1) + "%";
 				}
 #else
-					std::cout << std::setprecision(25);
-					const int precisionVal = 25;
+				std::cout << std::setprecision(25);
+				const int precisionVal = 25;
 				cValue[1] = std::to_string( m_duration.count()).substr(0, std::to_string(m_duration.count()).find(".") + precisionVal + 1);	
 				cValue[2] = std::to_string( (m_duration.count()/total_time)*100 ).substr(0, std::to_string((m_duration.count()/total_time)*100).find(".") + precisionVal + 1);
 #endif

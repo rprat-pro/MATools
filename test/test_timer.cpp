@@ -52,6 +52,6 @@ int main(int argc, char * argv[])
 	}
 
 	MATools::finalize();
-
+	MATools::MPI::mpi_finalize();
 	return 0;
 }

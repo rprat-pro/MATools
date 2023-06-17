@@ -67,6 +67,31 @@ namespace MATools
 						}
 					}
 
+					void host_resize(unsigned int a_size)
+					{
+						if(a_size == 0) 
+						{
+							set_host_size(0);
+						}
+						else if(m_host_size > a_size) /* */
+						{
+							/* Warning, this vector has been reduced */
+							set_host_size(a_size);
+						}
+						else if(m_host_size != a_size)
+						{
+							if(m_host.get() == nullptr) // scenario : only host memory has been defined with an extern storage
+							{
+								host_allocator(a_size);
+							}
+							else
+							{
+								std::cout << " HOST RESIZE : It's not possible to enlarge the memory of a MAGPUVector that has already been defined" << std::endl;
+								std::abort();
+							}
+						}
+					}
+
 					/**
 					 * @brief initialize MAGPUVector with a host pointer.
 					 * @param[in] a_ptr host pointer on the data storage
@@ -75,11 +100,11 @@ namespace MATools
 					void host_aliasing(T* a_ptr, unsigned int a_size)
 					{
 #ifdef __VERBOSE_MAGPU
-					  std::cout << " host_aliasing -> size " << a_size << std::endl;
+						std::cout << " host_aliasing -> size " << a_size << std::endl;
 #endif
-					  assert(a_ptr != nullptr);
-					  m_host = std::shared_ptr<T>(a_ptr, [](T*){}); // no destructor
-					  set_host_size(a_size);
+						assert(a_ptr != nullptr);
+						m_host = std::shared_ptr<T>(a_ptr, [](T*){}); // no destructor
+						set_host_size(a_size);
 					}
 					/**
 					 * @brief Gets host memory pointer
@@ -87,8 +112,8 @@ namespace MATools
 					 */
 					T* get_host_data()
 					{
-					  T* ret = m_host.get();
-					  return ret;
+						T* ret = m_host.get();
+						return ret;
 					}
 
 					/**
@@ -97,8 +122,8 @@ namespace MATools
 					 */
 					unsigned int get_host_size()
 					{
-					  unsigned int ret = m_host_size;
-					  return ret;
+						unsigned int ret = m_host_size;
+						return ret;
 					}
 
 					/**
@@ -107,19 +132,19 @@ namespace MATools
 					 */
 					void set_host_size(unsigned int a_size)
 					{
-					  m_host_size = a_size;
+						m_host_size = a_size;
 					}
 
 
 				public:
 					std::vector<T> copy_to_vector_from_host()
 					{
-					  std::vector<T> ret;
-					  T* raw_ptr = get_host_data();
-					  unsigned int size = get_host_size();
-					  ret.resize(size);
-					  std::copy(raw_ptr, raw_ptr + m_host_size, ret.data());
-					  return ret;
+						std::vector<T> ret;
+						T* raw_ptr = get_host_data();
+						unsigned int size = get_host_size();
+						ret.resize(size);
+						std::copy(raw_ptr, raw_ptr + m_host_size, ret.data());
+						return ret;
 					}
 
 				private:
@@ -127,6 +152,6 @@ namespace MATools
 					std::shared_ptr<T> m_host;
 					/** @brief data size */
 					unsigned int m_host_size;
-      };
-  }
+			};
+	}
 }

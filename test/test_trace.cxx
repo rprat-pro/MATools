@@ -58,5 +58,6 @@ int main(int argc, char * argv[])
 	}
 #endif
 	MATools::finalize();	
+	MATools::MPI::mpi_finalize();
 	return 0;
 }
