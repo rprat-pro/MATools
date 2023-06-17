@@ -57,6 +57,21 @@ echo $MATools_DIR
 
 You need to set the environment variable `MATools_DIR` to the install directory and add `find_package(MATools)` in your `CMakeLists.txt`.
 
+## MATools
+
+MATools is a HPC toolkit to profile MPI + X code.
+
+### Minimal requirement 
+
+Two minimal instructions are used to initiliaze all MATools tools : 
+
+```
+MATools::initialize(&argc,&argv)
+
+... code ...
+
+MATools::finalize();
+```
 ## MATimer
 
 MATimers are designed to track the execution time of a scope/routine whenever they are called. They are organized in a tree structure. Additionally, MATimers are compatible with MPI. They provide information such as the minimum time, average time, maximum time, percentage of execution time, and imbalance for each scope/routine.
@@ -66,7 +81,7 @@ MATimers are designed to track the execution time of a scope/routine whenever th
 Two instructions are required to use MATimers: 
 
 ```
-MATools::MATimer::initialize();
+MATools::MATimer::initialize(); // initialize(&argc,&argv) if mpi
 
 ... code ...
 
@@ -96,7 +111,7 @@ Catch_Nested_Time_Section("nested_section_name");
 
 Please note the following limitations: only one instruction is allowed per scope, and these timers are not thread-safe.
 
-Another approach to capturing a section is by using the chrono_section([&](args){...}) function, which returns the duration as a double. Additionally, you can add a chrono_section to the timers tree using the add_capture_chrono_section("name", [&](args){...}) function.
+Another approach to capturing a section is by using the `chrono_section([&](args){...})` function, which returns the duration as a double. Additionally, you can add a chrono_section to the timers tree using the `add_capture_chrono_section("name", [&](args){...})` function.
 
 ### MATimers Output
 
