@@ -176,19 +176,31 @@ namespace MATools
 		template<enumTimer T>
 			MATimerNode*& get_MATimer_node();
 
+		/**
+		 * @brief Template specialization for getting the MATimerNode pointer for enumTimer::CURRENT.
+		 * @return The MATimerNode pointer for enumTimer::CURRENT.
+		 */
 		template<>
-			MATimerNode*& get_MATimer_node<enumTimer::CURRENT>();
+		MATimerNode*& get_MATimer_node<enumTimer::CURRENT>();
 
+		/**
+		 * @brief Template specialization for getting the MATimerNode pointer for enumTimer::ROOT.
+		 * @return The MATimerNode pointer for enumTimer::ROOT.
+		 */
 		template<>
-			MATimerNode*& get_MATimer_node<enumTimer::ROOT>();
+		MATimerNode*& get_MATimer_node<enumTimer::ROOT>();
 
+		/**
+		 * @brief Debugs the MATimerNode based on the provided enumTimer value.
+		 * @tparam T The enumTimer value (should be enumTimer::ROOT or enumTimer::CURRENT).
+		 */
 		template<enumTimer T>
-			void debug_MATimer_node()
-			{
-				static_assert(T == enumTimer::ROOT || T == enumTimer::CURRENT);
-				auto node = get_MATimer_node<T>();
-				std::cout << node << std::endl;
-				node->debug_info();
-			}
+		void debug_MATimer_node()
+		{
+			static_assert(T == enumTimer::ROOT || T == enumTimer::CURRENT, "T should be enumTimer::ROOT or enumTimer::CURRENT");
+			auto node = get_MATimer_node<T>();
+			std::cout << node << std::endl;
+			node->debug_info();
+		}
 	};
 };
