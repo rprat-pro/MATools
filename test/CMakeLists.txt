@@ -9,6 +9,23 @@ else()
 	endfunction()
 endif()
 
+
+######## UNIT TESTS
+
+
+if(NOT MATOOLS_MPI)
+	find_package(Catch2 REQUIRED)
+	add_executable(matimer_optional_units test_matimer_optional_unit_tests.cxx)
+	target_link_libraries(matimer_optional_units Catch2::Catch2 pthread MATools)
+	include(CTest)
+	include(Catch)
+	catch_discover_tests(matimer_optional_units)
+	add_custom_target(check COMMAND ${CMAKE_CTEST_COMMAND}
+      DEPENDS test_matimer_optional_unit_tests.cxx)
+endif()
+
+#########
+
 function(build_test name)
 	add_executable(check_${name} ${name}.cxx)
 	target_include_directories(check_${name} PUBLIC ${HEADERS} ${TCLAP_INCLUDE_DIR})
