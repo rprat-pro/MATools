@@ -10,7 +10,7 @@ namespace MATools
 		/**
 		 * MAFootprint is a derived class of std::vector with rusage objects
 		 */
-		class MAFootprint : std::vector<rusage>
+		class MAFootprint : public std::vector<rusage>
 		{
 			public:
 				/**
