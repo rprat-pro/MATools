@@ -45,10 +45,20 @@ namespace MATools
 		void print_checkpoints(MAFootprint& a_f);
 
 		/*
+		 * The memory footprint is written for every memory checkpoints
+		 * @see mafootprint
+		 */
+		void write_memory_checkpoints(MAFootprint&, std::string="MAMemoryFootprint.mem");
+
+		/*
 		 * The memory footprint is printed where this function is called.
 		 * @see MAFootprint
 		 */
 		void print_memory_footprint();
 
+		/**
+		 * @brief This function gets the "common" MAFootprint or create if necessary.
+		 */
+		MAFootprint& get_MAFootprint();
 	};
 };

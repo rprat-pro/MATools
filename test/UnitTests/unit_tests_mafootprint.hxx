@@ -60,6 +60,4 @@ TEST_CASE("print_memory_footprint doesn't fail")
 	{
 		print_memory_footprint();
 	}
-
 }
-

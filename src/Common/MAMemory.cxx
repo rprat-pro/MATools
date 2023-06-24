@@ -1,6 +1,6 @@
-
 #include <vector>
 #include <cassert>
+#include <fstream>
 #include <MAOutput/MAOutput.hxx>
 #include <Common/MAMemory.hxx>
 #include <Common/MAToolsMPI.hxx>
@@ -87,6 +87,29 @@ namespace MATools
 			}
 		};
 
+
+		/*
+		 * The memory footprint is written for every memory checkpoints
+		 * @param f is a mafootprint object that contains memory checkpoints
+		 * @see mafootprint
+		 */
+		void write_memory_checkpoints(MAFootprint& a_f, std::string file_name)
+		{
+			using namespace MATools::MPI;
+			// This function extracts the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
+			// For every memory checkpoints
+			auto obj = a_f.reduce();
+			if(is_master())
+			{
+				std::ofstream out (file_name, std::ios::out);
+				std::cout << " List (maximum resident size): ";
+				for(size_t i = 0 ; i < obj.size() ; i++)
+				{
+					out << i << " " << obj[i] << std::endl;
+				}
+			}
+		};
+
 		/*
 		 * The memory footprint is printed where this function is called.
 		 * @see MAFootprint
@@ -104,5 +127,13 @@ namespace MATools
 			MATools::MAOutput::printMessage(" memory footprint: ", last, " GB");
 		};
 
+		/**
+		 * @brief This function gets the "common" MAFootprint or create if necessary.
+		 */
+		MAFootprint& get_MAFootprint()
+		{
+			static MAFootprint ret;
+			return ret;
+		}
 	};
 };

@@ -18,3 +18,4 @@ namespace MATools
 
 // API
 #include <MAToolsAPI/MATimersAPI.hxx>
+#include <MAToolsAPI/MAMemoryAPI.hxx>
