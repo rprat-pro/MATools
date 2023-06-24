@@ -15,9 +15,10 @@ class MAMemoryManager
 		get_MAFootprint();
 		printMessage("MATools_LOG:","The memory profiler is activated");
 	}
+
 	/**
-	* @brief 
-	*/
+	 * @brief This function prints the memory usage points in a file collected via the use of Add_Mem_Points
+	 */
 	void print_trace_memory_footprint()
 	{
 		using namespace MATools::MAMemory;
@@ -25,6 +26,9 @@ class MAMemoryManager
 		print_checkpoints(mem);		
 	}
 
+	/**
+	 * @brief This function writes the memory usage points in a file collected via the use of Add_Mem_Points
+	 */
 	void write_trace_memory_footprint()
 	{
 		using namespace MATools::MAMemory;
@@ -34,6 +38,9 @@ class MAMemoryManager
 
 };
 
+/**
+ * @brief Add a memory point (memory usage)
+ */
 void Add_Mem_Point()
 {
 	using namespace MATools::MAMemory;

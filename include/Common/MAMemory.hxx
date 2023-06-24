@@ -29,6 +29,12 @@ namespace MATools
 				 * @return a vector with the total memory footprint by memory checkpoints  
 				 */
 				std::vector<long> reduce();
+				/*
+				 * @brief Get the maximum memory usage value (rusage::.ru_maxrss) for the point number i
+				 * @param a_idx a_idx is the index of the memory point
+				 * @return return the ru_maxrss of the rusage structure
+				 */
+				const long get_usage(const int a_idx);
 		};
 
 		/**
@@ -43,6 +49,16 @@ namespace MATools
 		 * @see mafootprint
 		 */
 		void print_checkpoints(MAFootprint& a_f);
+
+		template<class IO>
+		void io_trace_memory_points_per_mpi(IO& a_stream, MAFootprint&& a_mem_points);
+
+		/*
+		 * The memory footprint is printed for every memory checkpoints according to their mpi rank.
+		 * @param f is a mafootprint object that contains memory checkpoints
+		 * @see mafootprint
+		 */
+		void print_trace_memory_points_per_mpi(MAFootprint& a_f);
 
 		/*
 		 * The memory footprint is written for every memory checkpoints

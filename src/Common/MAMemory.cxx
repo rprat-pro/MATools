@@ -1,6 +1,8 @@
 #include <vector>
 #include <cassert>
 #include <fstream>
+#include <array>
+#include <cstring>
 #include <MAOutput/MAOutput.hxx>
 #include <Common/MAMemory.hxx>
 #include <Common/MAToolsMPI.hxx>
@@ -61,7 +63,17 @@ namespace MATools
 				ret[id] = m_data[id].ru_maxrss;
 #endif
 			}
+			return ret;
+		}
 
+		/*
+		* @brief Get the maximum memory usage value (rusage::.ru_maxrss) for the point number i
+		* @param a_idx a_idx is the index of the memory point
+		* @return return the ru_maxrss of the rusage structure
+		*/
+		const long MAFootprint::get_usage(const int a_idx)
+		{
+			const long ret = this->data()[a_idx].ru_maxrss;
 			return ret;
 		}
 
@@ -126,6 +138,47 @@ namespace MATools
 			auto last = obj.back() * 1e-6; // conversion kb to Gb
 			MATools::MAOutput::printMessage(" memory footprint: ", last, " GB");
 		};
+
+
+		template<class IO>
+		void io_trace_memory_points_per_mpi(IO& a_stream, MAFootprint& a_mem_points)
+		{
+			using namespace MATools;
+//			int rank = MPI::get_rank();
+			int size = MPI::get_mpi_size();
+			int number_of_mem_points = a_mem_points.size();
+			std::vector<std::vector<long>> mpi_trace(number_of_mem_points, std::vector<long>(size));
+			// gather all data per rank
+			for(int i = 0 ; i < number_of_mem_points ; i++)
+			{
+#ifdef __MPI
+				MPI_Gather(&a_mem_points.get_usage(i), mpi_trace[i].data(), 1, MPI_LONG, 0, MPI_COMM_WORLD);
+#else /* __MPI */
+				mpi_trace[i][0] = a_mem_points.get_usage(i);
+#endif /* __MPI */
+			}
+
+			int point_id = 0; 
+			for(auto& mem_points : mpi_trace)
+			{
+				std::string buf = std::to_string(point_id++) + " "; 
+				for(auto& mpi : mem_points)
+				{
+					buf += std::to_string(mpi) + " "; 
+				}
+				a_stream << buf << std::endl;
+			}
+		}
+
+		/*
+		 * The memory footprint is printed for every memory checkpoints according to their mpi rank.
+		 * @param f is a mafootprint object that contains memory checkpoints
+		 * @see mafootprint
+		 */
+		void print_trace_memory_points_per_mpi(MAFootprint&& a_mem_points)
+		{
+			io_trace_memory_points_per_mpi(std::cout, a_mem_points);
+		}
 
 		/**
 		 * @brief This function gets the "common" MAFootprint or create if necessary.
