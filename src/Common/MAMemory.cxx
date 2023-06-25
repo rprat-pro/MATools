@@ -152,7 +152,8 @@ namespace MATools
 			for(int i = 0 ; i < number_of_mem_points ; i++)
 			{
 #ifdef __MPI
-				MPI_Gather(&a_mem_points.get_usage(i), mpi_trace[i].data(), 1, MPI_LONG, 0, MPI_COMM_WORLD);
+				long local = a_mem_points.get_usage(i);
+				MPI_Gather(&local, 1, MPI_LONG, mpi_trace[i].data(), 1, MPI_LONG, 0, MPI_COMM_WORLD);
 #else /* __MPI */
 				mpi_trace[i][0] = a_mem_points.get_usage(i);
 #endif /* __MPI */
