@@ -54,11 +54,18 @@ namespace MATools
 		void io_trace_memory_points_per_mpi(IO& a_stream, MAFootprint&& a_mem_points);
 
 		/*
-		 * The memory footprint is printed for every memory checkpoints according to their mpi rank.
+		 * the memory footprint is printed for every memory checkpoints according to their mpi rank.
 		 * @param f is a mafootprint object that contains memory checkpoints
 		 * @see mafootprint
 		 */
 		void print_trace_memory_points_per_mpi(MAFootprint& a_f);
+
+		/*
+		 * the memory footprint is written for every memory checkpoints according to their mpi rank.
+		 * @param f is a mafootprint object that contains memory checkpoints
+		 * @see mafootprint
+		 */
+		void write_trace_memory_points_per_mpi(MAFootprint& a_f, std::string a_name="MAMemoryFootprinPar.mem");
 
 		/*
 		 * The memory footprint is written for every memory checkpoints
