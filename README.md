@@ -278,7 +278,7 @@ python3 print_memory_footprint_with_labels.py MAMemoryFootprint.mem
 ```
 
 Output example:  
-
+![](doc/post_processing_mamemory_example.png)
 
 
 ### Status of developments 
