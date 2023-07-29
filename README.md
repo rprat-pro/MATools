@@ -10,6 +10,18 @@ MATools is a library that offers various tools, including MATimers (timers in hi
 
 ## Installation 
 
+### MATools Environment requirements
+
+Below is a list of the packages required, depending on the options used.
+
+| Options         | Requirements |
+|-----------------|--------------|
+| Default         | X            |
+| MATOOLS_TESTING | TCLAP        |
+| MATOOLS_MPI     | MPI          |
+
+Note that other options don't any extra pacckage.
+
 ### MATools installation with cmake
 
 Command lines
@@ -33,7 +45,7 @@ export MATools_LIBRARY_DIR=${MATools_DIR}/lib
 spack add MATools/spack_repo
 ```
 
-#### Installation wihthout mpi
+#### Installation without mpi
 
 ```
 spack install matools 
