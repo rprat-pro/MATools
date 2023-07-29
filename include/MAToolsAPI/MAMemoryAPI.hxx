@@ -41,6 +41,7 @@ class MAMemoryManager
 /**
  * @brief Add a memory point (memory usage)
  */
+inline
 void Add_Mem_Point()
 {
 	using namespace MATools::MAMemory;
