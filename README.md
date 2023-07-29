@@ -1,6 +1,6 @@
 # MATools library
 
-MATools is a library that offers various tools, including MATimers (timers in hierarchical form), MATrace (Trace generation for VITE), and MAMemory (memory footprint printing).
+MATools is a library that offers various tools, including `MATimers` (timers in hierarchical form), `MATrace` (Trace generation for VITE), and `MAMemory` (memory footprint printing).
 
 - Installation
 - MATimer
@@ -9,6 +9,18 @@ MATools is a library that offers various tools, including MATimers (timers in hi
 - Debugging tools
 
 ## Installation 
+
+### MATools Environment requirements
+
+Below is a list of the packages required, depending on the options used.
+
+| Options         | Requirements |
+|-----------------|--------------|
+| Default         | X            |
+| MATOOLS_TESTING | TCLAP        |
+| MATOOLS_MPI     | MPI          |
+
+Note that other options don't any extra pacckage.
 
 ### MATools installation with cmake
 
@@ -33,7 +45,7 @@ export MATools_LIBRARY_DIR=${MATools_DIR}/lib
 spack add MATools/spack_repo
 ```
 
-#### Installation wihthout mpi
+#### Installation without mpi
 
 ```
 spack install matools 
@@ -45,7 +57,7 @@ spack install matools
 spack install matools+mpi 
 ```
 
-Do not forget to define MATools_DIR:
+Do not forget to define `MATools_DIR`:
 
 ```
 spack load matools
@@ -59,11 +71,11 @@ You need to set the environment variable `MATools_DIR` to the install directory 
 
 ## MATools
 
-MATools is a HPC toolkit to profile MPI + X code.
+`MATools` is a HPC toolkit to profile MPI + X code.
 
-### Minimal requirement 
+### Minimal requirement in your code
 
-Two minimal instructions are used to initiliaze all MATools tools : 
+Two minimal instructions are used to initiliaze all `MATools` tools : 
 
 ```
 MATools::initialize(&argc,&argv)
@@ -72,7 +84,7 @@ MATools::initialize(&argc,&argv)
 
 MATools::finalize();
 ```
-## MATimer
+## MATimers
 
 MATimers are designed to track the execution time of a scope/routine whenever they are called. They are organized in a tree structure. Additionally, MATimers are compatible with MPI. They provide information such as the minimum time, average time, maximum time, percentage of execution time, and imbalance for each scope/routine.
 
@@ -157,12 +169,12 @@ MATimers_LOG: MATimers finalization
 ```
 ### MATimers Options
 
-In order to modify the behavior of MATimers, you can utilize the following options:
+In order to modify the behavior of `MATimers`, you can utilize the following options:
 Disable printing the timetable
 
 #### Disable printing the timetable
 
-To prevent the timetable from being printed, this routine should be called within the MATools::Finalize() routine.
+To prevent the timetable from being printed, this routine should be called within the `MATools::Finalize()` routine.
 
 ```
 MATools::MATimer::Optional::disable_print_timetable();
@@ -184,6 +196,43 @@ This option should be activated when all MPI processes do not build the same tim
 active_full_tree_mode();
 ```
 
+#### Use HybridTimer instead of Catch_Nested_Time_Section
+
+Since several `Catch_Time_Section` macros cannot be called in the same scope, a solution is to use the `Catch_Nested_Time_Section` macro. However, this macro can only be called once in a `Catch_Time_Section`. `MATimer` has been designed to be included in a set of short functions at the start of each one, however, in the case of long functions, you may wish to capture several sections of the same function. For this reason, the `HybridTimer` class has been developed. These use a start_time_section and end_time_section function instead of the constructor and destructor. They are also integrated into the timer tree.
+
+Example (or see `test/est_hybrid_timer.cxx`):
+```
+HybridTimer first_timer("first_section"), second_timer("second_section");
+first_timer.start_time_section();
+first_section();
+first_timer.end_time_section();
+second_timer.start_time_section();
+second_section();
+second_timer.end_time_section();
+```
+
+
+However, it's important to note that `HybridTimers` will not modify the timer hierarchy, i.e. `HybridTimers` have no influence on the timer tree. The aim is to be able to intertwine timers. For example, this type of operation is allowed: A.start_time_section(), B.start_time_section(), A.end_time_section(), B.end_time_section().
+
+Example (or see `test/est_hybrid_timer_short.cxx`): 
+```
+  HybridTimer first_timer("hybrid_timer");
+  first_timer.start_time_section();
+  {
+    Catch_Nested_Time_Section("inside_hybrid_timer");
+  }
+  first_timer.end_time_section();
+```
+```
+ |-- start timetable --------------------------------------------------------------------------------------------------------------------------------------|
+ |    name                   |    number Of calls |            min (s) |           mean (s) |            max (s) |     time ratio (%) |            imb (%) |
+ |---------------------------------------------------------------------------------------------------------------------------------------------------------|
+ | > root                    |                  1 |           0.000141 |           0.000141 |           0.000141 |        100.000000% |          0.000000% |
+ | |--> hybrid_timer         |                  1 |           0.000032 |           0.000032 |           0.000032 |         22.904766% |          0.000000% |
+ | |--> inside_hybrid_timer  |                  1 |           0.000001 |           0.000001 |           0.000001 |          0.571250% |          0.000000% |
+ |-- end timetable ----------------------------------------------------------------------------------------------------------------------------------------|
+```
+
 ### Status of developments 
 
 | MATimers feature                 | Status      |
@@ -191,7 +240,7 @@ active_full_tree_mode();
 | Sequential                       | Done        |
 | MPI                              | Done        |
 | OpenMP                           | TODO        |
-| Hybrid                           | not planned |
+| MPI + OpenMP                     | not planned |
 | Unbalanced timers trees with MPI | Done        |
 
 
