@@ -1,0 +1,17 @@
+root 1 20.0151 100
+   graph::build_cartesian_grid 1 0.0459929 0.229791
+   graph::write_csv 1 9.13146 45.6228
+      graph::color_rank 1 0.00244238 0.0122027
+   set_zoltan_query_functions 1 5.2e-07 2.59803e-06
+   timeloop 1 19.9177 99.513
+      zoltan_manager::graph::number_of_objects 1 4.58e-07 2.28827e-06
+      zoltan_manager::graph::fill_object_list 1 0.00556859 0.0278219
+      zoltan_manager::graph::get_dim 1 4.17e-07 2.08342e-06
+      zoltan_manager::graph::build_geometry 1 0.00861706 0.0430527
+      zoltan_manager::graph::fill_sizes 2 0.00107464 0.00536912
+      zoltan_manager::graph::pack 1 0.13913 0.695124
+      zoltan_manager::graph::unpack 1 0.0205936 0.10289
+      graph::update_workload 1 0.044397 0.221817
+      graph::write_csv 1 10.4938 52.4292
+         graph::color_rank 1 0.00484527 0.024208
+      checker 1 10.4172 52.0467
