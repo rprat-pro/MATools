@@ -257,16 +257,16 @@ Unlike other tools, `MAMemory` does not require an initialize or finalize routin
 `MAMemory` lets you add different points in your code to obtain the memory footprint during simulation. To do this, use the `Add_Mem_Point()` function or the `ADD_MEMORY_POINT()` macro to add point 1, then 2 and so on. You can also label these points with `Add_Mem_Point('my_point")`. To display this data, use the `TRACE_MEMORY_POINTS()` macro or the `print_checkpoints(MATools::MAMemory::get_MAFootprint())` function. To write the data, use the `WRITE_MEMORY_POINTS()` macro or the `write_memory_checkpoints(MATools::MAMemory::get_MAFootprint())` function. To simplify writing, you can also use `MAMemoryManager` such as (or see test/test_mamemory_api.cxx): 
 
 ```
-	using namespace MATools::MAMemory;
-	MAMemoryManager mem_manager;
-	for(int i = 0; i < 100 ; i++)
-	{
-		std::vector<char> vec(10000*i);
+using namespace MATools::MAMemory;
+MAMemoryManager mem_manager;
+for(int i = 0; i < 100 ; i++)
+{
+  std::vector<char> vec(10000*i);
   std::string name = "labed_" + std::to_string(i);
-		Add_Mem_Point(name);
-	}
-	mem_manager.write_trace_memory_footprint();
-	mem_manager.print_trace_memory_footprint();
+  Add_Mem_Point(name);
+}
+mem_manager.write_trace_memory_footprint();
+mem_manager.print_trace_memory_footprint();
 ```
 
 ### Post-processing
