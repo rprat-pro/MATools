@@ -121,6 +121,30 @@ namespace MATools
 				}
 			}
 		};
+	
+	/*
+		 * The memory footprint is written for every memory checkpoints
+		 * @param f is a mafootprint object that contains memory checkpoints
+		 * @param a_labels is a list of labels
+		 * @see mafootprint
+		 */
+		void write_memory_checkpoints(MAFootprint& a_f, std::vector<std::string>& a_labels,  std::string file_name)
+		{
+			using namespace MATools::MPI;
+			// This function extracts the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
+			// For every memory checkpoints
+			auto obj = a_f.reduce();
+			
+			if(is_master())
+			{
+				std::ofstream out (file_name, std::ios::out);
+				std::cout << " List (maximum resident size): ";
+				for(size_t i = 0 ; i < obj.size() ; i++)
+				{
+					out << a_labels[i] << " " << obj[i] << std::endl;
+				}
+			}
+		};
 
 		/*
 		 * The memory footprint is printed where this function is called.
