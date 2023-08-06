@@ -26,22 +26,32 @@ void add_capture_chrono_section(std::string a_name, Lambda&& a_lambda_function) 
 
 #else /* NO_TIMER */
 
+// One level of macro indirection is required in order to resolve __COUNTER__,
+// and get varname1 instead of varname__COUNTER__.
+#define CONCAT(a, b) CONCAT_INNER(a, b)
+#define CONCAT_INNER(a, b) a ## b
+
+#define CONCAT_LINE(x) CONCAT(x, __LINE__)
+#define CONCAT_FILE(x) CONCAT(x, __FILE__)
+#define CONCAT_COUNTER(x) CONCAT(x, __COUNTER__)
+#define VARNAME() CONCAT_COUNTER(BASE)
+
+std::chrono::duration<double>* get_duration(std::string a_name)
+{
+	auto& ptr = MATools::MATimer::get_MATimer_node<CURRENT>();
+	assert(ptr != nullptr && "do not use an undefined MATimerNode");
+	ptr = ptr->find(a_name);
+	ptr -> update_count();
+	MATools::MATimer::print_verbosity_level_1(a_name, ptr->get_level());
+	return ptr-> get_ptr_duration();
+}
+
 #define Catch_Time_Section(XNAME)\
-	auto& current = MATools::MATimer::get_MATimer_node<CURRENT>();\
-	assert(current != nullptr && "do not use an undefined MATimerNode");\
-	current = current->find(XNAME);\
-	current -> update_count();\
-	MATools::MATimer::print_verbosity_level_1(XNAME, current->get_level());\
-	MATools::MATimer::Timer non_generic_name(current->get_ptr_duration());
+	MATools::MATimer::Timer VARNAME()(get_duration(XNAME));
 
-#define Catch_Nested_Time_Section(XNAME)\
-	auto& nested_current = MATools::MATimer::get_MATimer_node<CURRENT>();\
-	assert(nested_current != nullptr && "do not use an undefined nested MATimerNode");\
-	nested_current = nested_current->find(XNAME);\
-	nested_current -> update_count();\
-	MATools::MATimer::print_verbosity_level_1(XNAME, nested_current->get_level());\
-	MATools::MATimer::Timer non_nested_generic_name(nested_current->get_ptr_duration());
 
+// alias
+#define Catch_Nested_Time_Section(XNAME) Catch_Time_Section(XNAME)
 #define START_TIMER(XNAME) Catch_Time_Section(XNAME)
 
 /**
