@@ -34,7 +34,7 @@ namespace MATools
 				 * @param a_idx a_idx is the index of the memory point
 				 * @return return the ru_maxrss of the rusage structure
 				 */
-				const long get_usage(const int a_idx);
+				long get_usage(const int a_idx);
 		};
 
 		/**

@@ -18,6 +18,9 @@ namespace MATools
 		class BaseTimer
 		{
 			public:
+
+			virtual ~BaseTimer() = default;
+
 			/**
 			 * @brief This function sets m_start to the current time point.
 			 */
@@ -53,12 +56,12 @@ namespace MATools
 				/**
 				 * @brief This function sets m_start to the current time point.
 				 */
-				void start();
+				void start() override;
 
 				/**
 				 * @brief This function sets m_stop to the current time point.
 				 */
-				void end();
+				void end() override;
 
 				/**
 				 * @brief Default destructor. The duration is incremented with the time section : m_stop - m_start
@@ -80,12 +83,12 @@ namespace MATools
 				/**
 				 * @brief This function sets m_start to the current time point.
 				 */
-				void start();
+				void start() override;
 
 				/**
 				 * @brief This function sets m_stop to the current time point.
 				 */
-				void end();
+				void end() override;
 
 				/**
 				 * @brief return the duration time defined between the time point m_start and m_stop.
