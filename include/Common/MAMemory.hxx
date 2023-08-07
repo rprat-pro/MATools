@@ -89,5 +89,5 @@ namespace MATools
 		 * @brief This function gets the "common" MAFootprint or create if necessary.
 		 */
 		MAFootprint& get_MAFootprint();
-	};
-};
+	}
+}

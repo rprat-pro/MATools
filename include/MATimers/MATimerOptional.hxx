@@ -89,6 +89,6 @@ namespace MATools
        * @return True if the write file is enabled, false otherwise.
        */
       bool is_write_file();
-    };
-  };
-};
+    }
+  }
+}

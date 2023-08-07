@@ -88,5 +88,5 @@ namespace MATools
 
 
 		typedef std::vector<MATrace_section> Trace;
-	};
-};
+	}
+}

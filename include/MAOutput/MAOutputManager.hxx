@@ -153,5 +153,5 @@ namespace MATools
 				recursive_sorted_call(func, mySort, it, arg...);
 			}
 		}
-	};
+	}
 }

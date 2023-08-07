@@ -14,6 +14,6 @@ namespace MATools
 			
 			bool is_MATrace_mode();
 			bool is_omp_mode();
-		};
-	};
-};
+		}
+	}
+}

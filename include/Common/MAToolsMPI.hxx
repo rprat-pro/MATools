@@ -82,5 +82,5 @@ namespace MATools
 		 * @return The mean value across all processes.
 		 */
 		double reduce_mean(double);
-	};
+	}
 }

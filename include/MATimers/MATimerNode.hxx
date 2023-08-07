@@ -202,5 +202,5 @@ namespace MATools
 			std::cout << node << std::endl;
 			node->debug_info();
 		}
-	};
-};
+	}
+}

@@ -33,5 +33,5 @@ namespace MATools
 					printMessage(a_msgs...);
 				}
 			}
-	};
-};
+	}
+}

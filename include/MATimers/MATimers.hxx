@@ -28,7 +28,7 @@ namespace MATools
 		 * @brief finalize the root timer node. This function has to be called after the intialize function. Do not call this function twice.  
 		 */
 		void finalize();
-	};
-};
+	}
+}
 #endif /* NO_TIMER */
 

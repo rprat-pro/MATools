@@ -158,4 +158,4 @@ namespace MATools
 				timer->end();
 			}
 	}
-};
+}
