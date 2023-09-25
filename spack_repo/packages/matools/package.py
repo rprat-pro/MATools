@@ -8,7 +8,9 @@ class Matools(AutotoolsPackage):
     git = "https://github.com/rprat-pro/MATools.git"
 
 
-    version("1.0", mat100="439f19525e10bae163da68abb00eed4203951af4")
+    version("1.2", sha256="1d071628dd7b13971c45ed00e8a00c1e553003af")
+    version("1.1", sha256="ea62ca75455d0741a6a179114734e9b12fa9f412")
+    version("1.0", sha256="439f19525e10bae163da68abb00eed4203951af4")
 
     depends_on("cmake")
     depends_on("openmpi", when="+mpi")
