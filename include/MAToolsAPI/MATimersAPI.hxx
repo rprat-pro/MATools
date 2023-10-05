@@ -36,6 +36,7 @@ void add_capture_chrono_section(std::string a_name, Lambda&& a_lambda_function) 
 #define CONCAT_COUNTER(x) CONCAT(x, __COUNTER__)
 #define VARNAME() CONCAT_COUNTER(BASE)
 
+inline
 std::chrono::duration<double>* get_duration(std::string a_name)
 {
 	auto& ptr = MATools::MATimer::get_MATimer_node<CURRENT>();
