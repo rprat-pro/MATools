@@ -98,7 +98,7 @@ namespace MATools
 				_mean = ((double)(_sum)) / ((double)(mpi_size));
 				item = std::make_tuple(_sum, _min, _max, _mean);
 #else
-				item = [m_data[id].ru_maxrss, m_data[id].ru_maxrss, m_data[id].ru_maxrss, m_data[id].ru_maxrss];
+				item = std::make_tuple(m_data[id].ru_maxrss, m_data[id].ru_maxrss, m_data[id].ru_maxrss, m_data[id].ru_maxrss);
 #endif
 				res[id] = std::move(item);
 			}
