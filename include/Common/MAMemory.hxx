@@ -29,6 +29,14 @@ namespace MATools
 				 * @return a vector with the total memory footprint by memory checkpoints  
 				 */
 				std::vector<long> reduce();
+
+				/**
+				 * get_sum_min_max_mean is called to get the total, min, max, mean memory footprint among MPI processes for every memory checkpoints
+				 * Data are gathered/reduced on the master mpi process 0.
+				 * @return a vector with the total, min, max, mean memory footprint by memory checkpoints  
+				 */
+				std::vector<std::tuple<long, long, long, double>> get_sum_min_max_mean();
+
 				/*
 				 * @brief Get the maximum memory usage value (rusage::.ru_maxrss) for the point number i
 				 * @param a_idx a_idx is the index of the memory point

@@ -2,6 +2,7 @@
 #include <cassert>
 #include <fstream>
 #include <array>
+#include <tuple>
 #include <cstring>
 #include <MAOutput/MAOutput.hxx>
 #include <Common/MAMemory.hxx>
@@ -66,11 +67,51 @@ namespace MATools
 			return ret;
 		}
 
+		std::vector<std::tuple<long, long, long, double>> MAFootprint::get_sum_min_max_mean()
+		{
+			using namespace MATools::MPI;
+			std::vector<std::tuple<long, long, long, double>> res;
+			int nb_points = this->size();
+			auto m_data = this->data();
+			res.resize(nb_points);
+
+			const int mpi_size = get_mpi_size();
+			std::vector<long> buffer;
+			if(is_master()) buffer.resize(mpi_size);
+
+			// get total memory footprint for every memory checkpoints
+			for(int id = 0 ; id < nb_points ; id++)
+			{
+				std::tuple<long, long, long, double> item;
+#ifdef __MPI
+				MPI_Gather(&(m_data[id].ru_maxrss), 1, MPI_LONG, buffer.data(), 1, MPI_LONG, 0, MPI_COMM_WORLD);
+				long _sum(0);
+				long _min(buffer[0]);
+				long _max(buffer[0]);
+				double _mean = 0.0;
+				for(int mpi = 0; mpi < mpi_size ; mpi++)
+				{
+					_sum += buffer[mpi];
+					_min = std::min(_min, buffer[mpi]);
+					_max = std::max(_max, buffer[mpi]);
+				}
+				_mean = ((double)(_sum)) / ((double)(mpi_size));
+				item = std::make_tuple(_sum, _min, _max, _mean);
+#else
+				item = [m_data[id].ru_maxrss, m_data[id].ru_maxrss, m_data[id].ru_maxrss, m_data[id].ru_maxrss];
+#endif
+				res[id] = std::move(item);
+			}
+
+			return res;
+		}
+
+
 		/*
-		* @brief Get the maximum memory usage value (rusage::.ru_maxrss) for the point number i
-		* @param a_idx a_idx is the index of the memory point
-		* @return return the ru_maxrss of the rusage structure
-		*/
+		 * @brief Get the maximum memory usage value (rusage::.ru_maxrss) for the point number i
+		 * @param a_idx a_idx is the index of the memory point
+		 * @return return the ru_maxrss of the rusage structure
+		 */
 		long MAFootprint::get_usage(const int a_idx)
 		{
 			const long ret = this->data()[a_idx].ru_maxrss;
@@ -121,8 +162,8 @@ namespace MATools
 				}
 			}
 		};
-	
-	/*
+
+		/*
 		 * The memory footprint is written for every memory checkpoints
 		 * @param f is a mafootprint object that contains memory checkpoints
 		 * @param a_labels is a list of labels
@@ -133,15 +174,27 @@ namespace MATools
 			using namespace MATools::MPI;
 			// This function extracts the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
 			// For every memory checkpoints
+#ifdef __MPI
+			auto obj = a_f.get_sum_min_max_mean(); 
+#else
 			auto obj = a_f.reduce();
-			
+#endif
 			if(is_master())
 			{
 				std::ofstream out (file_name, std::ios::out);
 				std::cout << " List (maximum resident size): ";
 				for(size_t i = 0 ; i < obj.size() ; i++)
 				{
+#ifdef __MPI
+					auto item = obj[i];
+					long _sum = std::get<0>(item);
+					long _min = std::get<1>(item);
+					long _max = std::get<2>(item);
+					double _mean = std::get<3>(item);
+					out << a_labels[i] << " " << _sum << " " << _min << " " << _max << " " << _mean << std::endl;
+#else
 					out << a_labels[i] << " " << obj[i] << std::endl;
+#endif
 				}
 			}
 		};
@@ -165,35 +218,35 @@ namespace MATools
 
 
 		template<class IO>
-		void io_trace_memory_points_per_mpi(IO& a_stream, MAFootprint& a_mem_points)
-		{
-			using namespace MATools;
-//			int rank = MPI::get_rank();
-			int size = MPI::get_mpi_size();
-			int number_of_mem_points = a_mem_points.size();
-			std::vector<std::vector<long>> mpi_trace(number_of_mem_points, std::vector<long>(size));
-			// gather all data per rank
-			for(int i = 0 ; i < number_of_mem_points ; i++)
+			void io_trace_memory_points_per_mpi(IO& a_stream, MAFootprint& a_mem_points)
 			{
-#ifdef __MPI
-				long local = a_mem_points.get_usage(i);
-				MPI_Gather(&local, 1, MPI_LONG, mpi_trace[i].data(), 1, MPI_LONG, 0, MPI_COMM_WORLD);
-#else /* __MPI */
-				mpi_trace[i][0] = a_mem_points.get_usage(i);
-#endif /* __MPI */
-			}
-
-			int point_id = 0; 
-			for(auto& mem_points : mpi_trace)
-			{
-				std::string buf = std::to_string(point_id++) + " "; 
-				for(auto& mpi : mem_points)
+				using namespace MATools;
+				//			int rank = MPI::get_rank();
+				int size = MPI::get_mpi_size();
+				int number_of_mem_points = a_mem_points.size();
+				std::vector<std::vector<long>> mpi_trace(number_of_mem_points, std::vector<long>(size));
+				// gather all data per rank
+				for(int i = 0 ; i < number_of_mem_points ; i++)
 				{
-					buf += std::to_string(mpi) + " "; 
+#ifdef __MPI
+					long local = a_mem_points.get_usage(i);
+					MPI_Gather(&local, 1, MPI_LONG, mpi_trace[i].data(), 1, MPI_LONG, 0, MPI_COMM_WORLD);
+#else /* __MPI */
+					mpi_trace[i][0] = a_mem_points.get_usage(i);
+#endif /* __MPI */
 				}
-				a_stream << buf << std::endl;
+
+				int point_id = 0; 
+				for(auto& mem_points : mpi_trace)
+				{
+					std::string buf = std::to_string(point_id++) + " "; 
+					for(auto& mpi : mem_points)
+					{
+						buf += std::to_string(mpi) + " "; 
+					}
+					a_stream << buf << std::endl;
+				}
 			}
-		}
 
 		/*
 		 * The memory footprint is printed for every memory checkpoints according to their mpi rank.
