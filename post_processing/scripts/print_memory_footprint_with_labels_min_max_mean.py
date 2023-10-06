@@ -8,7 +8,6 @@ import matplotlib.ticker as ticker
 
 # setup plot
 fig, ax = plt.subplots()
-
 fig.set_figheight(10)
 fig.set_figwidth(10)
 ax.set_ylabel('Memory(KB)')
@@ -18,10 +17,15 @@ data = pd.read_csv('MAMemoryFootprint.mem', sep='\s+',header=None)
 data = pd.DataFrame(data)
 
 xplot = data[0]
-yplot = data[1]
+minplot = data[1]
+maxplot = data[2]
+meanplot = data[3]
 
-ax.plot(xplot,yplot)
+ax.plot(xplot, minplot, label="Min")
+ax.plot(xplot, maxplot, label="Max")
+ax.plot(xplot, meanplot, label="Average")
+ax.legend()
 fig.autofmt_xdate(rotation=75)
 plt.tight_layout()
-namepng='memory.png'
+namepng='min_max_mean.png'
 plt.savefig(namepng)
