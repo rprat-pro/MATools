@@ -1,6 +1,6 @@
 from spack import *
 
-class Matools(AutotoolsPackage):
+class Matools(CMakePackage):
     """MATools is a library that offers various tools, including MATimers (timers in hierarchical form), MATrace (Trace generation for VITE), and MAMemory (memory footprint printing).
 		"""
 
@@ -15,7 +15,7 @@ class Matools(AutotoolsPackage):
     depends_on("openmpi", when="+mpi")
     depends_on("vite", when="+trace")
 
-    build_system("cmake", "autotools", default="cmake")
+    build_system("cmake", default="cmake")
 
     variant("mpi", default=False, description="Support for MPI")
     variant("static", default=False, description="Using static library")
