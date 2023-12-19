@@ -1,7 +1,7 @@
 # MATools library
 
 MATools is a library that offers various tools, including `MATimers` (timers in hierarchical form), `MATrace` (Trace generation for VITE), and `MAMemory` (memory footprint printing).
-
+ 
 - Installation
 - MATimer
 - MATrace
