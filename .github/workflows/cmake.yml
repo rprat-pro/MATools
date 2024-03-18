@@ -23,7 +23,7 @@ jobs:
     - uses: ziishaned/jest-reporter-action@v0.0.1
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
-        test-command: "yarn jest --coverage"
+#        test-command: "yarn jest --coverage"
         
     - name: Install libtclap-dev
       run: sudo apt-get install -y libtclap-dev catch2
