@@ -56,6 +56,4 @@ jobs:
         root: ${{github.workspace}}
 
     - name: Generate a code coverage report
-      uses: threeal/gcovr-action@xml-out
-      with:
-        xml-out: coverage.xml  
+      run: gcovr --html-details coverage.html && gcovr --html-nested coverage.html
