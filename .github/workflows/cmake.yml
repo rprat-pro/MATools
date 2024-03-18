@@ -20,11 +20,8 @@ jobs:
     steps:
     - uses: actions/checkout@v3
     - uses: mpi4py/setup-mpi@v1
-    - uses: ziishaned/jest-reporter-action@v0.0.1
-      with:
-        github-token: ${{ secrets.GITHUB_TOKEN }}
-#        test-command: "yarn jest --coverage"
-        
+    - uses: ArtiomTr/jest-coverage-report-action@v2
+    
     - name: Install libtclap-dev
       run: sudo apt-get install -y libtclap-dev catch2
 
