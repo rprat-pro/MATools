@@ -53,5 +53,6 @@ jobs:
     - name: Generate a code coverage report
       uses: threeal/gcovr-action@v1.0.0
       with:
-        root: ${{github.workspace}}
+        root: ${{github.workspace}}/builf
+        coveralls-send: true
         
