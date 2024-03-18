@@ -40,7 +40,7 @@ jobs:
       run: ctest -C --rerun-failed --output-on-failure ${{env.BUILD_TYPE}}
 
     - name: Configure CMake no MPI
-      run: cmake -DMATOOLS_MPI=OFF -DMATOOLS_TESTING=ON -B ${{github.workspace}}/build-no-mpi -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+      run: cmake -DCMAKE_CXX_FLAGS="--coverage -g" -DMATOOLS_MPI=OFF -DMATOOLS_TESTING=ON -B ${{github.workspace}}/build-no-mpi -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
 
     - name: Build no MPI
       # Build your program with the given configuration
