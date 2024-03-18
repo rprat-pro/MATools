@@ -23,13 +23,18 @@ jobs:
     - name: Install libtclap-dev
       run: sudo apt-get install -y libtclap-dev catch2
 
+
     - name: Configure CMake
       run: cmake -DMATOOLS_TESTING=ON -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
-
 
     - name: Build
       # Build your program with the given configuration
       run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}}
+      
+    - name: Code Coverage Summary Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage.cobertura.xml
 
     - name: Test
       working-directory: ${{github.workspace}}/build
@@ -50,7 +55,7 @@ jobs:
       uses: insightsengineering/coverage-action@v2
       with:
         # Path to the Cobertura XML report.
-        path: ./cobertura.xml
+        path: ./coverage.cobertura.xml
         # Minimum total coverage, if you want to the
         # workflow to enforce it as a standard.
         # This has no effect if the `fail` arg is set to `false`.
