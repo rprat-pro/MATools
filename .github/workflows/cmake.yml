@@ -50,8 +50,6 @@ jobs:
       working-directory: ${{github.workspace}}/build-no-mpi
       run: ctest -C --rerun-failed --output-on-failure ${{env.BUILD_TYPE}}
 
-    - name: Code Coverage Summary Report
-      uses: irongut/CodeCoverageSummary@v1.3.0
-      with:
-        filename: coverage.cobertura.xml
+    - name: Generate a code coverage report
+      uses: threeal/gcovr-action@v1.0.0
         
