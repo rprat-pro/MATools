@@ -56,7 +56,7 @@ jobs:
         root: ${{github.workspace}}
 
     - name: Generate a code coverage report
-      run: gcovr --html-details coverage.html && gcovr --html-nested coverage.html
+      run: gcovr --html-details coverage.html
 
     - name: Archive code coverage results
       uses: actions/upload-artifact@v4
