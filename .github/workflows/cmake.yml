@@ -55,5 +55,18 @@ jobs:
       with:
         root: ${{github.workspace}}
 
+    - name: Code Coverage Report
+      uses: irongut/CodeCoverageSummary@v1.3.0
+      with:
+        filename: coverage.xml
+        badge: true
+        fail_below_min: true
+        format: markdown
+        hide_branch_rate: false
+        hide_complexity: true
+        indicators: true
+        output: both
+        thresholds: '60 80'
+
     - name: Generate a code coverage report
       run: gcovr --html-details coverage.html && gcovr --html-nested coverage.html
