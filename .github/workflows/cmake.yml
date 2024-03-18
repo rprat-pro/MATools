@@ -19,7 +19,7 @@ jobs:
 
     steps:
     - uses: actions/checkout@v4
-    - run: npm init
+    - run: npm install npx
     - uses: ArtiomTr/jest-coverage-report-action@v2
     - uses: actions/setup-node@v4
     - uses: mpi4py/setup-mpi@v1
