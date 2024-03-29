@@ -67,6 +67,7 @@ target_include_directories(MATools PUBLIC ${HEADERS})
 if(MATOOLS_MPI)
 	target_link_libraries(MATools PRIVATE mpi)
 	target_include_directories(MATools PRIVATE ${MPI_C_INCLUDE_PATH}) 
+	target_link_directories(MATools PRIVATE $ENV{MPI_ROOT}/lib) 
 endif()
 
 
