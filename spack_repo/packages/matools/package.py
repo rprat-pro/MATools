@@ -7,7 +7,7 @@ class Matools(CMakePackage):
     homepage = "https://github.com/rprat-pro/MATools/"
     git = "https://github.com/rprat-pro/MATools.git"
 
-    version("1.2", commit="1d071628dd7b13971c45ed00e8a00c1e553003af")
+    version("1.2", commit="e51d20f8d6f299c346514f9bd166ce6666f1335d")
     version("1.1", commit="ea62ca75455d0741a6a179114734e9b12fa9f412")
     version("1.0", commit="439f19525e10bae163da68abb00eed4203951af4")
 
