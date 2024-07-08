@@ -28,8 +28,7 @@ Command lines
 
 ```
 cd MATools
-mkdir build
-cd $build
+mkdir build && cd build
 cmake -DMATOOLS_MPI=OFF -DCMAKE_INSTALL_PREFIX=../install ..
 make install -j 8
 export MATools_DIR=${BASE_PATH}/MATools/install/
@@ -71,7 +70,7 @@ You need to set the environment variable `MATools_DIR` to the install directory 
 
 ## MATools
 
-`MATools` is a HPC toolkit to profile MPI + X code.
+`MATools` is a HPC toolkit to profile `MPI + X` code.
 
 ### Minimal requirement in your code
 
