@@ -73,7 +73,7 @@ namespace MATools
 		 * @param f is a mafootprint object that contains memory checkpoints
 		 * @see mafootprint
 		 */
-		void write_trace_memory_points_per_mpi(MAFootprint& a_f, std::string a_name="MAMemoryFootprinPar.mem");
+	void write_trace_memory_points_per_mpi(MAFootprint&& a_f, std::string a_name="MAMemoryFootprinPar.mem");
 
 		/*
 		 * The memory footprint is written for every memory checkpoints

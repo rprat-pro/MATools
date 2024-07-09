@@ -73,7 +73,9 @@ set (testlist
 	test_print_filtered_timers 
 	test_print_filtered_timers_unbalance 
 	test_mpi_debug_unbalanced_timers
-	test_mpi_debug_balanced_timers)
+	test_mpi_debug_balanced_timers
+  test_memory_footprint_write_per_mpi
+)
 
 foreach(elem IN LISTS testlist)
 	message("---> add test ${elem}")
