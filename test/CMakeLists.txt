@@ -69,6 +69,7 @@ set (testlist
 	test_memory_footprint 
 	test_memory_footprint_write 
 	test_mamemory_api
+	test_matoolsmanager_api
 	test_get_filtered_timers 
 	test_print_filtered_timers 
 	test_print_filtered_timers_unbalance 
