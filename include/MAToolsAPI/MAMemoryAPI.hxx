@@ -7,7 +7,11 @@
 #include <MAOutput/MAOutput.hxx>
 #include <iostream>
 
-std::vector<std::string>& get_mem_labels();
+inline std::vector<std::string>& get_mem_labels()
+{
+	static std::vector<std::string> ret;
+	return ret;
+}
 
 inline
 void Add_Mem_Label(std::string a_name)

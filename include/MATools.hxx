@@ -17,5 +17,4 @@ namespace MATools
 }
 
 // API
-#include <MAToolsAPI/MATimersAPI.hxx>
-#include <MAToolsAPI/MAMemoryAPI.hxx>
+#include <MAToolsAPI/MAToolsSectionAPI.hxx>
