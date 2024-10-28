@@ -77,7 +77,8 @@ namespace MATools
 
 			const int mpi_size = get_mpi_size();
 			std::vector<long> buffer;
-			if(is_master()) buffer.resize(mpi_size);
+			//if(is_master()) buffer.resize(mpi_size);
+			buffer.resize(mpi_size);
 
 			// get total memory footprint for every memory checkpoints
 			for(int id = 0 ; id < nb_points ; id++)
@@ -172,6 +173,22 @@ namespace MATools
 		void write_memory_checkpoints(MAFootprint& a_f, std::vector<std::string>& a_labels,  std::string file_name)
 		{
 			using namespace MATools::MPI;
+
+      // rename file
+      // replace * by mpi_size
+      std::string pattern =  "*";
+      auto ppos = file_name.find(pattern);
+      if( ppos == std::string::npos )
+      {
+        MATools::MAOutput::printMessage("MATools_Error: output filename should contains the pattern *");
+        std::abort();
+      }
+
+      const int mpi_size = get_mpi_size();
+      file_name = file_name.replace(ppos, 1, std::to_string(mpi_size));
+
+      MATools::MAOutput::printMessage("Writting" , file_name );
+
 			// This function extracts the maxmimal data size (footprint) and do a reduction if the MPI feature is activated
 			// For every memory checkpoints
 #ifdef __MPI
