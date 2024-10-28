@@ -139,7 +139,7 @@ class MATimersManager
 		~MATimersManager() 
 		{
 			MATools::MATimer::finalize();
-			MATools::MPI::mpi_finalize();
+      MATools::MPI::mpi_finalize();
 		}
 };
 

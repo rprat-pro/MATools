@@ -20,8 +20,5 @@ int main(int argc, char * argv[])
 		Add_Mem_Point();
 	}
 	mem_manager.write_trace_memory_footprint();
-#ifdef __MPI
-	MPI_Finalize();
-#endif
 	return 0;
 }

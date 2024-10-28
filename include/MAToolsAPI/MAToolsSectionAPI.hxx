@@ -56,7 +56,7 @@ class MAToolsManager : public MATimersManager, public MAMemoryManager
 		 */
 		~MAToolsManager() 
 		{
-			//MATools::MPI::mpi_finalize();
+      // call finalize (MATimersAPI)
 		}
 };
 
