@@ -74,13 +74,13 @@ namespace MATools
 			 * @brief Displays the banner/header.
 			 * @param[in] shift number of blank character displayed
 			 */
-			void print_banner(size_t shift);
+			void print_banner(int shift);
 
 			/**
 			 * @brief Displays the header.
 			 * @param[in] shift number of blank character displayed
 			 */
-			void print_ending(size_t shift);
+			void print_ending(int shift);
 
 			/**
 			 * @brief Gets of the duration member
@@ -93,14 +93,14 @@ namespace MATools
 			 * @param[in] shift number of blank character displayed
 			 * @param[in] runtime duration value
 			 */
-			void print(size_t shift, double runtime);
+			void print(int shift, double runtime);
 
 			/**
 			 * @brief Displays the local runtime.
 			 * @param[in] shift number of blank character displayed
 			 * @param[in] runtime local duration value
 			 */
-			void print_local(size_t shift, double runtime);
+			void print_local(int shift, double runtime);
 
 			// accessors
 
@@ -114,13 +114,13 @@ namespace MATools
 			 * @brief Retruns the MATimerNode iteration number
 			 * @return the iteration number
 			 */
-			std::size_t get_iteration();
+			int get_iteration();
 
 			/**
 			 * @brief Retruns the MATimerNode level
 			 * @return level
 			 */
-			std::size_t get_level();
+			int get_level();
 
 			/**
 			 * @brief Retruns a vector of daughter MATimerNode pointers
@@ -152,9 +152,9 @@ namespace MATools
 			/** @brief name of the measured section */
 			std::string m_name;
 			/** @brief number of time the measured section is called */
-			std::size_t m_iteration;
+			int m_iteration;
 			/** @brief depth of this MATimerNode */
-			std::size_t m_level;
+			int m_level;
 			/** @brief bunch of daughter MATimerNode */
 			std::vector<MATimerNode*> m_daughter;
 			/** @brief pointer on the mother MATimerNode, this value is nullptr if it's the root MATimerNode */

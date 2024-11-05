@@ -58,7 +58,7 @@ namespace MATools
 				std::string space;
 				std::string motif = "   ";
 
-				for(std::size_t i = 0 ; i < a_ptr->get_level() ; i++) space +=motif;
+				for(int i = 0 ; i < a_ptr->get_level() ; i++) space +=motif;
 
 				const auto max_time = reduce_max(a_ptr->get_duration());
 
@@ -120,7 +120,7 @@ namespace MATools
 				std::string space;
 				std::string motif = "   ";
 
-				for(std::size_t i = 0 ; i < a_ptr->get_level() ; i++) space +=motif;
+				for(int i = 0 ; i < a_ptr->get_level() ; i++) space +=motif;
 				// get timer value
 				auto value = a_ptr->get_duration();
 				a_file << space << a_ptr->get_name() 

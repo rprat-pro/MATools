@@ -161,7 +161,7 @@ namespace MATools
 		 * @param[in] shift number of blank character displayed
 		 */
 		void 
-			MATimerNode::print_banner(size_t shift)
+			MATimerNode::print_banner(int shift)
 			{
 				if(m_name == "root")
 				{
@@ -174,7 +174,7 @@ namespace MATools
 #endif
 						std::string start_name = " |-- start timetable "; 
 						std::cout << start_name;
-						size_t end = shift+ nColumns*(cWidth+1) + 1;	
+						int end = shift+ nColumns*(cWidth+1) + 1;	
 						print_replicate(start_name.size(), end,"-");
 						column(); end_line();
 						std::string name = " |    name";
@@ -182,7 +182,7 @@ namespace MATools
 						print_replicate(name.size(),shift + 1," ");
 
 						// columns name are displayed, columns change if the MPI mode is ued
-						for(size_t i =  0 ; i < nColumns ; i++)
+						for(int i =  0 ; i < nColumns ; i++)
 						{
 							column();
 							int size = cName[i].size();
@@ -206,7 +206,7 @@ namespace MATools
 		 * @param[in] shift number of blank character displayed
 		 */
 		void 
-			MATimerNode::print_ending(size_t shift)
+			MATimerNode::print_ending(int shift)
 			{
 				if(m_name == "root")
 				{
@@ -237,14 +237,14 @@ namespace MATools
 		 * @param[in] runtime local duration value
 		 */
 		void 
-			MATimerNode::print_local(size_t shift, double total_time)
+			MATimerNode::print_local(int shift, double total_time)
 			{
 				assert(total_time >= 0);
 				int nC = 3;
 				std::string cValue[3];
-				size_t realShift = shift;
+				int realShift = shift;
 				space(); column(); space();
-				size_t currentShift = 3;
+				int currentShift = 3;
 				for(int i = 0 ; i < int(m_level) - 1; i++) 
 				{
 					int spaceSize = 3;
@@ -280,15 +280,15 @@ namespace MATools
 		 * @param[in] runtime duration value
 		 */
 		void 
-			MATimerNode::print(size_t shift, double total_time)
+			MATimerNode::print(int shift, double total_time)
 			{
 				assert(total_time >= 0);
 				std::string cValue[nColumns];
 				if(MATools::MPI::is_master()) 
 				{
-					size_t realShift = shift;
+					int realShift = shift;
 					space(); column(); space();
-					size_t currentShift = 3;
+					int currentShift = 3;
 					for(int i = 0 ; i < int(m_level) - 1; i++) 
 					{
 						int spaceSize = 3;
@@ -366,7 +366,7 @@ namespace MATools
 #endif
 				if(MATools::MPI::is_master())
 				{
-					for(size_t i =  0 ; i < nColumns ; i++)
+					for(int i =  0 ; i < nColumns ; i++)
 					{
 						column();
 						int size = cValue[i].size();
@@ -404,22 +404,22 @@ namespace MATools
 		 * @brief Retruns the MATimerNode iteration number
 		 * @return the iteration number
 		 */
-		std::size_t 
+		int 
 			MATimerNode::get_iteration()
 			{
-				std::size_t ret = m_iteration;
-				return ret;
+				int res = m_iteration;
+				return res;
 			}
 
 		/**
 		 * @brief Retruns the MATimerNode level
 		 * @return level
 		 */
-		std::size_t 
+		int 
 			MATimerNode::get_level()
 			{
-				std::size_t ret = m_level;
-				return ret;
+				int res = m_level;
+				return res;
 			}
 
 		/**
