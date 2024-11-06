@@ -1,5 +1,7 @@
 # MATools library
 
+[![CMake](https://github.com/rprat-pro/MATools/actions/workflows/cmake.yml/badge.svg?branch=main)](https://github.com/rprat-pro/MATools/actions/workflows/cmake.yml)
+
 MATools is a library that offers various tools, including `MATimers` (timers in hierarchical form), `MATrace` (Trace generation for VITE), and `MAMemory` (memory footprint printing).
 
 - Installation
