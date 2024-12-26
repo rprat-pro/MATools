@@ -10,7 +10,7 @@ MATools is a library that offers various tools, including `MATimers` (timers in 
 - MAMemory
 - Debugging tools
 
-## Installation 
+## Installation
 
 ### MATools Environment requirements
 
