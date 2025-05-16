@@ -1,4 +1,4 @@
-name: CMake
+name: Doxygen
 
 on:
   push:
