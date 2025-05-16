@@ -73,7 +73,7 @@ endif()
 add_custom_target(doc)
 add_subdirectory(doc)
 
-option(enable-website "enable generation of the website" ON)
+option(enable-website "enable generation of the website" OFF)
 if(enable-website)
   set(MATOOLS_GENERATE_WEBSITE ON)
   # Looking for pandoc (http://johnmacfarlane.net/pandoc)
@@ -92,7 +92,7 @@ else(enable-website)
 endif(enable-website)
 
 # add a target to generate API documentation with Doxygen
-option(enable-doxygen-doc "enable generation of the Doxygen documentation" ON)
+option(enable-doxygen-doc "enable generation of the Doxygen documentation" OFF)
 if(enable-doxygen-doc)
   find_package(Doxygen)
   if(DOXYGEN_FOUND)
