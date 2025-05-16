@@ -70,6 +70,51 @@ if(MATOOLS_MPI)
 	target_link_directories(MATools PRIVATE $ENV{MPI_ROOT}/lib) 
 endif()
 
+add_custom_target(doc)
+add_subdirectory(doc)
+
+option(enable-website "enable generation of the website" ON)
+if(enable-website)
+  set(MATOOLS_GENERATE_WEBSITE ON)
+  # Looking for pandoc (http://johnmacfarlane.net/pandoc)
+  include(cmake/modules/pandoc.cmake)
+  if(MATOOLS_HAVE_PANDOC)
+    set(MATOOLS_GENERATE_WEBSITE ON)
+  endif(MATOOLS_HAVE_PANDOC)
+  if(MATOOLS_GENERATE_WEBSITE)
+    list(APPEND CPACK_COMPONENTS_ALL website)
+    set(CPACK_COMPONENT_WEBSITE_DESCRIPTION
+      "Contains the MFEM/MGIS web site")
+  endif(MATOOLS_GENERATE_WEBSITE)
+else(enable-website)
+  set(MATOOLS_GENERATE_WEBSITE OFF)
+  message(STATUS "Generation of the MATools website disabled")
+endif(enable-website)
+
+# add a target to generate API documentation with Doxygen
+option(enable-doxygen-doc "enable generation of the Doxygen documentation" ON)
+if(enable-doxygen-doc)
+  find_package(Doxygen)
+  if(DOXYGEN_FOUND)
+    configure_file(${CMAKE_CURRENT_SOURCE_DIR}/Doxyfile.in
+      ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile)
+    add_custom_target(doc-html
+      ${DOXYGEN_EXECUTABLE} ${CMAKE_CURRENT_BINARY_DIR}/Doxyfile
+      WORKING_DIRECTORY ${CMAKE_CURRENT_BINARY_DIR}
+      COMMENT "Generating API documentation with Doxygen" VERBATIM)
+    add_dependencies(doc doc-html)
+    list(APPEND CPACK_COMPONENTS_ALL doxygen)
+    set(CPACK_COMPONENT_DOXYGEN_DESCRIPTION
+      "Contains the TFEL doxygen documentation")
+    set(GENERATE_DOXYGEN ON)
+  else(DOXYGEN_FOUND)
+    message(FATAL_ERROR "doxygen is required")
+  endif(DOXYGEN_FOUND)
+else(enable-doxygen-doc)
+  message(STATUS "doxygen documentation is not enabled")
+endif(enable-doxygen-doc)
+
+
 
 target_compile_options(MATools PRIVATE -fPIC)
 
