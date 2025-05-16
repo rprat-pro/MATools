@@ -1,0 +1,49 @@
+name: CMake
+
+on:
+  push:
+    branches:
+      - main
+      - gh-pages
+  pull_request:
+    branches: [ "main" ]
+
+env:
+  # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+  BUILD_TYPE: Release
+
+jobs:
+  build:
+    # The CMake configure and build commands are platform agnostic and should work equally well on Windows or Mac.
+    # You can convert this to a matrix build if you need cross-platform coverage.
+    # See: https://docs.github.com/en/free-pro-team@latest/actions/learn-github-actions/managing-complex-workflows#using-a-build-matrix
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        persist-credentials: false
+
+    - uses: actions/setup-node@v4
+    - uses: mpi4py/setup-mpi@v1
+
+    - name: Install libtclap-dev
+      run: sudo apt-get install -y libtclap-dev catch2 pandoc doxygen
+
+    - name: Configure CMake
+      run: cmake -B ${{github.workspace}}/build -DCMAKE_BUILD_TYPE=${{env.BUILD_TYPE}}
+
+    - name: Build
+      # Build your program with the given configuration
+      run: cmake --build ${{github.workspace}}/build --config ${{env.BUILD_TYPE}} --target doc-html 
+    - name: Deploy
+      uses: peaceiris/actions-gh-pages@v4
+      with:
+#        deploy_key: ${{ secrets.DEPLOY_TO_THELFER_GITHUB_IO }}
+        personal_token: ${{ secrets.GITHUB_TOKEN }}
+#        personal_token: ${{ secrets.GITHUB_TOKEN }}        
+        publish_branch: gh-pages
+#        github_token: ${{ secrets.GITHUB_TOKEN }}
+        publish_dir: ${{github.workspace}}/build/doc/doxygen/html/ 
+#        external_repository: rprat-pro/rprat-pro.github.io/
+#        destination_dir: matools/doxygen/
