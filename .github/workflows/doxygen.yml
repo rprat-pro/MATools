@@ -45,5 +45,5 @@ jobs:
         publish_branch: gh-pages
 #        github_token: ${{ secrets.GITHUB_TOKEN }}
         publish_dir: ${{github.workspace}}/build/doc/doxygen/html/ 
-        external_repository: rprat-pro/rprat-pro.github.io/MATools/
+        external_repository: rprat-pro/rprat-pro.github.io/
         destination_dir: matools/doxygen/
